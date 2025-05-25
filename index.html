@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Het's Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="./projects/h1-bg" >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo-container">
+                    <img src="./projects/h1-bg" class="logo" />
+                    <div class="logo-text">et Shah</div>
+                </div>
+
+                <div class="nav-items">
+                    <div><a href="#projects">Projects</a></div>
+                    <div><a href="#skills">Skills</a></div>
+                    <div>
+                        <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank">Contact Me</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-section">
+                <div class="faded-text">Het Shah</div>
+
+                <div class="hero-section-left">
+                    <div class="hero-section-heading">Hi! Het Shah</div>
+
+                    <div class="hero-section-heading hero-section-sub-heading">
+                        I am a <span class="role"></span>
+                    </div>
+
+                    <div class="hero-section-description">
+                        I'm a software developer and here is my portfolio website. Here you'll
+                        learn about my journey as a software developer.
+                    </div>
+                    <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank">
+                        <div class="btn-pink" id="btn">Hire me</div>
+                    </a>
+                </div>
+
+                <div class="hero-section-right">
+                    <div class="absolute icons icon-dots">
+                        <img src="./projects/dots.png" alt="" />
+                    </div>
+                    <div class="absolute icons icon-cube">
+                        <img src="./projects/cube.png" alt="" />
+                    </div>
+                    <div class="absolute icons icon-circle">
+                        <img src="./projects/circle.png" alt="" />
+                    </div>
+                    <div class="absolute icons icon-zigzag">
+                        <img src="./projects/zigzags.png" alt="" />
+                    </div>
+                    <div class="absolute icons icon-plus">
+                        <img src="./projects/plus.png" alt="" />
+                    </div>
+                    <div class="user-image">
+                        <img src="./projects/i2.jpg" alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-section">
+            <h2 class="page-header">Projects</h2>
+
+            <div class="project-container">
+                <div class="project-card" id="project1">
+                    <div class="project-number project-number-right">01</div>
+                    <div class="project-content project-content-left">
+                        <div class="project-skills-container">
+                            <img class="project-skill" src="./stack/HTML.png" alt="" />
+                            <img class="project-skill" src="./stack/CSS.png" alt="" />
+                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
+                            <img class="project-skill" src="./stack/python.svg" alt="" />
+                        </div>
+
+                        <h2 class="project-heading">Cryptic</h2>
+
+                        <p class="project-subHeading">
+                            It teaches what is cryptocurrency and it predicts the future prices
+                            of various cryptocurrency.
+                        </p>
+                        <div class="btn-grp">
+                            <a href="#live link">
+                                <button class="btn-pink btn-project">Show Live</button>
+                            </a>
+                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank">
+                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" id="project2">
+                    <div class="project-number project-number-left">02</div>
+                    <div class="project-content project-content-right">
+                        <div class="project-skill-container">
+                            <img class="project-skill" src="./stack/HTML.png" alt="" />
+                            <img class="project-skill" src="./stack/CSS.png" alt="" />
+                            <img class="project-skill" src="./stack/Tailwind.png" alt="" />
+                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
+                        </div>
+                        <h2 class="project-heading">Razorpay</h2>
+                        <p class="project-subHeading project-content-right">
+                            I have created a clone of Razorpay who provides payment gateway to multiple platforms.
+                        </p>
+                        <div class="btn-grp">
+                            <button class="btn-pink btn-project">Show Live</button>
+                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank">
+                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="skills" class="container skills-container">
+            <div class="skill-fade-text">Skills</div>
+
+            <div class="skill-container-left">
+                <h2 class="skill-heading">
+                    <span class="caps">M</span>e and
+                    <br />
+                    MyTech Stack
+                </h2>
+
+                <div class="skill-subHeading">
+                    <p>
+                        Hi everyone! My name is Het Shah. I am a Full Stack Web Developer with 3 years of experience. 
+                        Currently working with a startup and freelancing. Specializing in Next.js and creating 
+                        beautiful UI/UX designs.
+                    </p>
+                    <p>
+                        Passionate about solving complex problems through clean code and intuitive interfaces. 
+                        Experienced in full development lifecycle from concept to deployment.
+                    </p>
+                </div>
+            </div>
+
+            <div class="skill-container-right">
+                <img src="./projects/blob vector.png" class="blob-style" alt="" />
+                <img src="./stack/HTML.png" alt="" class="skills-logo" />
+                <img src="./stack/CSS.png" alt="" class="skills-logo" />
+                <img src="./stack/Javascript.svg" alt="" class="skills-logo" />
+                <img src="./stack/React.png" alt="" class="skills-logo" />
+                <img src="./stack/NodeJs.svg" alt="" class="skills-logo" />
+                <img src="./stack/python.svg" alt="" class="skills-logo" />
+                <img src="./stack/Bootstrap.svg" alt="" class="skills-logo" />
+                <img src="./stack/Tailwind.png" alt="" class="skills-logo" />
+                <img src="./stack/django.svg" alt="" class="skills-logo" />
+                <img src="./stack/google-cloud.svg" alt="" class="skills-logo" />
+                <img src="./stack/Express.png" alt="" class="skills-logo" />
+                <img src="./stack/Git.svg" alt="" class="skills-logo" />
+                <img src="./stack/Github.svg" alt="" class="skills-logo" />
+                <img src="./stack/android.svg" alt="" class="skills-logo" />
+                <img src="./stack/c.svg" alt="" class="skills-logo" />
+                <img src="./stack/Docker.svg" alt="" class="skills-logo" />
+                <img src="./stack/java.svg" alt="" class="skills-logo" />
+                <img src="./stack/K8s.svg" alt="" class="skills-logo" />
+            </div>
+        </div>
+
+        <div class="contactus-form-container">
+            <div class="container">
+                <h1 class="contactus-heading">Contact me</h1>
+                <h3 class="contactus-subHeading">Questions, thoughts, or just want to say hello?</h3>
+
+                <section class="contactMeSection">
+                    <form action="">
+                        <div class="formfield-container">
+                            <input class="formfield" type="text" name="name" placeholder="Enter your name" />
+                            <input class="formfield" name="email" type="email" placeholder="Enter your email" />
+                            <input class="formfield" type="text" name="subject" placeholder="Enter your Subject" />
+                            <textarea class="formfield" name="message" cols="30" rows="10" placeholder="Enter your message"></textarea>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn-pink" id="submit-btn">
+                                Send Message<i class="submit-icon fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <footer class="footer-container">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <img src="./projects/h1-bg" class="logo" />
+                        <span class="logo-text">et Shah</span>
+                    </div>
+
+                    <div class="footer-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#projects">Projects</a></li>
+                            <li><a href="#skills">Skills</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-contact">
+                        <h3>Connect With Me</h3>
+                        <ul>
+                            <li><i class="fas fa-envelope"></i> hetshah3303@gmail.com</li>
+                            <li><i class="fas fa-phone"></i> +91 9409078274</li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-social">
+                        <h3>Follow Me</h3>
+                        <div class="social-icons">
+                            <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://github.com/HetShah2004" target="_blank"><i class="fab fa-github"></i></a>
+                            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Het Shah. All rights reserved.</p>
+                    <p>Made with <i class="fas fa-heart" style="color: var(--bgOrange);"></i> by Het Shah</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://kit.fontawesome.com/58a810656e.js" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+    <script>
+        var typeData = new Typed(".role", {
+            strings: [
+                "Full Stack Developer",
+                "Java Developer",
+                "ML Engineer",
+                "Python Developer",
+            ],
+            loop: true,
+            typeSpeed: 50,
+            backSpeed: 60,
+            backDelay: 1000,
+        });
+    </script>
+</body>
+</html>
