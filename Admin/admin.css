@@ -1,0 +1,59 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-container label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.admin-container input,
+.admin-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-container button {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #ff4b2b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-container button:hover {
+  background-color: #ff3a1a;
+}
+
+#successMessage {
+  margin-top: 20px;
+  color: green;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}

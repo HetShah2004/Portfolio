@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Add Projects</title>
+  <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
-    <div class="admin-container">
-        <div class="auth-container" id="auth-container">
-            <h2>Admin Login</h2>
-            <input type="email" id="email" placeholder="Admin Email">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="login()">Login</button>
-        </div>
+  <div class="admin-container">
+    <h1>Add New Project</h1>
+    <form id="projectForm">
+      <label>Project Title</label>
+      <input type="text" id="title" required />
 
-        <div class="project-form hidden" id="project-form">
-            <h2>Add New Project</h2>
-            <form id="projectForm">
-                <input type="text" id="projectTitle" placeholder="Project Title" required>
-                <textarea id="projectDesc" placeholder="Project Description" required></textarea>
-                <input type="text" id="projectImage" placeholder="Image URL" required>
-                <div class="skills-input">
-                    <input type="text" id="projectSkills" placeholder="Skills (comma separated)">
-                    <small>e.g., HTML, CSS, JavaScript</small>
-                </div>
-                <input type="text" id="githubLink" placeholder="GitHub Link">
-                <input type="text" id="liveLink" placeholder="Live Demo Link">
-                <button type="submit">Add Project</button>
-            </form>
-        </div>
-    </div>
+      <label>Description</label>
+      <textarea id="description" required></textarea>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-    <script src="admin.js"></script>
+      <label>Skills (comma-separated)</label>
+      <input type="text" id="skills" placeholder="e.g., html,css,js" required />
+
+      <label>Image URL</label>
+      <input type="url" id="image" required />
+
+      <label>Live Link (optional)</label>
+      <input type="url" id="live" />
+
+      <label>GitHub Link (optional)</label>
+      <input type="url" id="github" />
+
+      <button type="submit">Add Project</button>
+    </form>
+    <div id="successMessage" class="hidden">Project added successfully!</div>
+  </div>
+
+  <script src="admin.js"></script>
 </body>
 </html>
