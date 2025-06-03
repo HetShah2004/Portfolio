@@ -39,5 +39,30 @@ function loadProjects() {
     });
 }
 
+<<<<<<< Updated upstream
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', loadProjects);
+=======
+    const result = await response.json();
+    alert(result.message);
+    contactForm.reset();
+  } catch (err) {
+    alert('Error sending message. Try again.');
+    console.error(err);
+  }
+});
+
+// Update your hamburger click event
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navItems.classList.toggle('active');
+    document.querySelector('.backdrop')?.classList.toggle('active');
+});
+
+// Add click event to backdrop
+document.querySelector('.backdrop')?.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navItems.classList.remove('active');
+    document.querySelector('.backdrop').classList.remove('active');
+});
+>>>>>>> Stashed changes
