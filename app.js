@@ -1,45 +1,3 @@
-// const contactForm = document.querySelector('form');
-// contactForm.addEventListener('submit', async (e) => {
-//   e.preventDefault();
-
-//   const data = {
-//     name: contactForm.name.value,
-//     email: contactForm.email.value,
-//     subject: contactForm.subject.value,
-//     message: contactForm.message.value
-//   };
-
-//   try {
-//     const response = await fetch('http://localhost:5000/api/contact', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(data)
-//     });
-
-//     const result = await response.json();
-//     alert(result.message);
-//     contactForm.reset();
-//   } catch (err) {
-//     alert('Error sending message. Try again.');
-//     console.error(err);
-//   }
-// });
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   const hamburger = document.querySelector('.hamburger-menu');
-//   const navItems = document.querySelector('.nav-items');
-
-//   hamburger.addEventListener('click', () => {
-//     navItems.classList.toggle('active');
-//   });
-
-//   document.querySelectorAll('.nav-items a').forEach(link => {
-//     link.addEventListener('click', () => {
-//       navItems.classList.remove('active');
-//     });
-//   });
-// });
-
 document.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.querySelector('.hamburger-menu');
   const navItems = document.querySelector('.nav-items');
@@ -96,33 +54,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- Existing Contact Form Logic ---
-  const contactForm = document.querySelector('form');
-  if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  // ---  Contact Form Logic for local host ---
+//   const contactForm = document.querySelector('form');
+//   if (contactForm) {
+//     contactForm.addEventListener('submit', async (e) => {
+//       e.preventDefault();
 
-      const data = {
-        name: contactForm.name.value,
-        email: contactForm.email.value,
-        subject: contactForm.subject.value,
-        message: contactForm.message.value
-      };
+//       const data = {
+//         name: contactForm.name.value,
+//         email: contactForm.email.value,
+//         subject: contactForm.subject.value,
+//         message: contactForm.message.value
+//       };
 
-      try {
-        const response = await fetch('http://localhost:5000/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+//       try {
+//         const response = await fetch('http://localhost:5000/api/contact', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(data)
+//         });
 
-        const result = await response.json();
-        alert(result.message);
-        contactForm.reset();
-      } catch (err) {
-        alert('Error sending message. Try again.');
-        console.error(err);
-      }
-    });
-  }
-});
+//         const result = await response.json();
+//         alert(result.message);
+//         contactForm.reset();
+//       } catch (err) {
+//         alert('Error sending message. Try again.');
+//         console.error(err);
+//       }
+//     });
+//   }
+// });
