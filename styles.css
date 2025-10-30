@@ -398,6 +398,7 @@ a {
 }
 
 .project-content {
+<<<<<<< Updated upstream
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -408,6 +409,20 @@ a {
     gap: 1em;
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform;
+=======
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  padding: 2em;
+  bottom: 20%;
+  z-index: 5;
+  gap: 1em;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+  text-align: center;
+  align-items: center;
+>>>>>>> Stashed changes
 }
 
 .project-content-left {
@@ -683,6 +698,24 @@ a {
     margin-bottom: 2rem;
 }
 
+.form-status {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-status .sending {
+  color: #2196F3;
+}
+
+.form-status .success {
+  color: #4CAF50;
+}
+
+.form-status .error {
+  color: #F44336;
+}
+
 .formfield {
     padding: 1rem;
     border: 2px solid #ccc;
@@ -807,7 +840,42 @@ textarea.formfield {
     opacity: 0.8;
 }
 
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 40px;
+  }
+  
+  .hero-section {
+    gap: 2rem;
+  }
+  
+  .project-container {
+    padding: 3rem 40px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-section {
+    gap: 1rem;
+  }
+  
+  .hero-section-heading {
+    font-size: 30px;
+  }
+  
+  .hero-section-sub-heading {
+    font-size: 35px;
+    line-height: 40px;
+  }
+  
+  .faded-text {
+    font-size: 5em;
+  }
+}
+
 @media (max-width: 768px) {
+<<<<<<< Updated upstream
     .logo-container {
         justify-content: center;
         padding-left: 6rem;
@@ -1002,3 +1070,292 @@ textarea.formfield {
         font-size: 0.9rem;
     }
 }
+=======
+  /* Remove blue animation on project cards for mobile */
+  .project-card::before {
+    display: none;
+  }
+  
+  /* Center all project content */
+  .project-content-left, 
+  .project-content-right {
+    text-align: center;
+    align-items: center;
+  }
+  
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .nav-items {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 2rem 0;
+    gap: 1.5rem;
+    z-index: 100;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-items.active {
+    display: flex;
+  }
+
+  .nav-items div {
+    text-align: center;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 3rem;
+    margin-bottom: 0;
+  }
+
+  .hero-section-left,
+  .hero-section-right {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-section-heading {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .hero-section-sub-heading {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+  }
+
+  .hero-section-description {
+    width: 90%;
+    margin: 1rem auto;
+    font-size: 1rem;
+  }
+
+  .faded-text {
+    display: none;
+  }
+
+  .user-image {
+    scale: 0.9;
+    padding: 0.5rem;
+  }
+
+  .user-image img {
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .absolute.icons {
+    scale: 0.7;
+  }
+
+  .page-header {
+    font-size: 60px;
+    padding-top: 20px;
+  }
+  
+  .project-container {
+    padding: 2rem 1rem;
+    gap: 4rem;
+  }
+  
+  .project-card {
+    width: 100%;
+    height: 450px;
+    background-position: center;
+    margin: 0 auto;
+  }
+  
+  .project-content {
+    position: absolute;
+    scale: 1;
+    padding: 1.5rem;
+    text-align: center;
+    color: white !important;
+    bottom: 10%;
+    top: auto;
+  }
+  
+  .project-content-left,
+  .project-content-right {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .project-heading {
+    font-size: 2rem;
+  }
+  
+  .project-subHeading {
+    width: 100%;
+    font-size: 1rem;
+    color: white !important;
+  }
+  
+  .project-skills-container,
+  .project-skill-container {
+    justify-content: center;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .project-skill {
+    width: 40px;
+    height: 40px;
+  }
+  .skills-container {
+    flex-direction: column;
+    gap: 3rem;
+    padding: 2rem 1rem;
+  }
+  
+  .skill-fade-text {
+    font-size: 5rem;
+    bottom: -10%;
+    right: -5%;
+  }
+  
+  .skill-container-left,
+  .skill-container-right {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .skill-heading {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+  
+  .caps {
+    font-size: 4rem;
+  }
+  
+  .skill-subHeading {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .skill-subHeading p {
+    font-size: 1rem;
+    margin: 1rem 0;
+    line-height: 1.5;
+  }
+  
+  .skill-container-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .skills-logo {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s;
+  }
+  
+  .skills-logo:hover {
+    transform: scale(1.2);
+  }
+  
+  .blob-style {
+    width: 250px;
+    height: auto;
+    position: absolute;
+    z-index: -1;
+    opacity: 0.4;
+  }
+  .contactus-heading {
+    font-size: 3rem;
+    text-align: center;
+  }
+  
+  .contactus-subHeading {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .contactus-form-container {
+    padding: 2rem 1rem;
+  }
+  
+  .formfield-container {
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .formfield {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: 5px;
+  }
+  
+  #submit-btn {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .submit-icon {
+    font-size: 1.2rem;
+  }
+  
+  .footer-container {
+    padding: 3rem 1rem 1rem;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .footer-logo {
+    justify-content: center;
+  }
+  
+  .footer-links ul,
+  .footer-contact ul {
+    padding: 0;
+    margin: 0 auto;
+  }
+  
+  .social-icons {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .footer-bottom {
+    margin-top: 2rem;
+  }
+}
+>>>>>>> Stashed changes
