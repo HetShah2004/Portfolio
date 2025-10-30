@@ -422,6 +422,9 @@ a {
   will-change: transform;
   text-align: center;
   align-items: center;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
@@ -716,6 +719,24 @@ a {
   color: #F44336;
 }
 
+.form-status {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-status .sending {
+  color: #2196F3;
+}
+
+.form-status .success {
+  color: #4CAF50;
+}
+
+.form-status .error {
+  color: #F44336;
+}
+
 .formfield {
     padding: 1rem;
     border: 2px solid #ccc;
@@ -874,7 +895,42 @@ textarea.formfield {
   }
 }
 
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 40px;
+  }
+  
+  .hero-section {
+    gap: 2rem;
+  }
+  
+  .project-container {
+    padding: 3rem 40px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-section {
+    gap: 1rem;
+  }
+  
+  .hero-section-heading {
+    font-size: 30px;
+  }
+  
+  .hero-section-sub-heading {
+    font-size: 35px;
+    line-height: 40px;
+  }
+  
+  .faded-text {
+    font-size: 5em;
+  }
+}
+
 @media (max-width: 768px) {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     .logo-container {
         justify-content: center;
@@ -1071,6 +1127,8 @@ textarea.formfield {
     }
 }
 =======
+=======
+>>>>>>> Stashed changes
   /* Remove blue animation on project cards for mobile */
   .project-card::before {
     display: none;
@@ -1352,6 +1410,13 @@ textarea.formfield {
   .social-icons {
     justify-content: center;
     margin-top: 1rem;
+<<<<<<< Updated upstream
+=======
+  }
+  
+  .footer-bottom {
+    margin-top: 2rem;
+>>>>>>> Stashed changes
   }
   
   .footer-bottom {

@@ -116,5 +116,9 @@ document.querySelector('.backdrop')?.addEventListener('click', () => {
       }, 1000);
     });
   }
+<<<<<<< Updated upstream
+});
+>>>>>>> Stashed changes
+=======
 });
 >>>>>>> Stashed changes
