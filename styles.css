@@ -690,19 +690,6 @@ a {
 }
 
 .formfield:focus {
-  outline: none;
-  border-color: var(--bgOrange);
-  box-shadow: 0 0 5px rgba(232, 73, 73, 0.5);
-}
-
-textarea.formfield {
-  min-height: 150px;
-  resize: vertical;
-}
-
-#submit-btn {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
   margin: 0 auto;
 }

@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = true;
 
       // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbxrtS01KgjuRIuwk9Utu25Sxq5jYfHpe-yBxW9CnFZHOciXhEHGBolkEAd2BjYOcvM/exec'; 
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzsg_j4en9A7b4F2Sqrcx6v748cJWIqjqwJyeDps0p_t1o_qWOa4wsLPeh2mAkRJSjs/exec'; 
 
       const formData = new FormData(contactForm);
 
