@@ -71,6 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const formData = new FormData(contactForm);
 
+      // Honeypot Check
+      if (formData.get('honeypot')) {
+          console.log("Bot detected!");
+          submitBtn.innerHTML = originalBtnText;
+          submitBtn.disabled = false;
+          alert('Message sent successfully!'); // Fake success
+          contactForm.reset();
+          return;
+      }
+
       fetch(scriptURL, { method: 'POST', body: formData })
         .then(response => {
             submitBtn.innerHTML = originalBtnText;

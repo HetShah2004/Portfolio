@@ -14,6 +14,8 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -50,7 +52,7 @@
                         I'm a software developer and here is my portfolio website. Here you'll
                         learn about my journey as a software developer.
                     </div>
-                    <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank">
                         <div class="btn-pink" id="btn">Hire me</div>
                     </a>
                 </div>
@@ -102,7 +104,7 @@
                             <a href="#live link">
                                 <button class="btn-pink btn-project">Show Live</button>
                             </a>
-                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank">
                                 <i title="GitHubLink" class="fa-brands fa-github icon"></i>
                             </a>
                         </div>
@@ -124,7 +126,7 @@
                         </p>
                         <div class="btn-grp">
                             <button class="btn-pink btn-project">Show Live</button>
-                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank">
                                 <i title="GitHubLink" class="fa-brands fa-github icon"></i>
                             </a>
                         </div>
@@ -150,7 +152,7 @@
                             <a href="#live link">
                                 <button class="btn-pink btn-project">Show Live</button>
                             </a>
-                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank">
                                 <i title="GitHubLink" class="fa-brands fa-github icon"></i>
                             </a>
                         </div>
@@ -201,12 +203,25 @@
                 <img src="./stack/android.svg" alt="" class="skills-logo" />
                 <img src="./stack/c.svg" alt="" class="skills-logo" />
                 <img src="./stack/c++.svg" alt="" class="skills-logo" />
-                <img src="./stack/java.svg" alt="" class="skills-logo" />
-                <img src="./stack/MongoDB.svg" alt="" class="skills-logo" />
             </div>
         </div>
 
-        <div id="contact"class="contactus-form-container">
+        <div id="contact" class="contactus-form-container">
+            <div class="container">
+                <h1 class="contactus-heading">Contact me</h1>
+                <h3 class="contactus-subHeading">Questions, thoughts, or just want to say hello?</h3>
+
+                <section class="contactMeSection">
+                    <form id="contactForm">
+                        <!-- Honeypot field to trap bots -->
+                        <input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
+                        
+                        <div class="formfield-container">
+                            <input class="formfield" type="text" name="name" placeholder="Enter your name" required />
+                            <input class="formfield" name="email" type="email" placeholder="Enter your email" required />
+                            <input class="formfield" type="text" name="subject" placeholder="Enter your subject" required />
+                            <textarea class="formfield" name="message" cols="30" rows="10" placeholder="Enter your message" required></textarea>
+                        </div>
 
                         <div>
                             <button type="submit" class="btn-pink" id="submit-btn">
@@ -246,10 +261,10 @@
                     <div class="footer-social">
                         <h3>Follow Me</h3>
                         <div class="social-icons">
-                            <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com/HetShah2004" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-                            <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                            <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://github.com/HetShah2004" target="_blank"><i class="fab fa-github"></i></a>
+                            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
