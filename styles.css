@@ -393,12 +393,12 @@ a {
 }
 
 .project-content-left {
-  left: 0%;
+  left: 5%;
   width: 50%;
 }
 
 .project-content-right {
-  right: 0%;
+  right: 5%;
   align-items: flex-end;
   width: 50%;
   text-align: right;
@@ -408,8 +408,25 @@ a {
     justify-content: flex-end;
 }
 
+img.project-skill{
+  width: 45px;
+  height: 45px;
+}
+
 .project-skills-container {
   width: 60%;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.project-skill {
+  width: 40px;
+}
+
+.project-heading {
+  font-size: 50px;
+  font-weight: bold;
   line-height: 3rem;
 }
 
@@ -636,6 +653,7 @@ a {
 
 .skills-logo {
   width: 80px;
+  height: 80px;
   transition: all 0.3s ease-in-out;
 }
 
