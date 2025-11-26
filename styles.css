@@ -463,7 +463,6 @@ a {
 #project1 {
   background-image: url(./projects/CryptopricePrediction.png);
 }
-
 #project2 {
   margin-left: 120px;
   background-image: url(./projects/RazorPay.png);
@@ -495,6 +494,11 @@ a {
     height: 300px;
     background-size: cover;
     background-position: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   .project-content {
     scale: 0.5;
@@ -502,6 +506,7 @@ a {
     left: 0;
     right: 0;
     top: 0;
+    width: 100%;
   }
   .project-content-left {
     left: 5%;
@@ -531,8 +536,35 @@ a {
   .project-card:hover .project-number {
     display: none;
   }
-  .project-card:hover .project-content {
-    scale: 0.55;
+  
+  /* Skills Section Tablet Fix */
+  .skills-container {
+    padding: 2rem;
+    margin: 5rem auto;
+    gap: 20px;
+    flex-direction: column;
+  }
+  
+  .skill-container-left {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .skill-container-right {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .skill-fade-text {
+    font-size: 10em;
+    bottom: -15%;
+    right: 0;
+  }
+  
+  .skill-subHeading {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -698,6 +730,7 @@ textarea.formfield {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  justify-content: center;
 }
 
 .footer-logo .logo {
@@ -778,33 +811,33 @@ textarea.formfield {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+    position: relative;
+    z-index: 10000;
   }
 
   .nav-items {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 70px;
+    top: 100%;
     left: 0;
     width: 100%;
-    background-color: white;
-    padding: 2rem 0;
+    background: white;
     gap: 1.5rem;
-    z-index: 100;
+    padding: 1.5rem 0;
+    z-index: 9999; /* FORCE visible */
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
   }
 
   .nav-items.active {
-    display: flex;
-  }
-
-  .nav-items div {
-    text-align: center;
+    display: flex !important;
   }
 
   .hamburger-menu {
     display: block;
+    cursor: pointer;
   }
+
 
   .hero-section {
     flex-direction: column;
@@ -851,13 +884,20 @@ textarea.formfield {
     width: 100%;
     height: auto;
     padding-bottom: 2rem;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: 100% 100%;
   }
   .project-content {
-    position: static;
+    position: relative;
     scale: 1;
     padding: 1.5rem;
     text-align: center;
     color: white !important;
+    z-index: 5;
   }
   .project-content-left,
   .project-content-right {
@@ -872,7 +912,7 @@ textarea.formfield {
   }
   .project-subHeading {
     width: 100%;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: white !important;
   }
   .project-skills-container {

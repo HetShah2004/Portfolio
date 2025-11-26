@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Hamburger Menu Logic ---
   hamburger.addEventListener('click', () => {
+    console.log("Hamburger clicked");
     navItems.classList.toggle('active');
   });
 
@@ -54,33 +55,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---  Contact Form Logic for local host ---
-//   const contactForm = document.querySelector('form');
-//   if (contactForm) {
-//     contactForm.addEventListener('submit', async (e) => {
-//       e.preventDefault();
+  // --- Contact Form Logic (Google Sheets) ---
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
+      submitBtn.disabled = true;
 
-//       const data = {
-//         name: contactForm.name.value,
-//         email: contactForm.email.value,
-//         subject: contactForm.subject.value,
-//         message: contactForm.message.value
-//       };
+      // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxrtS01KgjuRIuwk9Utu25Sxq5jYfHpe-yBxW9CnFZHOciXhEHGBolkEAd2BjYOcvM/exec'; 
 
-//       try {
-//         const response = await fetch('http://localhost:5000/api/contact', {
-//           method: 'POST',
-//           headers: { 'Content-Type': 'application/json' },
-//           body: JSON.stringify(data)
-//         });
+      const formData = new FormData(contactForm);
 
-//         const result = await response.json();
-//         alert(result.message);
-//         contactForm.reset();
-//       } catch (err) {
-//         alert('Error sending message. Try again.');
-//         console.error(err);
-//       }
-//     });
-//   }
-// });
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            alert('Message sent successfully!');
+            contactForm.reset();
+        })
+        .catch(error => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            alert('Error sending message. Please try again.');
+            console.error('Error!', error.message);
+        });
+    });
+  }
+});
