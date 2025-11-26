@@ -393,12 +393,12 @@ a {
 }
 
 .project-content-left {
-  left: 10%;
+  left: 0%;
   width: 50%;
 }
 
 .project-content-right {
-  right: 10%;
+  right: 0%;
   align-items: flex-end;
   width: 50%;
   text-align: right;
@@ -410,18 +410,6 @@ a {
 
 .project-skills-container {
   width: 60%;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.project-skill {
-  width: 40px;
-}
-
-.project-heading {
-  font-size: 50px;
-  font-weight: bold;
   line-height: 3rem;
 }
 
@@ -477,7 +465,40 @@ a {
   background-image: url(./images/projects/Project4.png);
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1200px) {
+  #project2, #project4 {
+    margin-left: 0;
+  }
+  .project-container {
+    align-items: center;
+  }
+  .project-content {
+    width: 100%;
+    left: 0;
+    right: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .project-content-left {
+    left: 0;
+  }
+  .project-content-right {
+    right: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .project-skills-container,
+  .project-content-right .project-skills-container {
+    justify-content: center;
+    width: 100%;
+  }
+  .btn-grp,
+  .project-content-right .btn-grp {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
   .page-header {
     padding-top: 30px;
     color: var(--bgOrange);
@@ -501,19 +522,14 @@ a {
     align-items: center;
   }
   .project-content {
-    scale: 0.5;
+    scale: 0.8;
     bottom: 0;
     left: 0;
     right: 0;
     top: 0;
     width: 100%;
   }
-  .project-content-left {
-    left: 5%;
-  }
-  .project-content-right {
-    right: 5%;
-  }
+
   .project-heading {
     font-size: 40px;
     width: 100%;
@@ -959,6 +975,7 @@ textarea.formfield {
   }
   #submit-btn {
     width: 100%;
+    justify-content: center;
   }
   .footer-content {
     flex-direction: column;

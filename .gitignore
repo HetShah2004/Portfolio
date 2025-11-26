@@ -1,3 +1,5 @@
 .vscode/
 .favicon.ico
 .node_modules/
+.gitignore
+.google_script_instructions.md
