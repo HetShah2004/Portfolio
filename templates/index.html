@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Het's Portfolio</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="favicon.ico" >
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+    <link rel="icon" href="{% static 'favicon.ico' %}" >
     <link 
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
@@ -22,7 +23,7 @@
         <div class="container">
             <div class="navbar">
                 <div class="logo-container">
-                    <img src="./projects/h1-bg.png" class="logo" />
+                    <img src="{% static 'projects/h1-bg.png' %}" class="logo" />
                     <div class="logo-text">et Shah</div>
                 </div>
 
@@ -59,22 +60,22 @@
 
                 <div class="hero-section-right">
                     <div class="absolute icons icon-dots">
-                        <img src="./projects/dots.png" alt="" />
+                        <img src="{% static 'projects/dots.png' %}" alt="" />
                     </div>
                     <div class="absolute icons icon-cube">
-                        <img src="./projects/cube.png" alt="" />
+                        <img src="{% static 'projects/cube.png' %}" alt="" />
                     </div>
                     <div class="absolute icons icon-circle">
-                        <img src="./projects/circle.png" alt="" />
+                        <img src="{% static 'projects/circle.png' %}" alt="" />
                     </div>
                     <div class="absolute icons icon-zigzag">
-                        <img src="./projects/zigzags.png" alt="" />
+                        <img src="{% static 'projects/zigzags.png' %}" alt="" />
                     </div>
                     <div class="absolute icons icon-plus">
-                        <img src="./projects/plus.png" alt="" />
+                        <img src="{% static 'projects/plus.png' %}" alt="" />
                     </div>
                     <div class="user-image">
-                        <img src="./projects/i2.jpg" alt="" />
+                        <img src="{% static 'projects/i2.jpg' %}" alt="" />
                     </div>
                 </div>
             </div>
@@ -84,81 +85,41 @@
             <h2 class="page-header">Projects</h2>
 
             <div class="project-container">
-                <div class="project-card" id="project1">
-                    <div class="project-number project-number-right">01</div>
-                    <div class="project-content project-content-left">
-                        <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/python.svg" alt="" />
-                        </div>
-
-                        <h2 class="project-heading">Cryptic</h2>
-
-                        <p class="project-subHeading">
-                            It teaches what is cryptocurrency and it predicts the future prices
-                            of various cryptocurrency.
-                        </p>
-                        <div class="btn-grp">
-                            <a href="#live link">
-                                <button class="btn-pink btn-project">Show Live</button>
-                            </a>
-                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project2">
-                    <div class="project-number project-number-left">02</div>
+                {% for project in projects %}
+                <div class="project-card {% if forloop.counter|divisibleby:2 %}offset-card{% endif %}" style="background-image: url('{{ project.image.url }}');">
+                    {% if forloop.counter|divisibleby:2 %}
+                    <div class="project-number project-number-left">{{ forloop.counter|stringformat:"02d" }}</div>
                     <div class="project-content project-content-right">
-                        <div class="project-skill-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Tailwind.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                        </div>
-                        <h2 class="project-heading">Razorpay</h2>
-                        <p class="project-subHeading project-content-right">
-                            I have created a clone of Razorpay who provides payment gateway to multiple platforms.
-                        </p>
-                        <div class="btn-grp">
-                            <button class="btn-pink btn-project">Show Live</button>
-                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project3">
-                    <div class="project-number project-number-right">03</div>
+                    {% else %}
+                    <div class="project-number project-number-right">{{ forloop.counter|stringformat:"02d" }}</div>
                     <div class="project-content project-content-left">
+                    {% endif %}
                         <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/spring-boot.svg" alt="" />
-                            <img class="project-skill" src="./stack/Java.svg" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
+                            {% for skill in project.skills.all %}
+                            <img class="project-skill" src="{{ skill.icon.url }}" alt="{{ skill.name }}" />
+                            {% endfor %}
                         </div>
 
-                        <h2 class="project-heading">Email Assisting</h2>
+                        <h2 class="project-heading">{{ project.title }}</h2>
 
                         <p class="project-subHeading">
-                            One-click perfect replies - Your AI co-pilot crafts responses instantly, so you never type another email from scratch!
+                            {{ project.description }}
                         </p>
                         <div class="btn-grp">
-                            <a href="#live link">
+                            {% if project.live_link %}
+                            <a href="{{ project.live_link }}">
                                 <button class="btn-pink btn-project">Show Live</button>
                             </a>
-                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank">
+                            {% endif %}
+                            {% if project.github_link %}
+                            <a href="{{ project.github_link }}" target="_blank">
                                 <i title="GitHubLink" class="fa-brands fa-github icon"></i>
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                
+                {% endfor %}
             </div>
         </div>
 
@@ -186,23 +147,23 @@
             </div>
 
             <div class="skill-container-right">
-                <img src="./projects/blob vector.png" class="blob-style" alt="" />
-                <img src="./stack/HTML.png" alt="" class="skills-logo" />
-                <img src="./stack/CSS.png" alt="" class="skills-logo" />
-                <img src="./stack/Javascript.svg" alt="" class="skills-logo" />
-                <img src="./stack/React.png" alt="" class="skills-logo" />
-                <img src="./stack/NodeJs.svg" alt="" class="skills-logo" />
-                <img src="./stack/python.svg" alt="" class="skills-logo" />
-                <img src="./stack/Bootstrap.svg" alt="" class="skills-logo" />
-                <img src="./stack/Tailwind.png" alt="" class="skills-logo" />
-                <img src="./stack/django.svg" alt="" class="skills-logo" />
-                <img src="./stack/google-cloud.svg" alt="" class="skills-logo" />
-                <img src="./stack/spring-boot.svg" alt="" class="skills-logo" />
-                <img src="./stack/Git.svg" alt="" class="skills-logo" />
-                <img src="./stack/Github.svg" alt="" class="skills-logo" />
-                <img src="./stack/android.svg" alt="" class="skills-logo" />
-                <img src="./stack/c.svg" alt="" class="skills-logo" />
-                <img src="./stack/c++.svg" alt="" class="skills-logo" />
+                <img src="{% static 'projects/blob vector.png' %}" class="blob-style" alt="" />
+                <img src="{% static 'stack/HTML.png' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/CSS.png' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/Javascript.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/React.png' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/NodeJs.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/python.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/Bootstrap.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/Tailwind.png' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/django.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/google-cloud.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/spring-boot.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/Git.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/Github.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/android.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/c.svg' %}" alt="" class="skills-logo" />
+                <img src="{% static 'stack/c++.svg' %}" alt="" class="skills-logo" />
             </div>
         </div>
 
@@ -237,7 +198,7 @@
             <div class="container">
                 <div class="footer-content">
                     <div class="footer-logo">
-                        <img src="./projects/h1-bg.png" class="logo" />
+                        <img src="{% static 'projects/h1-bg.png' %}" class="logo" />
                         <span class="logo-text">et Shah</span>
                     </div>
 
@@ -279,7 +240,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://kit.fontawesome.com/58a810656e.js" crossorigin="anonymous"></script>
-    <script src="app.js"></script>
+    <script src="{% static 'app.js' %}"></script>
     <script>
         var typeData = new Typed(".role", {
             strings: [

@@ -460,21 +460,8 @@ a {
   transform: scale(1.05) translateY(-10px);
 }
 
-#project1 {
-  background-image: url(./projects/CryptopricePrediction.png);
-}
-#project2 {
+.offset-card {
   margin-left: 120px;
-  background-image: url(./projects/RazorPay.png);
-}
-
-#project3 {
-  background-image: url(./projects/Project3.png);
-}
-
-#project4 {
-  margin-left: 120px;
-  background-image: url(./images/projects/Project4.png);
 }
 
 @media (max-width: 1300px) {
@@ -521,10 +508,7 @@ a {
   .project-sub-heading {
     width: 100%;
   }
-  #project2 {
-    margin-left: 0;
-  }
-  #project4 {
+  .offset-card {
     margin-left: 0;
   }
   .project-skill-container {
