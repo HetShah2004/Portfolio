@@ -861,7 +861,7 @@ textarea.formfield {
     top: 100%;
     left: 0;
     width: 100%;
-    background: white;
+    background: rgb(180, 180, 180);
     gap: 1.5rem;
     padding: 1.5rem 0;
     z-index: 9999; /* FORCE visible */
@@ -870,6 +870,7 @@ textarea.formfield {
 
   .nav-items.active {
     display: flex !important;
+    align-items: center;
   }
 
   .hamburger-menu {
