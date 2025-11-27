@@ -513,6 +513,11 @@ img.project-skill{
   .project-content-right .btn-grp {
     justify-content: center;
   }
+  .skill-fade-text {
+    font-size: 10em;
+    bottom: -15%;
+    right: 0;
+  }
 }
 
 @media (max-width: 768px) {
@@ -856,7 +861,7 @@ textarea.formfield {
     top: 100%;
     left: 0;
     width: 100%;
-    background: rgb(190, 190, 190);
+    background: white;
     gap: 1.5rem;
     padding: 1.5rem 0;
     z-index: 9999; /* FORCE visible */
@@ -865,7 +870,6 @@ textarea.formfield {
 
   .nav-items.active {
     display: flex !important;
-    align-items: center;
   }
 
   .hamburger-menu {
@@ -994,7 +998,6 @@ textarea.formfield {
   }
   #submit-btn {
     width: 100%;
-    justify-content: center;
   }
   .footer-content {
     flex-direction: column;
