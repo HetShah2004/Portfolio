@@ -393,12 +393,12 @@ a {
 }
 
 .project-content-left {
-  left: 10%;
+  left: 5%;
   width: 50%;
 }
 
 .project-content-right {
-  right: 10%;
+  right: 5%;
   align-items: flex-end;
   width: 50%;
   text-align: right;
@@ -406,6 +406,11 @@ a {
 
 .project-content-right .project-skills-container {
     justify-content: flex-end;
+}
+
+img.project-skill{
+  width: 45px;
+  height: 45px;
 }
 
 .project-skills-container {
@@ -460,11 +465,62 @@ a {
   transform: scale(1.05) translateY(-10px);
 }
 
-.offset-card {
+#project1 {
+  background-image: url(./projects/CryptopricePrediction.png);
+}
+#project2 {
   margin-left: 120px;
+  background-image: url(./projects/RazorPay.png);
 }
 
-@media (max-width: 1300px) {
+#project3 {
+  background-image: url(./projects/Project3.png);
+}
+
+#project4 {
+  margin-left: 120px;
+  background-image: url(./images/projects/Project4.png);
+}
+
+@media (max-width: 1200px) {
+  #project2, #project4 {
+    margin-left: 0;
+  }
+  .project-container {
+    align-items: center;
+  }
+  .project-content {
+    width: 100%;
+    left: 0;
+    right: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .project-content-left {
+    left: 0;
+  }
+  .project-content-right {
+    right: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .project-skills-container,
+  .project-content-right .project-skills-container {
+    justify-content: center;
+    width: 100%;
+  }
+  .btn-grp,
+  .project-content-right .btn-grp {
+    justify-content: center;
+  }
+  .skill-fade-text {
+    font-size: 10em;
+    bottom: -15%;
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
   .page-header {
     padding-top: 30px;
     color: var(--bgOrange);
@@ -488,19 +544,14 @@ a {
     align-items: center;
   }
   .project-content {
-    scale: 0.5;
+    scale: 0.8;
     bottom: 0;
     left: 0;
     right: 0;
     top: 0;
     width: 100%;
   }
-  .project-content-left {
-    left: 5%;
-  }
-  .project-content-right {
-    right: 5%;
-  }
+
   .project-heading {
     font-size: 40px;
     width: 100%;
@@ -508,7 +559,10 @@ a {
   .project-sub-heading {
     width: 100%;
   }
-  .offset-card {
+  #project2 {
+    margin-left: 0;
+  }
+  #project4 {
     margin-left: 0;
   }
   .project-skill-container {
@@ -604,6 +658,7 @@ a {
 
 .skills-logo {
   width: 80px;
+  height: 80px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -806,7 +861,7 @@ textarea.formfield {
     top: 100%;
     left: 0;
     width: 100%;
-    background: white;
+    background: rgb(180, 180, 180);
     gap: 1.5rem;
     padding: 1.5rem 0;
     z-index: 9999; /* FORCE visible */
@@ -815,6 +870,7 @@ textarea.formfield {
 
   .nav-items.active {
     display: flex !important;
+    align-items: center;
   }
 
   .hamburger-menu {
@@ -941,9 +997,7 @@ textarea.formfield {
   .formfield-container {
     gap: 1rem;
   }
-  #submit-btn {
-    width: 100%;
-  }
+
   .footer-content {
     flex-direction: column;
     gap: 2rem;
