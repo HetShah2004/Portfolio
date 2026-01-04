@@ -997,9 +997,7 @@ textarea.formfield {
   .formfield-container {
     gap: 1rem;
   }
-  #submit-btn {
-    width: 100%;
-  }
+  
   .footer-content {
     flex-direction: column;
     gap: 2rem;
