@@ -1,302 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Het's Portfolio</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="favicon.ico" >
-    <link 
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Het Shah | Backend Engineer</title>
+    <meta name="description"
+        content="Portfolio of Het Shah, a Backend Engineer specializing in Python, Machine Learning, and scalable systems.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
-    <div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar">
         <div class="container">
-            <div class="navbar">
-                <div class="logo-container">
-                    <img src="./projects/h1-bg.png" class="logo" />
-                    <div class="logo-text">et Shah</div>
-                </div>
+            <div class="logo-container">
+                <img src="./projects/h1-bg.png" alt="Logo" class="logo-img">
+                <span class="logo-text">et Shah</span>
+            </div>
 
-                <div class="nav-items">
-                    <div><a href="#projects">Projects</a></div>
-                    <div><a href="#skills">Skills</a></div>
-                    <div><a href="#contact">Contact Me</a></div>
-                </div>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
 
-                <div class="hamburger-menu">
-                    <i class="fa-solid fa-bars"></i>
-                    
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="Het_Shah_Resume_Final.pdf" target="_blank" class="btn btn-primary"
+                        style="padding: 8px 16px;">Resume</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-bg-gradient"></div>
+        <div class="container hero-content">
+            <div class="hero-text reveal">
+                <div class="hero-badge"><span class="status-dot"></span> Available for opportunities</div>
+                <h1 class="hero-title">Architecting <br /><span class="text-gradient">Robust Backend</span> Systems.
+                </h1>
+                <h2 class="role-wrapper"><span class="role"></span></h2>
+                <p class="hero-desc">
+                    I build scalable infrastructure and solve complex engineering problems using clean code, Python, and
+                    modern cloud technologies.
+                </p>
+                <div class="hero-btns">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="Het_Shah_Resume_Final.pdf" target="_blank" class="btn btn-secondary">
+                        <i class="fa-solid fa-file-pdf"></i> Resume
+                    </a>
                 </div>
             </div>
 
-            <div class="hero-section">
-                <div class="faded-text">Het Shah</div>
-
-                <div class="hero-section-left">
-                    <div class="hero-section-heading">Hi! Het Shah</div>
-
-                    <div class="hero-section-heading hero-section-sub-heading">
-                        I am a <span class="role"></span>
+            <div class="hero-visual reveal">
+                <div class="glass-profile-card">
+                    <div class="card-header">
+                        <div class="mac-btns">
+                            <span></span><span></span><span></span>
+                        </div>
                     </div>
-
-                    <div class="hero-section-description">
-                        I'm a software developer and here is my portfolio website. Here you'll
-                        learn about my journey as a software developer.
+                    <img src="./projects/me.jpg" alt="Het Shah" class="profile-img">
+                    <div class="profile-info">
+                        <h3>Het Shah</h3>
+                        <p>Backend Engineer</p>
                     </div>
-                    <a class="btn-pink" href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank">
-                        Hire me
-                    </a>                     
                 </div>
 
-                <div class="hero-section-right">
-                    <div class="absolute icons icon-dots">
-                        <img src="./projects/dots.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-cube">
-                        <img src="./projects/cube.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-circle">
-                        <img src="./projects/circle.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-zigzag">
-                        <img src="./projects/zigzags.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-plus">
-                        <img src="./projects/plus.png" alt="" />
-                    </div>
-                    <div class="user-image">
-                        <img src="./projects/i2.jpg" alt="" />
-                    </div>
+                <div class="floating-icons">
+                    <div class="float-icon icon-1"><i class="fa-brands fa-python"></i></div>
+                    <div class="float-icon icon-2"><i class="fa-solid fa-server"></i></div>
+                    <div class="float-icon icon-3"><i class="fa-brands fa-docker"></i></div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div id="projects" class="project-section">
-            <h2 class="page-header">Projects</h2>
-
-            <div class="project-container">
-                <div class="project-card" id="project1">
-                    <div class="project-number project-number-right">01</div>
-                    <div class="project-content project-content-left">
-                        <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/python.svg" alt="" />
-                        </div>
-
-                        <h2 class="project-heading">Cryptic</h2>
-
-                        <p class="project-subHeading">
-                            It teaches what is cryptocurrency and it predicts the future prices
-                            of various cryptocurrency.
-                        </p>
-                        <div class="btn-grp">
-                            <a href="#live link">
-                                <button class="btn-pink btn-project">Show Live</button>
-                            </a>
-                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project2">
-                    <div class="project-number project-number-left">02</div>
-                    <div class="project-content project-content-right">
-                        <div class="project-skill-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Tailwind.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                        </div>
-                        <h2 class="project-heading">Razorpay</h2>
-                        <p class="project-subHeading project-content-right">
-                            I have created a clone of Razorpay who provides payment gateway to multiple platforms.
-                        </p>
-                        <div class="btn-grp">
-                            <button class="btn-pink btn-project">Show Live</button>
-                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project3">
-                    <div class="project-number project-number-right">03</div>
-                    <div class="project-content project-content-left">
-                        <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/spring-boot.svg" alt="" />
-                            <img class="project-skill" src="./stack/Java.svg" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                        </div>
-
-                        <h2 class="project-heading">Email Assisting</h2>
-
-                        <p class="project-subHeading">
-                            One-click perfect replies - Your AI co-pilot crafts responses instantly, so you never type another email from scratch!
-                        </p>
-                        <div class="btn-grp">
-                            <a href="#live link">
-                                <button class="btn-pink btn-project">Show Live</button>
-                            </a>
-                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">About Me</h2>
             </div>
-        </div>
 
-        <div id="skills" class="container skills-container">
-            <div class="skill-fade-text">Skills</div>
-
-            <div class="skill-container-left">
-                <h2 class="skill-heading">
-                    <span class="caps">M</span>e and
-                    <br />
-                    MyTech Stack
-                </h2>
-
-                <div class="skill-subHeading">
+            <div class="about-content">
+                <div class="reveal">
+                    <img src="./projects/i2.jpg" alt="Het Shah at work" class="about-image">
+                </div>
+                <div class="about-text reveal">
+                    <h3>System-Level Thinker & Problem Solver</h3>
                     <p>
-                        I’m a software engineer with a solid foundation in system-level thinking and backend development. 
-                        I work comfortably across C, C++, Java, and Django, and I know how to build reliable, 
-                        scalable applications rather than just “write code.” I also know my way around Google Cloud Platform
-                         for deploying and managing real workloads.
+                        I’m a software engineer with a solid foundation in system-level thinking and backend
+                        development. I work comfortably across Python, C++, and Java, focusing on building reliable,
+                        scalable applications rather than just "writing code."
                     </p>
                     <p>
-                        Right now, I’m expanding into machine learning and Docker because I’m more interested in building production-ready systems,
-                         not just coding demos. My strength is understanding how things actually work under the hood — 
-                         which helps me debug faster, design smarter, and deliver cleaner solutions.
+                        Currently expanding into machine learning and Docker, my strength lies in understanding how
+                        things actually work under the hood. This fundamental knowledge allows me to debug faster,
+                        design smarter, and deliver cleaner, production-ready solutions.
                     </p>
+
+                    <div class="stats-row">
+                        <!-- <div class="stat-item">
+                            <span class="stat-number">2+</span>
+                            <span class="stat-label">Years Exp.</span>
+                        </div> -->
+                        <div class="stat-item">
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">20+</span>
+                            <span class="stat-label">Certifications</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="skill-container-right">
-                <img src="./projects/blob vector.png" class="blob-style" alt="" />
-                <img src="./stack/HTML.png" alt="" class="skills-logo" />
-                <img src="./stack/CSS.png" alt="" class="skills-logo" />
-                <img src="./stack/Javascript.svg" alt="" class="skills-logo" />
-                <img src="./stack/java.svg" alt="" class="skills-logo" />
-                <img src="./stack/NodeJs.svg" alt="" class="skills-logo" />
-                <img src="./stack/python.svg" alt="" class="skills-logo" />
-                <img src="./stack/Bootstrap.svg" alt="" class="skills-logo" />
-                <img src="./stack/Tailwind.png" alt="" class="skills-logo" />
-                <img src="./stack/django.svg" alt="" class="skills-logo" />
-                <img src="./stack/google-cloud.svg" alt="" class="skills-logo" />
-                <img src="./stack/spring-boot.svg" alt="" class="skills-logo" />
-                <img src="./stack/Git.svg" alt="" class="skills-logo" />
-                <img src="./stack/Github.svg" alt="" class="skills-logo" />
-                <img src="./stack/android.svg" alt="" class="skills-logo" />
-                <img src="./stack/c.svg" alt="" class="skills-logo" />
-                <img src="./stack/c++.svg" alt="" class="skills-logo" />
-                <img src="./stack/Docker.svg" alt="" class="skills-logo">
-                <img src="./stack/android.svg" alt="" class="skills-logo">
+    <!-- Experience Section -->
+    <section id="experience" class="section" style="background-color: var(--surface);">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Experience & Education</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jan 2026 - Present</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Software Developer Intern</h3>
+                        <p class="timeline-company">Vajravyuh Enterprise</p>
+                        <ul class="timeline-desc">
+                            <li>Built AI-driven automated lead management systems.</li>
+                            <li>Replaced manual workflows with efficient automation pipelines.</li>
+                            <li>Tech stack: React, n8n, ERPNext, Python.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2023 - 2026</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">B.Tech Computer Science</h3>
+                        <p class="timeline-company">Parul University (CGPA: 7.74/10)</p>
+                        <ul class="timeline-desc">
+                            <li>Microsoft ML Workshop Certification.</li>
+                            <li>Google DevOps on GCP Certification.</li>
+                            <li>Focus on Core CS, Data Structures, and System Architecture.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2020 - 2023</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Diploma Computer Science</h3>
+                        <p class="timeline-company">Parul University (CGPA: 8.83/10)</p>
+                        <ul class="timeline-desc">
+                            <li>Foundation in programming and web technologies.</li>
+                            <li>Graduated with Distinction.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div id="contact" class="contactus-form-container">
-            <div class="container">
-                <h1 class="contactus-heading">Contact me</h1>
-                <h3 class="contactus-subHeading">Questions, thoughts, or just want to say hello?</h3>
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Featured Projects</h2>
+            </div>
 
-                <section class="contactMeSection">
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card reveal">
+                    <img src="./projects/CryptopricePrediction.png" alt="Cryptic" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">Cryptic</h3>
+                        <p class="project-desc">Educational platform and ML-based cryptocurrency price prediction using
+                            real-time API data and time-series analysis.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">NumPy</span>
+                            <span class="tech-tag">Pandas</span>
+                            <span class="tech-tag">Scikit-Learn</span>
+                            <span class="tech-tag">Streamlit</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank" class="btn btn-outline">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card reveal">
+                    <img src="./projects/Project3.png" alt="Email Assistant" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">Email Assistant</h3>
+                        <p class="project-desc">AI-powered Gmail extension that drafts context-aware email replies
+                            instantly using Gemini API integration.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Spring Boot</span>
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Chrome Ext</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank"
+                                class="btn btn-outline">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card reveal">
+                    <img src="./projects/AuraSafe.png" alt="AuraSafe" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">AuraSafe Backend</h3>
+                        <p class="project-desc">Backend infrastructure for a women's safety app featuring real-time
+                            location sharing and emergency SOS routing.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">MySQL</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/HetShah2004/aura-backend" target="_blank"
+                                class="btn btn-outline">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card reveal">
+                    <img src="./projects/RazorPay.png" alt="Razorpay Clone" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">Razorpay UI Clone</h3>
+                        <p class="project-desc">Pixel-perfect frontend clone of the Razorpay payment gateway dashboard
+                            with responsive design.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag">Tailwind</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank"
+                                class="btn btn-outline">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section" style="background-color: var(--surface);">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Tech Stack</h2>
+            </div>
+
+            <div class="skills-container">
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">Languages</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">C / C++</span>
+                        <span class="tech-tag">Java</span>
+                        <span class="tech-tag">JavaScript</span>
+                    </div>
+                </div>
+
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">Frameworks</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">Django / DRF</span>
+                        <span class="tech-tag">Spring Boot</span>
+                        <span class="tech-tag">React</span>
+                        <span class="tech-tag">TailwindCSS</span>
+                    </div>
+                </div>
+
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">Databases</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">MongoDB</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">ML & Data</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">NumPy</span>
+                        <span class="tech-tag">Pandas</span>
+                        <span class="tech-tag">Scikit-Learn</span>
+                        <span class="tech-tag">Matplotlib</span>
+                        <span class="tech-tag">Streamlit</span>
+                    </div>
+                </div>
+
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">Cloud & Tools</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">Git & GitHub</span>
+                        <span class="tech-tag">GCP</span>
+                        <span class="tech-tag">n8n</span>
+                        <span class="tech-tag">Postman</span>
+                        <span class="tech-tag">Swagger / OpenAPI</span>
+                        <span class="tech-tag">Jira</span>
+                    </div>
+                </div>
+
+                <div class="skill-category reveal">
+                    <h3 class="skill-category-title">Core CS</h3>
+                    <div class="skill-tags">
+                        <span class="tech-tag">Data Structures</span>
+                        <span class="tech-tag">OOP</span>
+                        <span class="tech-tag">API Design</span>
+                        <span class="tech-tag">Networking</span>
+                        <span class="tech-tag">System Architecture</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Get In Touch</h2>
+                <p style="color: var(--text-secondary); margin-top: var(--spacing-sm);">Questions, opportunities, or
+                    just want to say hello?</p>
+            </div>
+
+            <div class="contact-container">
+                <div class="contact-form reveal">
                     <form id="contactForm">
-                        <!-- Honeypot field to trap bots -->
                         <input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
-                        
-                        <div class="formfield-container">
-                            <input class="formfield" type="text" name="name" placeholder="Enter your name" required />
-                            <input class="formfield" name="email" type="email" placeholder="Enter your email" required />
-                            <input class="formfield" type="text" name="subject" placeholder="Enter your subject" required />
-                            <textarea class="formfield" name="message" cols="30" rows="10" placeholder="Enter your message" required></textarea>
+
+                        <div class="form-group">
+                            <label class="form-label" for="name">Name</label>
+                            <input class="form-control" type="text" id="name" name="name" placeholder="John Doe"
+                                required />
                         </div>
 
-                        <div>
-                            <button type="submit" class="btn-pink" id="submit-btn">
-                                Send Message<i class="submit-icon fa-solid fa-paper-plane"></i>
-                            </button>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control" type="email" id="email" name="email"
+                                placeholder="john@example.com" required />
                         </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="subject">Subject</label>
+                            <input class="form-control" type="text" id="subject" name="subject"
+                                placeholder="Project Inquiry" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="message">Message</label>
+                            <textarea class="form-control" id="message" name="message"
+                                placeholder="Hello Het, I'd like to discuss..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submit-btn" style="width: 100%;">
+                            Send Message <i class="fa-solid fa-paper-plane"></i>
+                        </button>
                     </form>
-                </section>
+                </div>
+
+                <div class="contact-info reveal">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p>hetshahworks@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div class="contact-details">
+                            <h4>Phone</h4>
+                            <p>+91 9409078274</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="contact-details">
+                            <h4>Location</h4>
+                            <p>Vadodara, Gujarat, India</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item" style="margin-top: var(--spacing-lg);">
+                        <div class="contact-details">
+                            <h4>Connect</h4>
+                            <div style="display: flex; gap: 16px; margin-top: 8px;">
+                                <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"
+                                    style="color: var(--primary); font-size: 1.5rem;"><i
+                                        class="fa-brands fa-linkedin"></i></a>
+                                <a href="https://github.com/HetShah2004" target="_blank"
+                                    style="color: var(--primary); font-size: 1.5rem;"><i
+                                        class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <footer class="footer-container">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-logo">
-                        <img src="./projects/h1-bg.png" class="logo" />
-                        <span class="logo-text">et Shah</span>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="logo-container" style="margin-bottom: 16px;">
+                        <img src="./projects/h1-bg.png" alt="Logo"
+                            style="width: 30px; filter: brightness(0) invert(1);">
+                        <span
+                            style="font-family: var(--font-heading); font-weight: 700; font-size: 1.2rem; margin-left: -8px;">et
+                            Shah</span>
                     </div>
-
-                    <div class="footer-links">
-                        <h3>Quick Links</h3>
-                        <ul>
-                            <li><a href="#projects">Projects</a></li>
-                            <li><a href="#skills">Skills</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-contact">
-                        <h3>Connect With Me</h3>
-                        <ul>
-                            <li><i class="fas fa-envelope"></i> hetshahworks@gmail.com</li>
-                            <li><i class="fas fa-phone"></i> +91 9409078274</li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-social">
-                        <h3>Follow Me</h3>
-                        <div class="social-icons">
-                            <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com/HetShah2004" target="_blank"><i class="fab fa-github"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
+                    <p style="color: #9CA3AF; font-size: 0.875rem;">Backend Engineer focusing on scalable architecture
+                        and production-ready code.</p>
                 </div>
 
-                <div class="footer-bottom">
-                    <p>&copy; 2025 Het Shah. All rights reserved.</p>
-                    <p>Made with <i class="fas fa-heart" style="color: var(--bgOrange);"></i> by Het Shah</p>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Social</h4>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank" class="social-link"><i
+                                class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="https://github.com/HetShah2004" target="_blank" class="social-link"><i
+                                class="fa-brands fa-github"></i></a>
+                    </div>
                 </div>
             </div>
-        </footer>
-    </div>
 
+            <div class="footer-bottom">
+                <p>&copy; 2026 Het Shah. All rights reserved. Made with <i class="fa-solid fa-heart"
+                        style="color: var(--accent);"></i> by Het Shah</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <script src="https://kit.fontawesome.com/58a810656e.js" crossorigin="anonymous"></script>
     <script src="app.js"></script>
-    <script>
-        var typeData = new Typed(".role", {
-            strings: [
-                "Java Developer",
-                "Python Developer",
-                "ML Engineer",
-                "Cloud Engineer",
-            ],
-            loop: true,
-            typeSpeed: 50,
-            backSpeed: 60,
-            backDelay: 1000,
-        });
-    </script>
 </body>
+
 </html>
