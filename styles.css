@@ -517,6 +517,13 @@ body.locked {
   border-color: var(--hair-2);
 }
 
+/* The motion switch reads as active when motion is on, so its state is
+   legible at a glance rather than hidden in a tooltip. */
+html[data-motion="on"] .motion-btn {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
 /* Two bars that rotate into a true X rather than swapping icons. */
 .burger {
   display: none;
@@ -2075,69 +2082,116 @@ body.locked {
   }
 }
 
+/*
+   MOTION SWITCH
+
+   One attribute on <html> decides whether the page moves, and an inline
+   script in the document head sets it before first paint:
+
+     data-motion="off"   everything below applies, the page is static
+     data-motion="on"    full motion
+
+   Its default comes from `prefers-reduced-motion`, so the accessibility
+   preference is still honoured for anyone who has not chosen. What changed
+   is that the preference is no longer the final word: a visitor can switch
+   motion back on from the nav, and that choice persists.
+
+   This matters on Windows in particular, where "Show animations" is off on
+   a lot of machines (battery savers and performance tweaks both flip it),
+   which makes every browser report `reduce` and would otherwise leave the
+   whole site frozen with no way back.
+*/
+html[data-motion="off"] {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+  animation-timeline: auto !important;
+}
+
+html[data-motion="off"] .reveal,
+html[data-motion="off"] .hero-title .l > span,
+html[data-motion="off"] .island-core > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+html[data-motion="off"] .marquee-track {
+  animation: none;
+}
+
+html[data-motion="off"] .progress span {
+  display: none;
+}
+
+html[data-motion="off"] .signal,
+html[data-motion="off"] .mesh {
+  display: none;
+}
+
+html[data-motion="off"] .stage3d-inner,
+html[data-motion="off"] .proj {
+  transform: none !important;
+}
+
+html[data-motion="off"] .portrait img {
+  transform: scale(1.1);
+}
+
+/* Without the pan, the track has to be a grid again. */
+html[data-motion="off"] .pan-wrap {
+  height: auto !important;
+}
+
+html[data-motion="off"] .pan-sticky {
+  position: static !important;
+  height: auto !important;
+}
+
+html[data-motion="off"] .pan-track {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  width: auto !important;
+}
+
+html[data-motion="off"] .proj {
+  width: auto !important;
+}
+
+/* No JavaScript means no attribute and no toggle to offer, so fall back to
+   obeying the media query directly. Only the self-running CSS animations
+   need silencing here: without JS nothing else moves anyway. */
 @media (prefers-reduced-motion: reduce) {
-  html {
+
+  html:not(.js) {
     scroll-snap-type: none;
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
+  html:not(.js) *,
+  html:not(.js) *::before,
+  html:not(.js) *::after {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
     animation-timeline: auto !important;
   }
 
-  .js .reveal,
-  .js .hero-title .l > span,
-  .js .island-core > * {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-
-  .marquee-track {
+  html:not(.js) .marquee-track {
     animation: none;
   }
 
-  .progress span {
+  html:not(.js) .signal,
+  html:not(.js) .mesh,
+  html:not(.js) .progress span {
     display: none;
-  }
-
-  .signal,
-  .mesh {
-    display: none;
-  }
-
-  .stage3d-inner,
-  .proj {
-    transform: none !important;
-  }
-
-  .portrait img {
-    transform: scale(1.1);
-  }
-
-  /* Without the pan, the track has to be a grid again. */
-  .pan-wrap {
-    height: auto !important;
-  }
-
-  .pan-sticky {
-    position: static !important;
-    height: auto !important;
-  }
-
-  .pan-track {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-    width: auto !important;
-  }
-
-  .proj {
-    width: auto !important;
   }
 }
 

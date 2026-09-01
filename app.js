@@ -19,27 +19,73 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
   const root = document.documentElement;
-  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const SMALL = matchMedia('(max-width: 900px)');
   const FINE = matchMedia('(pointer: fine)').matches;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a, b, t) => a + (b - a) * t;
-  const RICH = FINE && !REDUCE;
 
   const navH = () =>
     parseInt(getComputedStyle(root).getPropertyValue('--nav-h'), 10) || 98;
 
+  /* ----------------------------------------------------- motion switch */
+  /*
+     The inline script in the document head has already set data-motion from
+     the visitor's saved choice, or from prefers-reduced-motion when there is
+     none. This reads that decision rather than the media query directly, so
+     the switch below is genuinely able to override the OS preference.
+
+     Motion is not read once at load: every animated part registers a
+     start/stop pair here, so flipping the switch takes effect immediately
+     and nothing has to be reloaded.
+  */
+  const MOTION_KEY = 'hs-motion';
+  let motionOn = root.getAttribute('data-motion') !== 'off';
+  const parts = [];
+
+  /* `pointer: fine` still gates the pointer effects independently: a touch
+     screen has no hovering cursor to follow, so those stay off there whatever
+     the switch says. */
+  const registerMotion = (part) => {
+    parts.push(part);
+    if (motionOn) part.start();
+  };
+
   const pointer = { x: -9999, y: -9999, has: false };
-  if (RICH) {
-    addEventListener('pointermove', (e) => {
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
-      pointer.has = true;
-    }, { passive: true });
-  }
+  addEventListener('pointermove', (e) => {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.has = true;
+  }, { passive: true });
 
   /* Effects that depend on the accent colour re-read it through these. */
   const themeHooks = [];
+
+  const motionBtn = document.getElementById('motionToggle');
+
+  const setMotion = (on, persist) => {
+    motionOn = on;
+    root.setAttribute('data-motion', on ? 'on' : 'off');
+
+    if (motionBtn) {
+      motionBtn.setAttribute('aria-pressed', String(on));
+      motionBtn.setAttribute('aria-label',
+        on ? 'Turn animations off' : 'Turn animations on');
+      const icon = motionBtn.querySelector('i');
+      if (icon) icon.className = on ? 'ph-light ph-sparkle' : 'ph-light ph-pause';
+    }
+
+    parts.forEach((p) => (on ? p.start() : p.stop()));
+
+    if (persist) {
+      try {
+        localStorage.setItem(MOTION_KEY, on ? 'on' : 'off');
+      } catch {
+        /* Private mode or blocked site data. The choice will not persist. */
+      }
+    }
+  };
+
+  motionBtn?.addEventListener('click', () => setMotion(!motionOn, true));
 
 
   /* ------------------------------------------------------------- theme */
@@ -104,7 +150,7 @@
     } else {
       menu.classList.remove('open');
       const done = () => { if (!menuOpen) menu.hidden = true; };
-      REDUCE ? done() : setTimeout(done, 520);
+      motionOn ? setTimeout(done, 520) : done();
     }
   }
 
@@ -137,7 +183,7 @@
     const from = scrollY;
     const dist = to - from;
 
-    if (REDUCE || Math.abs(dist) < 2) {
+    if (!motionOn || Math.abs(dist) < 2) {
       scrollTo(0, to);
       return;
     }
@@ -238,9 +284,7 @@
   /* ------------------------------------------------------------ reveals */
   const revealables = $$('.reveal');
 
-  if (REDUCE) {
-    revealables.forEach((el) => el.classList.add('in'));
-  } else if (revealables.length) {
+  if (revealables.length) {
     const io = new IntersectionObserver((entries, obs) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -277,32 +321,32 @@
   /* ----------------------------------------------------------- counters */
   const counters = $$('.snum[data-count]');
   if (counters.length) {
-    if (REDUCE) {
-      counters.forEach((el) => {
-        el.textContent = `${el.dataset.count}${el.dataset.suffix || ''}`;
-      });
-    } else {
-      const cio = new IntersectionObserver((entries, obs) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target;
-          obs.unobserve(el);
+    const cio = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const el = entry.target;
+        obs.unobserve(el);
 
-          const target = parseFloat(el.dataset.count) || 0;
-          const suffix = el.dataset.suffix || '';
-          const t0 = performance.now();
+        const target = parseFloat(el.dataset.count) || 0;
+        const suffix = el.dataset.suffix || '';
 
-          const tick = (now) => {
-            const p = Math.min((now - t0) / 1300, 1);
-            const eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(target * eased) + (p === 1 ? suffix : '');
-            if (p < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
+        if (!motionOn) {
+          el.textContent = `${target}${suffix}`;
+          continue;
         }
-      }, { threshold: 0.5 });
-      counters.forEach((el) => cio.observe(el));
-    }
+
+        const t0 = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - t0) / 1300, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + (p === 1 ? suffix : '');
+          if (p < 1 && motionOn) requestAnimationFrame(tick);
+          else el.textContent = `${target}${suffix}`;
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.5 });
+    counters.forEach((el) => cio.observe(el));
   }
 
 
@@ -319,12 +363,12 @@
 
   /* --------------------------------------------------- hero signal field */
   const field = $('#signal');
-  if (field && !REDUCE) {
+  if (field) {
     const ctx = field.getContext('2d');
     const GAP = 54;
     const REACH = 240;
 
-    let w = 0, h = 0, nodes = [], live = true;
+    let w = 0, h = 0, nodes = [], live = true, raf = 0;
     const start = performance.now();
 
     const readInk = () =>
@@ -350,7 +394,7 @@
     };
 
     const draw = (now) => {
-      requestAnimationFrame(draw);
+      raf = requestAnimationFrame(draw);
       if (!live || !nodes.length) return;
 
       const box = field.getBoundingClientRect();
@@ -396,7 +440,22 @@
     build();
     addEventListener('resize', build, { passive: true });
     new IntersectionObserver((e) => { live = e[0].isIntersecting; }).observe(field);
-    requestAnimationFrame(draw);
+
+    registerMotion({
+      start() {
+        /* Rebuild on every start. While motion is off the canvas is
+           display:none, so it measures zero and holds no nodes; without this
+           it would stay blank after the switch is turned on. */
+        build();
+        if (!raf) raf = requestAnimationFrame(draw);
+      },
+      stop() {
+        cancelAnimationFrame(raf);
+        raf = 0;
+        field.classList.remove('on');
+        ctx.clearRect(0, 0, w, h);
+      }
+    });
   }
 
 
@@ -404,11 +463,12 @@
   /* Rects are read in one pass and styles written in a second, so a frame
      never interleaves reads and writes and forces synchronous layout. */
   const magnets = $$('.btn, .icon-btn, .to-top');
-  if (RICH && magnets.length) {
+  if (FINE && magnets.length) {
     const items = magnets.map((el) => ({ el, x: 0, y: 0, tx: 0, ty: 0 }));
+    let magRaf = 0;
 
     const tick = () => {
-      requestAnimationFrame(tick);
+      magRaf = requestAnimationFrame(tick);
 
       for (const m of items) {
         const r = m.el.getBoundingClientRect();
@@ -437,21 +497,35 @@
         m.el.style.setProperty('--my-off', `${m.y.toFixed(2)}px`);
       }
     };
-    requestAnimationFrame(tick);
+
+    registerMotion({
+      start() {
+        if (!magRaf) magRaf = requestAnimationFrame(tick);
+      },
+      stop() {
+        cancelAnimationFrame(magRaf);
+        magRaf = 0;
+        for (const m of items) {
+          m.x = m.y = m.tx = m.ty = 0;
+          m.el.style.removeProperty('--mx-off');
+          m.el.style.removeProperty('--my-off');
+        }
+      }
+    });
   }
 
 
   /* -------------------------------------------------------- hero 3D stage */
   const stage = $('#stage3d');
   const stageInner = stage && $('.stage3d-inner', stage);
-  if (stageInner && RICH) {
-    let rx = 0, ry = 0, tx = 0, ty = 0, inView = true;
+  if (stageInner && FINE) {
+    let rx = 0, ry = 0, tx = 0, ty = 0, inView = true, spinRaf = 0;
 
     new IntersectionObserver((e) => { inView = e[0].isIntersecting; },
       { rootMargin: '140px' }).observe(stage);
 
     const spin = () => {
-      requestAnimationFrame(spin);
+      spinRaf = requestAnimationFrame(spin);
       if (!inView) return;
 
       if (pointer.has) {
@@ -466,14 +540,25 @@
       stageInner.style.transform =
         `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
     };
-    spin();
+
+    registerMotion({
+      start() {
+        if (!spinRaf) spinRaf = requestAnimationFrame(spin);
+      },
+      stop() {
+        cancelAnimationFrame(spinRaf);
+        spinRaf = 0;
+        rx = ry = tx = ty = 0;
+        stageInner.style.transform = '';
+      }
+    });
   }
 
 
   /* -------------------------------------------- project tilt and spotlight */
   /* Per card, and the loop only runs while a pointer is actually over one,
      so an idle Work screen costs nothing. */
-  if (RICH) {
+  if (FINE) {
     for (const card of $$('.proj')) {
       let raf = 0, rx = 0, ry = 0, tx = 0, ty = 0, over = false;
 
@@ -492,6 +577,7 @@
       };
 
       card.addEventListener('pointermove', (e) => {
+        if (!motionOn) return;
         const r = card.getBoundingClientRect();
         const nx = (e.clientX - r.left) / r.width;
         const ny = (e.clientY - r.top) / r.height;
@@ -510,6 +596,19 @@
         tx = ty = 0;
         if (!raf) raf = requestAnimationFrame(run);
       }, { passive: true });
+
+      /* Switching motion off mid-hover has to clear the card itself: its
+         loop only settles while a pointer is driving it. */
+      registerMotion({
+        start() { },
+        stop() {
+          cancelAnimationFrame(raf);
+          raf = 0;
+          rx = ry = tx = ty = 0;
+          over = false;
+          card.style.transform = '';
+        }
+      });
     }
   }
 
@@ -616,20 +715,43 @@
       later(run, t);
     };
 
-    if (REDUCE) {
+    /* With motion off the diagram still has to communicate: it renders its
+       finished state rather than animating toward it. */
+    const settle = () => {
+      clearAll();
+      transcriptEl.replaceChildren();
+      reqsEl.replaceChildren();
+      filesEl.replaceChildren();
       TALK.slice(-3).forEach(addTalk);
       REQS.forEach(addReq);
       FILES.forEach(addFile);
       setStep(6);
-    } else {
-      let started = false;
-      new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !started) {
+    };
+
+    let inView = false, started = false;
+
+    new IntersectionObserver((entries) => {
+      inView = entries[0].isIntersecting;
+      if (inView && motionOn && !started) {
+        started = true;
+        run();
+      }
+    }, { threshold: 0.25 }).observe(rail);
+
+    registerMotion({
+      start() {
+        if (inView && !started) {
           started = true;
           run();
         }
-      }, { threshold: 0.25 }).observe(rail);
-    }
+      },
+      stop() {
+        started = false;
+        settle();
+      }
+    });
+
+    if (!motionOn) settle();
   }
 
 

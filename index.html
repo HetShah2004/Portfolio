@@ -2,7 +2,21 @@
 <html lang="en" data-theme="dark">
 
 <head>
-    <script>document.documentElement.classList.add('js');</script>
+    <script>
+        /* Runs before first paint. Decides whether the page moves, from the
+           visitor's saved choice if there is one, otherwise from the OS
+           accessibility preference. Wrapped because storage access throws
+           outright in some privacy modes. */
+        (function () {
+            var r = document.documentElement;
+            r.classList.add('js');
+            var saved = null;
+            try { saved = localStorage.getItem('hs-motion'); } catch (e) { }
+            var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            r.setAttribute('data-motion',
+                saved === 'on' ? 'on' : saved === 'off' ? 'off' : (reduce ? 'off' : 'on'));
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Het Shah, AI Engineer</title>
@@ -64,6 +78,10 @@
             <span class="island-rule" aria-hidden="true"></span>
 
             <div class="island-actions">
+                <button class="icon-btn motion-btn" id="motionToggle" aria-label="Turn animations on"
+                    aria-pressed="false">
+                    <i class="ph-light ph-sparkle" aria-hidden="true"></i>
+                </button>
                 <button class="icon-btn" id="themeToggle" aria-label="Switch to light theme">
                     <i class="ph-light ph-sun" aria-hidden="true"></i>
                 </button>
