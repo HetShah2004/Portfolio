@@ -1,302 +1,708 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Het's Portfolio</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="favicon.ico" >
-    <link 
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script>
+        /* Runs before first paint. Decides whether the page moves, from the
+           visitor's saved choice if there is one, otherwise from the OS
+           accessibility preference. Wrapped because storage access throws
+           outright in some privacy modes. */
+        (function () {
+            var r = document.documentElement;
+            r.classList.add('js');
+            var saved = null;
+            try { saved = localStorage.getItem('hs-motion'); } catch (e) { }
+            var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            r.setAttribute('data-motion',
+                saved === 'on' ? 'on' : saved === 'off' ? 'off' : (reduce ? 'off' : 'on'));
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Het Shah, AI Engineer</title>
+    <meta name="description"
+        content="Het Shah is an AI-focused software engineer building automation systems, REST APIs and LLM-powered products with Python, Django, FastAPI and the Gemini stack. Creator of ProtoMind.">
+    <meta name="author" content="Het Shah">
+    <meta name="theme-color" content="#050506">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Het Shah, AI Engineer">
+    <meta property="og:description"
+        content="Engineering AI that ships real software. Python, Django, FastAPI, LangChain, RAG.">
+    <meta property="og:image" content="./projects/me.jpg">
+
+    <link rel="icon" href="favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css">
+
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div id="wrapper">
-        <div class="container">
-            <div class="navbar">
-                <div class="logo-container">
-                    <img src="./projects/h1-bg.png" class="logo" />
-                    <div class="logo-text">et Shah</div>
-                </div>
 
-                <div class="nav-items">
-                    <div><a href="#projects">Projects</a></div>
-                    <div><a href="#skills">Skills</a></div>
-                    <div><a href="#contact">Contact Me</a></div>
-                </div>
+    <!-- Fixed layers. Both are pointer-events:none and neither sits on a
+         scrolling container, so they never trigger repaint on scroll. -->
+    <div class="grain" aria-hidden="true"></div>
+    <div class="progress" aria-hidden="true"><span></span></div>
 
-                <div class="hamburger-menu">
-                    <i class="fa-solid fa-bars"></i>
-                    
-                </div>
-            </div>
+    <a href="#about" class="skip">Skip to content</a>
 
-            <div class="hero-section">
-                <div class="faded-text">Het Shah</div>
+    <!-- ------------------------------------------------- floating island -->
+    <header class="island" id="island">
+        <div class="island-core">
+            <a href="#top" class="brand" aria-label="Het Shah, home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 4v16M5 12h8M13 4v16" />
+                        <circle cx="18.5" cy="12" r="1.6" />
+                    </svg>
+                </span>
+                <span class="brand-text">Het Shah</span>
+            </a>
 
-                <div class="hero-section-left">
-                    <div class="hero-section-heading">Hi! Het Shah</div>
+            <span class="island-rule" aria-hidden="true"></span>
 
-                    <div class="hero-section-heading hero-section-sub-heading">
-                        I am a <span class="role"></span>
-                    </div>
+            <nav class="island-links" aria-label="Primary">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#protomind" class="nav-link">ProtoMind</a>
+                <a href="#work" class="nav-link">Work</a>
+                <a href="#path" class="nav-link">Path</a>
+                <a href="#stack" class="nav-link">Stack</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
 
-                    <div class="hero-section-description">
-                        I'm a software developer and here is my portfolio website. Here you'll
-                        learn about my journey as a software developer.
-                    </div>
-                    <a class="btn-pink" href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank">
-                        Hire me
-                    </a>                     
-                </div>
+            <span class="island-rule" aria-hidden="true"></span>
 
-                <div class="hero-section-right">
-                    <div class="absolute icons icon-dots">
-                        <img src="./projects/dots.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-cube">
-                        <img src="./projects/cube.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-circle">
-                        <img src="./projects/circle.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-zigzag">
-                        <img src="./projects/zigzags.png" alt="" />
-                    </div>
-                    <div class="absolute icons icon-plus">
-                        <img src="./projects/plus.png" alt="" />
-                    </div>
-                    <div class="user-image">
-                        <img src="./projects/i2.jpg" alt="" />
-                    </div>
-                </div>
+            <div class="island-actions">
+                <button class="icon-btn motion-btn" id="motionToggle" aria-label="Turn animations on"
+                    aria-pressed="false">
+                    <i class="ph-light ph-sparkle" aria-hidden="true"></i>
+                </button>
+                <button class="icon-btn" id="themeToggle" aria-label="Switch to light theme">
+                    <i class="ph-light ph-sun" aria-hidden="true"></i>
+                </button>
+                <a href="Het_Shah_AI_Engineer.pdf" target="_blank" rel="noopener" class="btn btn-solid btn-sm">
+                    <span>Résumé</span>
+                    <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-down"></i></i>
+                </a>
+                <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+                    <span></span><span></span>
+                </button>
             </div>
         </div>
+    </header>
 
-        <div id="projects" class="project-section">
-            <h2 class="page-header">Projects</h2>
-
-            <div class="project-container">
-                <div class="project-card" id="project1">
-                    <div class="project-number project-number-right">01</div>
-                    <div class="project-content project-content-left">
-                        <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/python.svg" alt="" />
-                        </div>
-
-                        <h2 class="project-heading">Cryptic</h2>
-
-                        <p class="project-subHeading">
-                            It teaches what is cryptocurrency and it predicts the future prices
-                            of various cryptocurrency.
-                        </p>
-                        <div class="btn-grp">
-                            <a href="#live link">
-                                <button class="btn-pink btn-project">Show Live</button>
-                            </a>
-                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project2">
-                    <div class="project-number project-number-left">02</div>
-                    <div class="project-content project-content-right">
-                        <div class="project-skill-container">
-                            <img class="project-skill" src="./stack/HTML.png" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                            <img class="project-skill" src="./stack/Tailwind.png" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                        </div>
-                        <h2 class="project-heading">Razorpay</h2>
-                        <p class="project-subHeading project-content-right">
-                            I have created a clone of Razorpay who provides payment gateway to multiple platforms.
-                        </p>
-                        <div class="btn-grp">
-                            <button class="btn-pink btn-project">Show Live</button>
-                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" id="project3">
-                    <div class="project-number project-number-right">03</div>
-                    <div class="project-content project-content-left">
-                        <div class="project-skills-container">
-                            <img class="project-skill" src="./stack/spring-boot.svg" alt="" />
-                            <img class="project-skill" src="./stack/java.svg" alt="" />
-                            <img class="project-skill" src="./stack/Javascript.svg" alt="" />
-                            <img class="project-skill" src="./stack/CSS.png" alt="" />
-                        </div>
-
-                        <h2 class="project-heading">Email Assisting</h2>
-
-                        <p class="project-subHeading">
-                            One-click perfect replies - Your AI co-pilot crafts responses instantly, so you never type another email from scratch!
-                        </p>
-                        <div class="btn-grp">
-                            <a href="#live link">
-                                <button class="btn-pink btn-project">Show Live</button>
-                            </a>
-                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank">
-                                <i title="GitHubLink" class="fa-brands fa-github icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
+    <!-- ------------------------------------------------ full-screen menu -->
+    <div class="menu" id="menu" hidden>
+        <nav class="menu-links" aria-label="Sections">
+            <a href="#about" class="menu-link"><span>About</span></a>
+            <a href="#protomind" class="menu-link"><span>ProtoMind</span></a>
+            <a href="#work" class="menu-link"><span>Work</span></a>
+            <a href="#path" class="menu-link"><span>Path</span></a>
+            <a href="#stack" class="menu-link"><span>Stack</span></a>
+            <a href="#contact" class="menu-link"><span>Contact</span></a>
+        </nav>
+        <div class="menu-foot">
+            <a href="mailto:hetshahworks@gmail.com">hetshahworks@gmail.com</a>
+            <span class="menu-social">
+                <a href="https://github.com/HetShah2004" target="_blank" rel="noopener" aria-label="GitHub"><i
+                        class="ph-light ph-github-logo" aria-hidden="true"></i></a>
+                <a href="https://www.linkedin.com/in/hets3303/" target="_blank" rel="noopener" aria-label="LinkedIn"><i
+                        class="ph-light ph-linkedin-logo" aria-hidden="true"></i></a>
+            </span>
         </div>
-
-        <div id="skills" class="container skills-container">
-            <div class="skill-fade-text">Skills</div>
-
-            <div class="skill-container-left">
-                <h2 class="skill-heading">
-                    <span class="caps">M</span>e and
-                    <br />
-                    MyTech Stack
-                </h2>
-
-                <div class="skill-subHeading">
-                    <p>
-                        I’m a software engineer with a solid foundation in system-level thinking and backend development. 
-                        I work comfortably across C, C++, Java, and Django, and I know how to build reliable, 
-                        scalable applications rather than just “write code.” I also know my way around Google Cloud Platform
-                         for deploying and managing real workloads.
-                    </p>
-                    <p>
-                        Right now, I’m expanding into machine learning and Docker because I’m more interested in building production-ready systems,
-                         not just coding demos. My strength is understanding how things actually work under the hood — 
-                         which helps me debug faster, design smarter, and deliver cleaner solutions.
-                    </p>
-                </div>
-            </div>
-
-            <div class="skill-container-right">
-                <img src="./projects/blob vector.png" class="blob-style" alt="" />
-                <img src="./stack/HTML.png" alt="" class="skills-logo" />
-                <img src="./stack/CSS.png" alt="" class="skills-logo" />
-                <img src="./stack/Javascript.svg" alt="" class="skills-logo" />
-                <img src="./stack/java.svg" alt="" class="skills-logo" />
-                <img src="./stack/NodeJs.svg" alt="" class="skills-logo" />
-                <img src="./stack/python.svg" alt="" class="skills-logo" />
-                <img src="./stack/Bootstrap.svg" alt="" class="skills-logo" />
-                <img src="./stack/Tailwind.png" alt="" class="skills-logo" />
-                <img src="./stack/django.svg" alt="" class="skills-logo" />
-                <img src="./stack/google-cloud.svg" alt="" class="skills-logo" />
-                <img src="./stack/spring-boot.svg" alt="" class="skills-logo" />
-                <img src="./stack/Git.svg" alt="" class="skills-logo" />
-                <img src="./stack/Github.svg" alt="" class="skills-logo" />
-                <img src="./stack/android.svg" alt="" class="skills-logo" />
-                <img src="./stack/c.svg" alt="" class="skills-logo" />
-                <img src="./stack/c++.svg" alt="" class="skills-logo" />
-                <img src="./stack/Docker.svg" alt="" class="skills-logo">
-                <img src="./stack/android.svg" alt="" class="skills-logo">
-            </div>
-        </div>
-
-        <div id="contact" class="contactus-form-container">
-            <div class="container">
-                <h1 class="contactus-heading">Contact me</h1>
-                <h3 class="contactus-subHeading">Questions, thoughts, or just want to say hello?</h3>
-
-                <section class="contactMeSection">
-                    <form id="contactForm">
-                        <!-- Honeypot field to trap bots -->
-                        <input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
-                        
-                        <div class="formfield-container">
-                            <input class="formfield" type="text" name="name" placeholder="Enter your name" required />
-                            <input class="formfield" name="email" type="email" placeholder="Enter your email" required />
-                            <input class="formfield" type="text" name="subject" placeholder="Enter your subject" required />
-                            <textarea class="formfield" name="message" cols="30" rows="10" placeholder="Enter your message" required></textarea>
-                        </div>
-
-                        <div>
-                            <button type="submit" class="btn-pink" id="submit-btn">
-                                Send Message<i class="submit-icon fa-solid fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </form>
-                </section>
-            </div>
-        </div>
-
-        <footer class="footer-container">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-logo">
-                        <img src="./projects/h1-bg.png" class="logo" />
-                        <span class="logo-text">et Shah</span>
-                    </div>
-
-                    <div class="footer-links">
-                        <h3>Quick Links</h3>
-                        <ul>
-                            <li><a href="#projects">Projects</a></li>
-                            <li><a href="#skills">Skills</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-contact">
-                        <h3>Connect With Me</h3>
-                        <ul>
-                            <li><i class="fas fa-envelope"></i> hetshahworks@gmail.com</li>
-                            <li><i class="fas fa-phone"></i> +91 9409078274</li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-social">
-                        <h3>Follow Me</h3>
-                        <div class="social-icons">
-                            <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com/HetShah2004" target="_blank"><i class="fab fa-github"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="footer-bottom">
-                    <p>&copy; 2025 Het Shah. All rights reserved.</p>
-                    <p>Made with <i class="fas fa-heart" style="color: var(--bgOrange);"></i> by Het Shah</p>
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <script src="https://kit.fontawesome.com/58a810656e.js" crossorigin="anonymous"></script>
+    <!-- --------------------------------------------------- section rail -->
+    <nav class="rail" id="rail" aria-label="Jump to section">
+        <a href="#hero" class="rail-item" data-label="Intro"><span></span></a>
+        <a href="#about" class="rail-item" data-label="About"><span></span></a>
+        <a href="#protomind" class="rail-item" data-label="ProtoMind"><span></span></a>
+        <a href="#work" class="rail-item" data-label="Work"><span></span></a>
+        <a href="#path" class="rail-item" data-label="Path"><span></span></a>
+        <a href="#stack" class="rail-item" data-label="Stack"><span></span></a>
+        <a href="#contact" class="rail-item" data-label="Contact"><span></span></a>
+    </nav>
+
+    <main id="top">
+
+        <!-- ------------------------------------------------------ hero -->
+        <section class="section section--snap hero" id="hero">
+            <canvas class="signal" id="signal" aria-hidden="true"></canvas>
+            <div class="mesh" aria-hidden="true"></div>
+
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <p class="badge reveal">
+                        <span class="live" aria-hidden="true"></span>
+                        Available for AI and backend roles
+                    </p>
+
+                    <h1 class="hero-title">
+                        <span class="l"><span>Engineering AI that</span></span>
+                        <span class="l"><span><b>ships</b> real software.</span></span>
+                    </h1>
+
+                    <p class="hero-sub reveal">
+                        I build automation systems, REST APIs and LLM products with Python, Django,
+                        FastAPI and the Gemini stack.
+                    </p>
+
+                    <div class="hero-cta reveal">
+                        <a href="#work" class="btn btn-solid btn-lg">
+                            <span>View work</span>
+                            <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-right"></i></i>
+                        </a>
+                        <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener"
+                            class="btn btn-ghost btn-lg">
+                            <span>Open ProtoMind</span>
+                            <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-up-right"></i></i>
+                        </a>
+                    </div>
+                </div>
+
+                <figure class="hero-figure reveal">
+                    <div class="stage3d" id="stage3d">
+                        <div class="stage3d-inner">
+                            <span class="depth depth--plane" aria-hidden="true"></span>
+                            <div class="bezel">
+                                <div class="core portrait">
+                                    <img src="./projects/me.jpg" alt="Het Shah" width="1645" height="2523"
+                                        fetchpriority="high" decoding="async">
+                                </div>
+                            </div>
+                            <span class="depth depth--tick tick-tl" aria-hidden="true"></span>
+                            <span class="depth depth--tick tick-br" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ----------------------------------------------------- about -->
+        <section class="section section--snap" id="about">
+            <div class="shell">
+                <h2 class="sec-title reveal">About</h2>
+
+                <div class="about-grid">
+                    <div class="about-main">
+                        <p class="lead reveal">
+                            I don't just write code. I build things that hold up in production.
+                        </p>
+
+                        <div class="prose reveal">
+                            <p>
+                                My work sits where backend engineering meets applied AI: automation pipelines,
+                                REST APIs, ML-powered applications and LLM integrations. I've shipped a
+                                lead-management system that took response time from hours to seconds, an ATS
+                                resume analyzer with an OCR and spaCy pipeline, and an ML crypto forecaster
+                                running on live exchange feeds.
+                            </p>
+                            <p>
+                                Underneath all of it are fundamentals: data structures, OOP, DBMS, operating
+                                systems and networking. Lately I've been deep in RAG architectures, agent
+                                orchestration and vector stores, because that is where the interesting problems
+                                moved.
+                            </p>
+                        </div>
+
+                        <div class="tags reveal">
+                            <span class="pill">Automation systems</span>
+                            <span class="pill">REST and API design</span>
+                            <span class="pill">LLM integration</span>
+                            <span class="pill">RAG pipelines</span>
+                        </div>
+                    </div>
+
+                    <aside class="bezel reveal">
+                        <div class="core about-stats">
+                            <div class="srow">
+                                <span class="snum" data-count="12" data-suffix="+">0</span>
+                                <span class="slabel">Projects shipped</span>
+                            </div>
+                            <div class="srow">
+                                <span class="snum" data-count="20" data-suffix="+">0</span>
+                                <span class="slabel">Certifications</span>
+                            </div>
+                            <div class="srow">
+                                <span class="snum" data-count="7">0</span>
+                                <span class="slabel">AI agents shipped</span>
+                            </div>
+                            <div class="srow">
+                                <span class="snum" data-count="3">0</span>
+                                <span class="slabel">Client deployments</span>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------- protomind -->
+        <section class="section section--snap spot" id="protomind">
+            <div class="shell">
+                <div class="spot-head">
+                    <div class="spot-id reveal">
+                        <h2 class="sec-title">ProtoMind</h2>
+                        <p class="spot-tag">Seven agents, one discovery call</p>
+                    </div>
+                    <p class="spot-claim reveal">
+                        ProtoMind listens to a live client call in Hindi, English and Gujarati, then hands back
+                        structured requirements, a reviewable PRD, a clickable prototype and a full-stack
+                        codebase that actually boots.
+                    </p>
+                </div>
+
+                <!-- Process diagram. Not a product screenshot: each panel shows
+                     what a stage of the pipeline actually produces. -->
+                <div class="bezel reveal">
+                    <div class="core pipe-core">
+                        <div class="pipe-rail" id="pipeRail" role="list" aria-label="Pipeline stages">
+                            <div class="pipe" role="listitem">Transcribe</div>
+                            <div class="pipe" role="listitem">Extract</div>
+                            <div class="pipe" role="listitem">Document</div>
+                            <div class="pipe" role="listitem">Prototype</div>
+                            <div class="pipe" role="listitem">Generate</div>
+                            <div class="pipe" role="listitem">Verify</div>
+                            <div class="pipe" role="listitem">Package</div>
+                        </div>
+
+                        <div class="panes">
+                            <div class="pane">
+                                <div class="pane-head">
+                                    <h3>Live transcript</h3>
+                                    <span class="langs"><b>HI</b><b>EN</b><b>GU</b></span>
+                                </div>
+                                <div class="transcript" id="transcript"></div>
+                            </div>
+
+                            <div class="pane">
+                                <div class="pane-head"><h3>Extracted requirements</h3></div>
+                                <ul class="reqs" id="reqs"></ul>
+                            </div>
+
+                            <div class="pane">
+                                <div class="pane-head"><h3>Generated files</h3></div>
+                                <ul class="files" id="files"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spot-foot reveal">
+                    <div class="spot-stats">
+                        <div class="sstat">
+                            <span class="snum" data-count="24">0</span>
+                            <span class="slabel">requirements traced</span>
+                        </div>
+                        <div class="sstat">
+                            <span class="snum" data-count="55">0</span>
+                            <span class="slabel">files generated</span>
+                        </div>
+                        <div class="sstat">
+                            <span class="snum static">&lt;1h</span>
+                            <span class="slabel">call to prototype</span>
+                        </div>
+                    </div>
+                    <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener" class="btn btn-solid">
+                        <span>Open ProtoMind</span>
+                        <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-up-right"></i></i>
+                    </a>
+                </div>
+
+                <p class="honest reveal">
+                    <b>Honest limits.</b>
+                    Gujarati speech-to-text under heavy code-switching is still the weak point, logic beyond
+                    CRUD is best-effort, and deploy and GitHub integration are not built yet.
+                </p>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------ work -->
+        <!-- Vertical scroll drives a horizontal pan. The wrapper is tall, the
+             inner layer is sticky, and a CSS view timeline moves the track, so
+             this needs no scroll listener and no animation library. Without
+             scroll-timeline support it degrades to a normal wrapping grid. -->
+        <section class="section section--pan" id="work">
+            <div class="pan-wrap">
+                <div class="pan-sticky">
+                    <div class="shell pan-head">
+                        <h2 class="sec-title">Selected work</h2>
+                    </div>
+
+                    <div class="pan-rail">
+                        <div class="pan-track" id="panTrack">
+
+                            <article class="proj bezel">
+                                <div class="core">
+                                    <div class="proj-media">
+                                        <img src="./projects/AuraSafe.png" alt="AuraSafe live location and SOS screens"
+                                            loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="proj-body">
+                                        <h3>AuraSafe</h3>
+                                        <p class="proj-kind">Real-time safety app</p>
+                                        <p>
+                                            Real-time location sharing, Google Maps integration and persistent
+                                            background tracking. An SMS alert notifies trusted contacts through a
+                                            one-tap SOS flow built for speed under stress.
+                                        </p>
+                                        <div class="tags">
+                                            <span class="pill">React Native</span><span class="pill">Maps API</span>
+                                            <span class="pill">MySQL</span>
+                                        </div>
+                                        <a href="https://github.com/HetShah2004/aura-backend" target="_blank"
+                                            rel="noopener" class="arrow-link">Code <i class="ph-light ph-github-logo"
+                                                aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="proj bezel">
+                                <div class="core">
+                                    <div class="proj-media">
+                                        <!-- TODO: real screenshot at 1200x750. Until the file exists
+                                             the empty state below is shown instead. -->
+                                        <img src="./projects/resume-analyzer.png"
+                                            alt="AI Resume Analyzer scoring view" loading="lazy" decoding="async">
+                                        <div class="media-empty" aria-hidden="true"><span>Screenshot coming</span></div>
+                                    </div>
+                                    <div class="proj-body">
+                                        <h3>AI Resume Analyzer</h3>
+                                        <p class="proj-kind">ATS scoring and NLP</p>
+                                        <p>
+                                            Scores resume-to-job compatibility and writes recruiter-focused
+                                            optimisation notes. OpenCV and OCR handle scanned resumes; a spaCy
+                                            pipeline does skill extraction and structured parsing.
+                                        </p>
+                                        <div class="tags">
+                                            <span class="pill">Python</span><span class="pill">spaCy</span>
+                                            <span class="pill">OpenCV</span>
+                                        </div>
+                                        <a href="https://github.com/HetShah2004" target="_blank" rel="noopener"
+                                            class="arrow-link">Code <i class="ph-light ph-github-logo"
+                                                aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="proj bezel">
+                                <div class="core">
+                                    <div class="proj-media">
+                                        <img src="./projects/CryptopricePrediction.png"
+                                            alt="Cryptic price forecast dashboard" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="proj-body">
+                                        <h3>Cryptic</h3>
+                                        <p class="proj-kind">ML time-series</p>
+                                        <p>
+                                            Cryptocurrency price prediction with real-time API ingestion and
+                                            interactive trend visualisation. Pandas and NumPy pipelines feed live
+                                            exchange data into the model.
+                                        </p>
+                                        <div class="tags">
+                                            <span class="pill">Python</span><span class="pill">Pandas</span>
+                                            <span class="pill">Scikit-learn</span>
+                                        </div>
+                                        <a href="https://github.com/HetShah2004/Cryptic" target="_blank"
+                                            rel="noopener" class="arrow-link">Code <i class="ph-light ph-github-logo"
+                                                aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="proj bezel">
+                                <div class="core">
+                                    <div class="proj-media">
+                                        <img src="./projects/Project3.png" alt="Email Assistant Gmail extension"
+                                            loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="proj-body">
+                                        <h3>Email Assistant</h3>
+                                        <p class="proj-kind">LLM browser extension</p>
+                                        <p>
+                                            A Gmail extension that drafts context-aware replies in one click. A
+                                            Spring Boot service brokers the Gemini API, handles prompt shaping and
+                                            drops the draft into the compose window.
+                                        </p>
+                                        <div class="tags">
+                                            <span class="pill">Java</span><span class="pill">Spring Boot</span>
+                                            <span class="pill">Gemini API</span>
+                                        </div>
+                                        <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank"
+                                            rel="noopener" class="arrow-link">Code <i class="ph-light ph-github-logo"
+                                                aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="proj proj--clients bezel">
+                                <div class="core">
+                                    <div class="proj-body">
+                                        <h3>Freelance clients</h3>
+                                        <p class="proj-kind">Shipped and handed over</p>
+
+                                        <div class="client">
+                                            <h4>Solar Glass Agency</h4>
+                                            <p>A sales and stock dashboard that replaced manual spreadsheet
+                                                tracking, putting inventory and revenue in one live view.</p>
+                                        </div>
+                                        <div class="client">
+                                            <h4>Purify Food</h4>
+                                            <p>Company website plus an ERPNext CRM dashboard tracking production,
+                                                sales and finances for a food manufacturer.</p>
+                                        </div>
+
+                                        <div class="tags">
+                                            <span class="pill">Full-stack</span><span class="pill">ERPNext</span>
+                                            <span class="pill">Dashboards</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------ path -->
+        <section class="section section--snap" id="path">
+            <div class="shell">
+                <h2 class="sec-title reveal">The path</h2>
+
+                <ol class="track">
+                    <li class="stop reveal">
+                        <span class="stop-date">Jul 2026 to now</span>
+                        <span class="stop-node" aria-hidden="true"></span>
+                        <h3>Full-Stack Developer</h3>
+                        <p class="stop-org">Freelance</p>
+                        <p>Dashboards and CRM builds for Solar Glass Agency and Purify Food. Owned the full
+                            cycle: scoping, build, deploy, handover.</p>
+                    </li>
+
+                    <li class="stop reveal">
+                        <span class="stop-date">Jan 2026 to Jul 2026</span>
+                        <span class="stop-node" aria-hidden="true"></span>
+                        <h3>Software Developer Intern</h3>
+                        <p class="stop-org">Vajravyuh Enterprise</p>
+                        <p>Built an AI-driven lead management system on React, n8n and ERPNext that cut response
+                            time <b>from hours to seconds</b>.</p>
+                    </li>
+
+                    <li class="stop reveal">
+                        <span class="stop-date">2023 to 2026</span>
+                        <span class="stop-node" aria-hidden="true"></span>
+                        <h3>B.Tech, Computer Science</h3>
+                        <p class="stop-org">Parul University <b class="stop-score">CGPA 7.74</b></p>
+                        <p>Data structures, operating systems, DBMS and networking, with independent focus on
+                            applied ML and agent systems.</p>
+                    </li>
+
+                    <li class="stop reveal">
+                        <span class="stop-date">2020 to 2023</span>
+                        <span class="stop-node" aria-hidden="true"></span>
+                        <h3>Diploma, Computer Science</h3>
+                        <p class="stop-org">Parul University <b class="stop-score">CGPA 8.83</b></p>
+                        <p>Foundation in programming and web technologies. Graduated with distinction.</p>
+                    </li>
+                </ol>
+
+                <div class="certs reveal">
+                    <span class="certs-label">Certifications</span>
+                    <span class="pill">Microsoft ML Workshop</span>
+                    <span class="pill">Google DevOps on Google Cloud</span>
+                    <span class="pill">Machine Learning Algorithms</span>
+                    <span class="pill">Networking Fundamentals in Cloud</span>
+                    <a href="Het_Shah_AI_Engineer.pdf" target="_blank" rel="noopener" class="arrow-link">Résumé
+                        <i class="ph-light ph-arrow-down" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ----------------------------------------------------- stack -->
+        <section class="section section--snap" id="stack">
+            <div class="shell">
+                <h2 class="sec-title reveal">Stack</h2>
+            </div>
+
+            <!-- The page's only marquee. It carries breadth so the grid below
+                 can stay short and grouped. -->
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span>Python</span><span>Django</span><span>FastAPI</span><span>LangChain</span>
+                    <span>RAG</span><span>Gemini API</span><span>OpenAI API</span><span>PyTorch</span>
+                    <span>Scikit-learn</span><span>OpenCV</span><span>ChromaDB</span><span>PostgreSQL</span>
+                    <span>MongoDB</span><span>Docker</span><span>GCP</span><span>n8n</span>
+                </div>
+                <div class="marquee-track">
+                    <span>Python</span><span>Django</span><span>FastAPI</span><span>LangChain</span>
+                    <span>RAG</span><span>Gemini API</span><span>OpenAI API</span><span>PyTorch</span>
+                    <span>Scikit-learn</span><span>OpenCV</span><span>ChromaDB</span><span>PostgreSQL</span>
+                    <span>MongoDB</span><span>Docker</span><span>GCP</span><span>n8n</span>
+                </div>
+            </div>
+
+            <div class="shell">
+                <div class="stack-grid">
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>Languages</h3>
+                            <div class="tags">
+                                <span class="pill">Python</span><span class="pill">C</span><span class="pill">C++</span>
+                                <span class="pill">JavaScript</span><span class="pill">Java</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>AI and LLM</h3>
+                            <div class="tags">
+                                <span class="pill">LangChain</span><span class="pill">RAG</span>
+                                <span class="pill">Prompt Engineering</span><span class="pill">Gemini API</span>
+                                <span class="pill">OpenAI API</span><span class="pill">PyTorch</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>ML and Data</h3>
+                            <div class="tags">
+                                <span class="pill">Scikit-learn</span><span class="pill">OpenCV</span>
+                                <span class="pill">Pandas</span><span class="pill">NumPy</span>
+                                <span class="pill">spaCy</span><span class="pill">Streamlit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>Backend</h3>
+                            <div class="tags">
+                                <span class="pill">Django</span><span class="pill">DRF</span>
+                                <span class="pill">FastAPI</span><span class="pill">REST APIs</span>
+                                <span class="pill">Spring Boot</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>Databases</h3>
+                            <div class="tags">
+                                <span class="pill">MySQL</span><span class="pill">PostgreSQL</span>
+                                <span class="pill">MongoDB</span><span class="pill">ChromaDB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sgroup bezel reveal">
+                        <div class="core">
+                            <h3>Cloud and tools</h3>
+                            <div class="tags">
+                                <span class="pill">Docker</span><span class="pill">GCP</span>
+                                <span class="pill">Git</span><span class="pill">n8n</span>
+                                <span class="pill">ERPNext</span><span class="pill">Postman</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --------------------------------------------------- contact -->
+        <section class="section section--snap" id="contact">
+            <div class="shell">
+                <div class="contact-grid">
+                    <div class="contact-left">
+                        <h2 class="sec-title reveal">Contact</h2>
+                        <p class="lead reveal">Got something worth <b>building</b>?</p>
+                        <p class="contact-sub reveal">
+                            Open to AI and backend engineering roles, plus selective freelance builds.
+                            Tell me what you're working on. I read everything.
+                        </p>
+
+                        <ul class="contact-list reveal">
+                            <li>
+                                <span class="clabel">Email</span>
+                                <a href="mailto:hetshahworks@gmail.com" class="arrow-link">hetshahworks@gmail.com</a>
+                            </li>
+                            <li>
+                                <span class="clabel">Phone</span>
+                                <a href="tel:+919409078274" class="arrow-link">+91 94090 78274</a>
+                            </li>
+                            <li>
+                                <span class="clabel">Based in</span>
+                                <span class="cplain">Vadodara, Gujarat, India</span>
+                            </li>
+                            <li>
+                                <span class="clabel">Elsewhere</span>
+                                <span class="csocial">
+                                    <a href="https://github.com/HetShah2004" target="_blank" rel="noopener"
+                                        aria-label="GitHub"><i class="ph-light ph-github-logo"
+                                            aria-hidden="true"></i></a>
+                                    <a href="https://www.linkedin.com/in/hets3303/" target="_blank" rel="noopener"
+                                        aria-label="LinkedIn"><i class="ph-light ph-linkedin-logo"
+                                            aria-hidden="true"></i></a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bezel reveal">
+                        <form class="core form" id="contactForm" novalidate>
+                            <input type="text" name="honeypot" class="hp" tabindex="-1" autocomplete="off"
+                                aria-hidden="true">
+
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="name">Your name</label>
+                                    <input type="text" id="name" name="name" required autocomplete="name">
+                                </div>
+                                <div class="field">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" required autocomplete="email">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="3" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-solid btn-block" id="submitBtn">
+                                <span>Send message</span>
+                                <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-up-right"></i></i>
+                            </button>
+                            <p class="form-note" id="formNote" role="status">All fields are required.</p>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="foot-bottom">
+                    <span id="footNote">© 2026 Het Shah. Designed and built from scratch.</span>
+                    <button class="to-top" id="toTop">
+                        <span>Top</span>
+                        <i class="btn-ico sm" aria-hidden="true"><i class="ph-light ph-arrow-up"></i></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <script src="app.js"></script>
-    <script>
-        var typeData = new Typed(".role", {
-            strings: [
-                "Java Developer",
-                "Python Developer",
-                "ML Engineer",
-                "Cloud Engineer",
-            ],
-            loop: true,
-            typeSpeed: 50,
-            backSpeed: 60,
-            backDelay: 1000,
-        });
-    </script>
 </body>
+
 </html>
