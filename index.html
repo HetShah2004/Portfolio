@@ -1,484 +1,707 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
+    <script>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Het Shah | Backend Engineer</title>
+    <title>Het Shah, AI Engineer</title>
     <meta name="description"
-        content="Portfolio of Het Shah, a Backend Engineer specializing in Python, Machine Learning, and scalable systems.">
-    <link rel="stylesheet" href="styles.css">
+        content="Het Shah is an AI-focused software engineer building automation systems, REST APIs and LLM-powered products with Python, Django, FastAPI and the Gemini stack. Creator of ProtoMind.">
+    <meta name="author" content="Het Shah">
+    <meta name="theme-color" content="#0a0a0b">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Het Shah, AI Engineer">
+    <meta property="og:description"
+        content="Engineering AI that ships real software. Python, Django, FastAPI, LangChain, RAG.">
+    <meta property="og:image" content="./projects/me.jpg">
+
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo-container">
-                <img src="./projects/h1-bg.png" alt="Logo" class="logo-img">
-                <span class="logo-text">et Shah</span>
-            </div>
+    <!-- Fixed overlays. Both are pointer-events:none and never scroll. -->
+    <div class="grain" aria-hidden="true"></div>
+    <div class="progress" aria-hidden="true"><span></span></div>
 
-            <div class="menu-toggle" id="mobile-menu">
-                <i class="fa-solid fa-bars"></i>
-            </div>
+    <a href="#about" class="skip">Skip to content</a>
 
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-                <li><a href="Het_Shah_AI_Resume.pdf" target="_blank" class="btn btn-primary"
-                        style="padding: 8px 16px;">Resume</a></li>
-            </ul>
+    <!-- ---------------------------------------------------------- nav -->
+    <header class="nav" id="nav">
+        <div class="shell nav-inner">
+            <a href="#top" class="brand" aria-label="Het Shah, home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 3v18M4 12h9M13 3v18M17 8l4 4-4 4" />
+                    </svg>
+                </span>
+                <span class="brand-text">Het&nbsp;Shah<i>AI Engineer</i></span>
+            </a>
+
+            <nav class="nav-links" id="navLinks" aria-label="Primary">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#protomind" class="nav-link">ProtoMind</a>
+                <a href="#work" class="nav-link">Work</a>
+                <a href="#path" class="nav-link">Path</a>
+                <a href="#stack" class="nav-link">Stack</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Switch to light theme">
+                    <i class="ph ph-sun" aria-hidden="true"></i>
+                </button>
+                <a href="Het_Shah_AI_Engineer.pdf" target="_blank" rel="noopener" class="btn btn-solid btn-sm">
+                    <span>Résumé</span>
+                    <i class="ph ph-arrow-down" aria-hidden="true"></i>
+                </a>
+                <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"
+                    aria-controls="navLinks"><span></span><span></span></button>
+            </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-        <div class="hero-bg-gradient"></div>
-        <div class="container hero-content">
-            <div class="hero-text reveal">
-                <div class="hero-badge"><span class="status-dot"></span> Available for opportunities</div>
-                <h1 class="hero-title">Architecting <br /><span class="text-gradient">Robust Backend</span> Systems.
-                </h1>
-                <h2 class="role-wrapper"><span class="role"></span></h2>
-                <p class="hero-desc">
-                    I build scalable infrastructure and solve complex engineering problems using clean code, Python, and
-                    modern cloud technologies.
-                </p>
-                <div class="hero-btns">
-                    <a href="#projects" class="btn btn-primary">View Projects</a>
-                    <a href="Het_Shah_Resume_Final.pdf" target="_blank" class="btn btn-secondary">
-                        <i class="fa-solid fa-file-pdf"></i> Resume
+    <main id="top">
+
+        <!-- ------------------------------------------------------ hero -->
+        <section class="section section--snap hero" id="hero">
+            <canvas class="field" id="field" aria-hidden="true"></canvas>
+
+            <div class="shell hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow reveal">
+                        <span class="live" aria-hidden="true"></span>
+                        Available for AI and backend roles
+                    </p>
+
+                    <h1 class="hero-title">
+                        <span class="line"><span>Engineering AI that</span></span>
+                        <span class="line"><span><b>ships</b> real software.</span></span>
+                    </h1>
+
+                    <p class="hero-sub reveal">
+                        I build automation systems, REST APIs and LLM products with Python, Django,
+                        FastAPI and the Gemini stack.
+                    </p>
+
+                    <div class="hero-cta reveal">
+                        <a href="#work" class="btn btn-solid">
+                            <span>View work</span> <i class="ph ph-arrow-right" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener" class="btn btn-line">
+                            <span>Open ProtoMind</span> <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <figure class="hero-figure reveal">
+                    <div class="stage3d" id="stage3d">
+                        <div class="stage3d-inner">
+                            <span class="depth depth--plane" aria-hidden="true"></span>
+                            <div class="portrait">
+                                <img src="./projects/me.jpg" alt="Het Shah" width="1645" height="2523"
+                                    fetchpriority="high" decoding="async">
+                            </div>
+                            <span class="depth depth--frame" aria-hidden="true"></span>
+                            <span class="depth depth--tick tick-tl" aria-hidden="true"></span>
+                            <span class="depth depth--tick tick-br" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ----------------------------------------------------- about -->
+        <section class="section section--snap" id="about">
+            <div class="shell">
+                <h2 class="sec-title reveal">About</h2>
+
+                <div class="about-grid">
+                    <div class="about-main">
+                        <p class="lead reveal">
+                            I don't just write code. I build things that hold up in production.
+                        </p>
+
+                        <div class="prose reveal">
+                            <p>
+                                My work sits where backend engineering meets applied AI: automation pipelines,
+                                REST APIs, ML-powered applications and LLM integrations. I've shipped a
+                                lead-management system that took response time from hours to seconds, an ATS
+                                resume analyzer with an OCR and spaCy pipeline, and an ML crypto forecaster
+                                running on live exchange feeds.
+                            </p>
+                            <p>
+                                Underneath all of it are fundamentals: data structures, OOP, DBMS, operating
+                                systems and networking. Lately I've been deep in RAG architectures, agent
+                                orchestration and vector stores, because that is where the interesting problems
+                                moved.
+                            </p>
+                        </div>
+
+                        <div class="tags reveal">
+                            <span class="pill">Automation systems</span>
+                            <span class="pill">REST and API design</span>
+                            <span class="pill">LLM integration</span>
+                            <span class="pill">RAG pipelines</span>
+                        </div>
+                    </div>
+
+                    <aside class="about-stats reveal">
+                        <div class="srow">
+                            <span class="snum" data-count="12" data-suffix="+">0</span>
+                            <span class="slabel">Projects shipped</span>
+                        </div>
+                        <div class="srow">
+                            <span class="snum" data-count="20" data-suffix="+">0</span>
+                            <span class="slabel">Certifications</span>
+                        </div>
+                        <div class="srow">
+                            <span class="snum" data-count="7">0</span>
+                            <span class="slabel">AI agents shipped</span>
+                        </div>
+                        <div class="srow">
+                            <span class="snum" data-count="3">0</span>
+                            <span class="slabel">Client deployments</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------- protomind -->
+        <section class="section section--flow spot" id="protomind">
+            <div class="shell">
+                <div class="spot-head">
+                    <div class="spot-id reveal">
+                        <h2 class="sec-title">ProtoMind</h2>
+                        <p class="spot-tag">Seven agents, one discovery call</p>
+                    </div>
+                    <p class="spot-claim reveal">
+                        ProtoMind listens to a live client call in Hindi, English and Gujarati, then hands back
+                        structured requirements, a reviewable PRD, a clickable prototype and a full-stack
+                        codebase that actually boots.
+                    </p>
+                </div>
+
+                <!-- Process diagram. Not a product screenshot: these panels show
+                     what each stage of the pipeline produces. -->
+                <div class="pipe-rail" id="pipeRail" role="list" aria-label="ProtoMind pipeline stages">
+                    <div class="pipe" role="listitem">Transcribe</div>
+                    <div class="pipe" role="listitem">Extract</div>
+                    <div class="pipe" role="listitem">Document</div>
+                    <div class="pipe" role="listitem">Prototype</div>
+                    <div class="pipe" role="listitem">Generate</div>
+                    <div class="pipe" role="listitem">Verify</div>
+                    <div class="pipe" role="listitem">Package</div>
+                </div>
+
+                <div class="panes reveal">
+                    <div class="pane">
+                        <div class="pane-head">
+                            <h3>Live transcript</h3>
+                            <span class="langs"><b>HI</b><b>EN</b><b>GU</b></span>
+                        </div>
+                        <div class="transcript" id="transcript"></div>
+                    </div>
+
+                    <div class="pane">
+                        <div class="pane-head">
+                            <h3>Extracted requirements</h3>
+                        </div>
+                        <ul class="reqs" id="reqs"></ul>
+                    </div>
+
+                    <div class="pane">
+                        <div class="pane-head">
+                            <h3>Generated files</h3>
+                        </div>
+                        <ul class="files" id="files"></ul>
+                    </div>
+                </div>
+
+                <div class="spot-stats reveal">
+                    <div class="sstat">
+                        <span class="snum" data-count="24">0</span>
+                        <span class="slabel">requirements traced</span>
+                    </div>
+                    <div class="sstat">
+                        <span class="snum" data-count="55">0</span>
+                        <span class="slabel">files generated and parsed</span>
+                    </div>
+                    <div class="sstat">
+                        <span class="snum" data-count="3">0</span>
+                        <span class="slabel">languages understood</span>
+                    </div>
+                    <div class="sstat">
+                        <span class="snum static">&lt;1h</span>
+                        <span class="slabel">call to running prototype</span>
+                    </div>
+                </div>
+
+                <div class="spot-foot reveal">
+                    <div class="tags">
+                        <span class="pill">FastAPI</span><span class="pill">Next.js</span>
+                        <span class="pill">PostgreSQL</span><span class="pill">Docker Compose</span>
+                        <span class="pill">LangChain</span><span class="pill">Gemini API</span>
+                        <span class="pill">Multilingual STT</span>
+                    </div>
+                    <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener" class="btn btn-solid">
+                        <span>Open ProtoMind</span> <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
                     </a>
                 </div>
+
+                <p class="honest reveal">
+                    <b>Honest limits.</b>
+                    Gujarati speech-to-text under heavy code-switching is still the weak point, logic beyond
+                    CRUD is best-effort, and deploy and GitHub integration are not built yet. Shipping beats
+                    pretending.
+                </p>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------ work -->
+        <section class="section section--flow" id="work">
+            <div class="shell">
+                <h2 class="sec-title reveal">Selected work</h2>
+
+                <div class="bento">
+
+                    <article class="proj proj--lead reveal">
+                        <div class="proj-media">
+                            <img src="./projects/AuraSafe.png" alt="AuraSafe live location and SOS screens"
+                                loading="lazy" decoding="async">
+                        </div>
+                        <div class="proj-body">
+                            <h3>AuraSafe</h3>
+                            <p class="proj-kind">Real-time safety app</p>
+                            <p>
+                                A women's safety app with real-time location sharing, Google Maps integration and
+                                persistent background tracking. An SMS emergency alert notifies trusted contacts
+                                through a one-tap SOS flow designed for speed under stress.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">React Native</span><span class="pill">Google Maps API</span>
+                                <span class="pill">SMS API</span><span class="pill">MySQL</span>
+                            </div>
+                            <a href="https://github.com/HetShah2004/aura-backend" target="_blank" rel="noopener"
+                                class="arrow-link">Code <i class="ph ph-github-logo" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="proj reveal">
+                        <div class="proj-media">
+                            <!-- TODO: replace with a real screenshot of the analyzer at 1200x750.
+                                 Until the file exists the empty state below is shown. -->
+                            <img src="./projects/resume-analyzer.png" alt="AI Resume Analyzer scoring view"
+                                loading="lazy" decoding="async" data-fallback>
+                            <div class="media-empty" aria-hidden="true"><span>Screenshot coming</span></div>
+                        </div>
+                        <div class="proj-body">
+                            <h3>AI Resume Analyzer</h3>
+                            <p class="proj-kind">ATS scoring and NLP</p>
+                            <p>
+                                Scores resume-to-job compatibility and writes recruiter-focused optimisation notes.
+                                OpenCV preprocessing and OCR handle scanned resumes; a spaCy pipeline does skill
+                                extraction and structured parsing.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">Python</span><span class="pill">spaCy</span>
+                                <span class="pill">OpenCV</span><span class="pill">Gemini API</span>
+                            </div>
+                            <a href="https://github.com/HetShah2004" target="_blank" rel="noopener"
+                                class="arrow-link">Code <i class="ph ph-github-logo" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="proj reveal">
+                        <div class="proj-media">
+                            <img src="./projects/CryptopricePrediction.png" alt="Cryptic price forecast dashboard"
+                                loading="lazy" decoding="async">
+                        </div>
+                        <div class="proj-body">
+                            <h3>Cryptic</h3>
+                            <p class="proj-kind">ML time-series</p>
+                            <p>
+                                Cryptocurrency price prediction with real-time API ingestion and interactive trend
+                                visualisation. Pandas and NumPy pipelines feed continuous live exchange data into
+                                the model.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">Python</span><span class="pill">Pandas</span>
+                                <span class="pill">Scikit-learn</span><span class="pill">Matplotlib</span>
+                            </div>
+                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank" rel="noopener"
+                                class="arrow-link">Code <i class="ph ph-github-logo" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="proj reveal">
+                        <div class="proj-media">
+                            <img src="./projects/Project3.png" alt="Email Assistant Gmail extension" loading="lazy"
+                                decoding="async">
+                        </div>
+                        <div class="proj-body">
+                            <h3>Email Assistant</h3>
+                            <p class="proj-kind">LLM browser extension</p>
+                            <p>
+                                A Gmail extension that drafts context-aware replies in one click. A Spring Boot
+                                service brokers the Gemini API, handles prompt shaping and tone control, and drops
+                                the draft into the compose window.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">Java</span><span class="pill">Spring Boot</span>
+                                <span class="pill">Gemini API</span><span class="pill">Chrome Extension</span>
+                            </div>
+                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank" rel="noopener"
+                                class="arrow-link">Code <i class="ph ph-github-logo" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="client-block reveal">
+                    <h3 class="sub-title">Freelance client work</h3>
+                    <div class="client-grid">
+                        <article class="client">
+                            <h4>Solar Glass Agency</h4>
+                            <p>
+                                A sales and stock dashboard that replaced manual spreadsheet tracking, putting
+                                inventory and revenue in one live view.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">Full-stack</span><span class="pill">Dashboard</span>
+                                <span class="pill">Reporting</span>
+                            </div>
+                        </article>
+
+                        <article class="client">
+                            <h4>Purify Food</h4>
+                            <p>
+                                Company website plus an ERPNext CRM dashboard tracking production, sales and
+                                finances for a food manufacturing operation.
+                            </p>
+                            <div class="tags">
+                                <span class="pill">ERPNext</span><span class="pill">CRM</span>
+                                <span class="pill">Web</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------ path -->
+        <section class="section section--flow" id="path">
+            <div class="shell">
+                <h2 class="sec-title reveal">The path</h2>
+
+                <div class="path-grid">
+                    <ol class="timeline">
+                        <li class="tl reveal">
+                            <div class="tl-when">
+                                <span class="tl-date">Jul 2026 to now</span>
+                                <span class="tl-now">Current</span>
+                            </div>
+                            <div class="tl-what">
+                                <h3>Full-Stack Developer</h3>
+                                <p class="tl-org">Freelance</p>
+                                <ul>
+                                    <li>Built a sales and stock dashboard for <b>Solar Glass Agency</b>, replacing
+                                        manual spreadsheet tracking with a single live source of truth.</li>
+                                    <li>Delivered <b>Purify Food</b>'s company website and an ERPNext CRM dashboard
+                                        covering production, sales and finances.</li>
+                                    <li>Owned the full cycle: scoping with the client, build, deploy, handover.</li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="tl reveal">
+                            <div class="tl-when">
+                                <span class="tl-date">Jan 2026 to Jul 2026</span>
+                            </div>
+                            <div class="tl-what">
+                                <h3>Software Developer Intern</h3>
+                                <p class="tl-org">Vajravyuh Enterprise</p>
+                                <ul>
+                                    <li>Built an AI-driven automated lead management system integrating React,
+                                        workflow automation and ERPNext.</li>
+                                    <li>Replaced manual inquiry handling with an end-to-end pipeline that cut
+                                        response time <b>from hours to seconds</b>.</li>
+                                    <li>Gathered requirements with stakeholders and shipped iterative releases.</li>
+                                </ul>
+                                <div class="tags">
+                                    <span class="pill">React</span><span class="pill">n8n</span>
+                                    <span class="pill">ERPNext</span><span class="pill">Python</span>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="tl reveal">
+                            <div class="tl-when">
+                                <span class="tl-date">2023 to 2026</span>
+                                <span class="tl-score">CGPA 7.74 / 10</span>
+                            </div>
+                            <div class="tl-what">
+                                <h3>B.Tech, Computer Science</h3>
+                                <p class="tl-org">Parul University, Vadodara</p>
+                                <ul>
+                                    <li>Core CS foundation: data structures, operating systems, DBMS, networking
+                                        and system architecture.</li>
+                                    <li>Independent focus on applied ML, RAG and agent systems alongside
+                                        coursework.</li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="tl reveal">
+                            <div class="tl-when">
+                                <span class="tl-date">2020 to 2023</span>
+                                <span class="tl-score">CGPA 8.83 / 10</span>
+                            </div>
+                            <div class="tl-what">
+                                <h3>Diploma, Computer Science</h3>
+                                <p class="tl-org">Parul University, Vadodara</p>
+                                <ul>
+                                    <li>Foundation in programming and web technologies. Graduated with
+                                        distinction.</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <aside class="certs reveal">
+                        <h3 class="sub-title">Certifications</h3>
+                        <ul class="cert-list">
+                            <li><span class="cert-org">Microsoft</span><span class="cert-name">ML Workshop</span></li>
+                            <li><span class="cert-org">Google</span><span class="cert-name">DevOps on Google
+                                    Cloud</span></li>
+                            <li><span class="cert-org">Great Learning</span><span class="cert-name">Machine Learning
+                                    Algorithms</span></li>
+                            <li><span class="cert-org">Cloud</span><span class="cert-name">Networking Fundamentals in
+                                    Cloud</span></li>
+                        </ul>
+                        <p class="certs-more">Plus more across backend, data and cloud.</p>
+                        <a href="Het_Shah_AI_Engineer.pdf" target="_blank" rel="noopener" class="arrow-link">
+                            Résumé <i class="ph ph-arrow-down" aria-hidden="true"></i>
+                        </a>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ----------------------------------------------------- stack -->
+        <section class="section section--snap" id="stack">
+            <div class="shell">
+                <h2 class="sec-title reveal">Stack</h2>
             </div>
 
-            <div class="hero-visual reveal">
-                <div class="glass-profile-card">
-                    <div class="card-header">
-                        <div class="mac-btns">
-                            <span></span><span></span><span></span>
+            <!-- The page's only marquee. It carries breadth so the grid below
+                 can stay short and grouped. -->
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span>Python</span><span>Django</span><span>FastAPI</span><span>LangChain</span>
+                    <span>RAG</span><span>Gemini API</span><span>OpenAI API</span><span>PyTorch</span>
+                    <span>Scikit-learn</span><span>OpenCV</span><span>ChromaDB</span><span>PostgreSQL</span>
+                    <span>MongoDB</span><span>Docker</span><span>GCP</span><span>n8n</span>
+                </div>
+                <div class="marquee-track">
+                    <span>Python</span><span>Django</span><span>FastAPI</span><span>LangChain</span>
+                    <span>RAG</span><span>Gemini API</span><span>OpenAI API</span><span>PyTorch</span>
+                    <span>Scikit-learn</span><span>OpenCV</span><span>ChromaDB</span><span>PostgreSQL</span>
+                    <span>MongoDB</span><span>Docker</span><span>GCP</span><span>n8n</span>
+                </div>
+            </div>
+
+            <div class="shell">
+                <div class="stack-grid">
+                    <div class="sgroup reveal">
+                        <h3>Languages</h3>
+                        <div class="tags">
+                            <span class="pill">Python</span><span class="pill">C</span><span class="pill">C++</span>
+                            <span class="pill">JavaScript</span><span class="pill">Java</span>
                         </div>
                     </div>
-                    <img src="./projects/me.jpg" alt="Het Shah" class="profile-img">
-                    <div class="profile-info">
-                        <h3>Het Shah</h3>
-                        <p>Backend Engineer</p>
-                    </div>
-                </div>
 
-                <div class="floating-icons">
-                    <div class="float-icon icon-1"><i class="fa-brands fa-python"></i></div>
-                    <div class="float-icon icon-2"><i class="fa-solid fa-server"></i></div>
-                    <div class="float-icon icon-3"><i class="fa-brands fa-docker"></i></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">About Me</h2>
-            </div>
-
-            <div class="about-content">
-                <div class="reveal">
-                    <img src="./projects/i2.jpg" alt="Het Shah at work" class="about-image">
-                </div>
-                <div class="about-text reveal">
-                    <h3>System-Level Thinker & Problem Solver</h3>
-                    <p>
-                        I’m a software engineer with a solid foundation in system-level thinking and backend
-                        development. I work comfortably across Python, C++, and Java, focusing on building reliable,
-                        scalable applications rather than just "writing code."
-                    </p>
-                    <p>
-                        Currently expanding into machine learning and Docker, my strength lies in understanding how
-                        things actually work under the hood. This fundamental knowledge allows me to debug faster,
-                        design smarter, and deliver cleaner, production-ready solutions.
-                    </p>
-
-                    <div class="stats-row">
-                        <!-- <div class="stat-item">
-                            <span class="stat-number">2+</span>
-                            <span class="stat-label">Years Exp.</span>
-                        </div> -->
-                        <div class="stat-item">
-                            <span class="stat-number">10+</span>
-                            <span class="stat-label">Projects</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">20+</span>
-                            <span class="stat-label">Certifications</span>
+                    <div class="sgroup reveal">
+                        <h3>AI and LLM</h3>
+                        <div class="tags">
+                            <span class="pill">LangChain</span><span class="pill">RAG</span>
+                            <span class="pill">Prompt Engineering</span><span class="pill">Gemini API</span>
+                            <span class="pill">OpenAI API</span><span class="pill">PyTorch</span>
                         </div>
                     </div>
+
+                    <div class="sgroup reveal">
+                        <h3>ML and Data</h3>
+                        <div class="tags">
+                            <span class="pill">Scikit-learn</span><span class="pill">OpenCV</span>
+                            <span class="pill">Pandas</span><span class="pill">NumPy</span>
+                            <span class="pill">spaCy</span><span class="pill">Streamlit</span>
+                        </div>
+                    </div>
+
+                    <div class="sgroup reveal">
+                        <h3>Backend</h3>
+                        <div class="tags">
+                            <span class="pill">Django</span><span class="pill">DRF</span>
+                            <span class="pill">FastAPI</span><span class="pill">REST APIs</span>
+                            <span class="pill">Spring Boot</span>
+                        </div>
+                    </div>
+
+                    <div class="sgroup reveal">
+                        <h3>Databases</h3>
+                        <div class="tags">
+                            <span class="pill">MySQL</span><span class="pill">PostgreSQL</span>
+                            <span class="pill">MongoDB</span><span class="pill">ChromaDB</span>
+                        </div>
+                    </div>
+
+                    <div class="sgroup reveal">
+                        <h3>Cloud and tools</h3>
+                        <div class="tags">
+                            <span class="pill">Docker</span><span class="pill">GCP</span>
+                            <span class="pill">Git</span><span class="pill">n8n</span>
+                            <span class="pill">ERPNext</span><span class="pill">Postman</span>
+                        </div>
+                    </div>
+
+                    <div class="sgroup sgroup--wide reveal">
+                        <h3>Core CS</h3>
+                        <div class="tags">
+                            <span class="pill">Data Structures and Algorithms</span><span class="pill">OOP</span>
+                            <span class="pill">DBMS</span><span class="pill">Operating Systems</span>
+                            <span class="pill">Networking</span><span class="pill">RESTful design</span>
+                            <span class="pill">System architecture</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="section" style="background-color: var(--surface);">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Experience & Education</h2>
-            </div>
+        <!-- --------------------------------------------------- contact -->
+        <section class="section section--snap" id="contact">
+            <div class="shell">
+                <h2 class="sec-title reveal">Contact</h2>
 
-            <div class="timeline">
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">Jan 2026 - Present</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Software Developer Intern</h3>
-                        <p class="timeline-company">Vajravyuh Enterprise</p>
-                        <ul class="timeline-desc">
-                            <li>Built AI-driven automated lead management systems.</li>
-                            <li>Replaced manual workflows with efficient automation pipelines.</li>
-                            <li>Tech stack: React, n8n, ERPNext, Python.</li>
+                <div class="contact-grid">
+                    <div class="contact-left">
+                        <p class="lead reveal">Got something worth <b>building</b>?</p>
+                        <p class="contact-sub reveal">
+                            Open to AI and backend engineering roles, plus selective freelance builds.
+                            Tell me what you're working on. I read everything.
+                        </p>
+
+                        <ul class="contact-list reveal">
+                            <li>
+                                <span class="clabel">Email</span>
+                                <a href="mailto:hetshahworks@gmail.com" class="arrow-link">hetshahworks@gmail.com</a>
+                            </li>
+                            <li>
+                                <span class="clabel">Phone</span>
+                                <a href="tel:+919409078274" class="arrow-link">+91 94090 78274</a>
+                            </li>
+                            <li>
+                                <span class="clabel">Based in</span>
+                                <span class="cplain">Vadodara, Gujarat, India</span>
+                            </li>
+                            <li>
+                                <span class="clabel">Elsewhere</span>
+                                <span class="csocial">
+                                    <a href="https://github.com/HetShah2004" target="_blank" rel="noopener"
+                                        aria-label="GitHub"><i class="ph ph-github-logo" aria-hidden="true"></i></a>
+                                    <a href="https://www.linkedin.com/in/hets3303/" target="_blank" rel="noopener"
+                                        aria-label="LinkedIn"><i class="ph ph-linkedin-logo"
+                                            aria-hidden="true"></i></a>
+                                </span>
+                            </li>
                         </ul>
                     </div>
-                </div>
 
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2023 - 2026</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">B.Tech Computer Science</h3>
-                        <p class="timeline-company">Parul University (CGPA: 7.74/10)</p>
-                        <ul class="timeline-desc">
-                            <li>Microsoft ML Workshop Certification.</li>
-                            <li>Google DevOps on GCP Certification.</li>
-                            <li>Focus on Core CS, Data Structures, and System Architecture.</li>
-                        </ul>
-                    </div>
-                </div>
+                    <form class="form reveal" id="contactForm" novalidate>
+                        <input type="text" name="honeypot" class="hp" tabindex="-1" autocomplete="off"
+                            aria-hidden="true">
 
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2020 - 2023</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Diploma Computer Science</h3>
-                        <p class="timeline-company">Parul University (CGPA: 8.83/10)</p>
-                        <ul class="timeline-desc">
-                            <li>Foundation in programming and web technologies.</li>
-                            <li>Graduated with Distinction.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Featured Projects</h2>
-            </div>
-
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <div class="project-card reveal">
-                    <img src="./projects/CryptopricePrediction.png" alt="Cryptic" class="project-image">
-                    <div class="project-content">
-                        <h3 class="project-title">Cryptic</h3>
-                        <p class="project-desc">Educational platform and ML-based cryptocurrency price prediction using
-                            real-time API data and time-series analysis.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">NumPy</span>
-                            <span class="tech-tag">Pandas</span>
-                            <span class="tech-tag">Scikit-Learn</span>
-                            <span class="tech-tag">Streamlit</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/HetShah2004/Cryptic" target="_blank" class="btn btn-outline">
-                                <i class="fa-brands fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="project-card reveal">
-                    <img src="./projects/Project3.png" alt="Email Assistant" class="project-image">
-                    <div class="project-content">
-                        <h3 class="project-title">Email Assistant</h3>
-                        <p class="project-desc">AI-powered Gmail extension that drafts context-aware email replies
-                            instantly using Gemini API integration.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Spring Boot</span>
-                            <span class="tech-tag">Java</span>
-                            <span class="tech-tag">Chrome Ext</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/HetShah2004/Email-Assistance/" target="_blank"
-                                class="btn btn-outline">
-                                <i class="fa-brands fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="project-card reveal">
-                    <img src="./projects/AuraSafe.png" alt="AuraSafe" class="project-image">
-                    <div class="project-content">
-                        <h3 class="project-title">AuraSafe Backend</h3>
-                        <p class="project-desc">Backend infrastructure for a women's safety app featuring real-time
-                            location sharing and emergency SOS routing.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">React Native</span>
-                            <span class="tech-tag">MySQL</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/HetShah2004/aura-backend" target="_blank"
-                                class="btn btn-outline">
-                                <i class="fa-brands fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="project-card reveal">
-                    <img src="./projects/RazorPay.png" alt="Razorpay Clone" class="project-image">
-                    <div class="project-content">
-                        <h3 class="project-title">Razorpay UI Clone</h3>
-                        <p class="project-desc">Pixel-perfect frontend clone of the Razorpay payment gateway dashboard
-                            with responsive design.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">HTML5</span>
-                            <span class="tech-tag">Tailwind</span>
-                            <span class="tech-tag">JavaScript</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/HetShah2004/Razorpay-clone" target="_blank"
-                                class="btn btn-outline">
-                                <i class="fa-brands fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="section" style="background-color: var(--surface);">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Tech Stack</h2>
-            </div>
-
-            <div class="skills-container">
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">Languages</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">C / C++</span>
-                        <span class="tech-tag">Java</span>
-                        <span class="tech-tag">JavaScript</span>
-                    </div>
-                </div>
-
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">Frameworks</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">Django / DRF</span>
-                        <span class="tech-tag">Spring Boot</span>
-                        <span class="tech-tag">React</span>
-                        <span class="tech-tag">TailwindCSS</span>
-                    </div>
-                </div>
-
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">Databases</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">MySQL</span>
-                        <span class="tech-tag">MongoDB</span>
-                        <span class="tech-tag">PostgreSQL</span>
-                    </div>
-                </div>
-
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">ML & Data</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">NumPy</span>
-                        <span class="tech-tag">Pandas</span>
-                        <span class="tech-tag">Scikit-Learn</span>
-                        <span class="tech-tag">Matplotlib</span>
-                        <span class="tech-tag">Streamlit</span>
-                    </div>
-                </div>
-
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">Cloud & Tools</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">Git & GitHub</span>
-                        <span class="tech-tag">GCP</span>
-                        <span class="tech-tag">n8n</span>
-                        <span class="tech-tag">Postman</span>
-                        <span class="tech-tag">Swagger / OpenAPI</span>
-                        <span class="tech-tag">Jira</span>
-                    </div>
-                </div>
-
-                <div class="skill-category reveal">
-                    <h3 class="skill-category-title">Core CS</h3>
-                    <div class="skill-tags">
-                        <span class="tech-tag">Data Structures</span>
-                        <span class="tech-tag">OOP</span>
-                        <span class="tech-tag">API Design</span>
-                        <span class="tech-tag">Networking</span>
-                        <span class="tech-tag">System Architecture</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="section">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Get In Touch</h2>
-                <p style="color: var(--text-secondary); margin-top: var(--spacing-sm);">Questions, opportunities, or
-                    just want to say hello?</p>
-            </div>
-
-            <div class="contact-container">
-                <div class="contact-form reveal">
-                    <form id="contactForm">
-                        <input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
-
-                        <div class="form-group">
-                            <label class="form-label" for="name">Name</label>
-                            <input class="form-control" type="text" id="name" name="name" placeholder="John Doe"
-                                required />
+                        <div class="field">
+                            <label for="name">Your name</label>
+                            <input type="text" id="name" name="name" required autocomplete="name">
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="email">Email</label>
-                            <input class="form-control" type="email" id="email" name="email"
-                                placeholder="john@example.com" required />
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required autocomplete="email">
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="subject">Subject</label>
-                            <input class="form-control" type="text" id="subject" name="subject"
-                                placeholder="Project Inquiry" required />
+                        <div class="field">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="message">Message</label>
-                            <textarea class="form-control" id="message" name="message"
-                                placeholder="Hello Het, I'd like to discuss..." required></textarea>
+                        <div class="field">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="4" required></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" id="submit-btn" style="width: 100%;">
-                            Send Message <i class="fa-solid fa-paper-plane"></i>
+                        <button type="submit" class="btn btn-solid btn-block" id="submitBtn">
+                            <span>Send message</span> <i class="ph ph-paper-plane-tilt" aria-hidden="true"></i>
                         </button>
+                        <p class="form-note" id="formNote" role="status">All fields are required.</p>
                     </form>
                 </div>
+            </div>
+        </section>
+    </main>
 
-                <div class="contact-info reveal">
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
-                        <div class="contact-details">
-                            <h4>Email</h4>
-                            <p>hetshahworks@gmail.com</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
-                        <div class="contact-details">
-                            <h4>Phone</h4>
-                            <p>+91 9409078274</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
-                        <div class="contact-details">
-                            <h4>Location</h4>
-                            <p>Vadodara, Gujarat, India</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item" style="margin-top: var(--spacing-lg);">
-                        <div class="contact-details">
-                            <h4>Connect</h4>
-                            <div style="display: flex; gap: 16px; margin-top: 8px;">
-                                <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank"
-                                    style="color: var(--primary); font-size: 1.5rem;"><i
-                                        class="fa-brands fa-linkedin"></i></a>
-                                <a href="https://github.com/HetShah2004" target="_blank"
-                                    style="color: var(--primary); font-size: 1.5rem;"><i
-                                        class="fa-brands fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- ---------------------------------------------------------- foot -->
+    <footer class="footer">
+        <div class="shell foot-inner">
+            <div class="foot-col foot-col--wide">
+                <p class="foot-name">Het Shah</p>
+                <p class="foot-desc">
+                    AI engineer working in Python and backend systems. Building things that survive contact
+                    with production.
+                </p>
+            </div>
+            <div class="foot-col">
+                <span class="foot-head">Navigate</span>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#protomind">ProtoMind</a></li>
+                    <li><a href="#work">Work</a></li>
+                    <li><a href="#stack">Stack</a></li>
+                </ul>
+            </div>
+            <div class="foot-col">
+                <span class="foot-head">Elsewhere</span>
+                <ul>
+                    <li><a href="https://github.com/HetShah2004" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/hets3303/" target="_blank" rel="noopener">LinkedIn</a>
+                    </li>
+                    <li><a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener">ProtoMind</a></li>
+                    <li><a href="Het_Shah_AI_Engineer.pdf" target="_blank" rel="noopener">Résumé</a></li>
+                </ul>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-col">
-                    <div class="logo-container" style="margin-bottom: 16px;">
-                        <img src="./projects/h1-bg.png" alt="Logo"
-                            style="width: 30px; filter: brightness(0) invert(1);">
-                        <span
-                            style="font-family: var(--font-heading); font-weight: 700; font-size: 1.2rem; margin-left: -8px;">et
-                            Shah</span>
-                    </div>
-                    <p style="color: #9CA3AF; font-size: 0.875rem;">Backend Engineer focusing on scalable architecture
-                        and production-ready code.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#projects">Projects</a></li>
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Social</h4>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/het-shah-917501227/" target="_blank" class="social-link"><i
-                                class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="https://github.com/HetShah2004" target="_blank" class="social-link"><i
-                                class="fa-brands fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Het Shah. All rights reserved. Made with <i class="fa-solid fa-heart"
-                        style="color: var(--accent);"></i> by Het Shah</p>
-            </div>
+        <div class="shell foot-bottom">
+            <span id="footNote">© 2026 Het Shah. Designed and built from scratch.</span>
+            <button class="to-top" id="toTop">
+                <span>Top</span> <i class="ph ph-arrow-up" aria-hidden="true"></i>
+            </button>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="app.js"></script>
 </body>
 
