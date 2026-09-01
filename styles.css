@@ -645,6 +645,54 @@ html[data-motion="on"] .motion-btn {
   color: var(--accent);
 }
 
+/* ---- story thread ---- */
+.thread {
+  position: fixed;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  z-index: 80;
+  width: 10px;
+  pointer-events: none;
+  display: none;
+}
+
+.thread-line,
+.thread-trail {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  margin-left: -.5px;
+}
+
+.thread-line {
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg,
+      transparent, var(--hair) 14%, var(--hair) 86%, transparent);
+}
+
+/* Drawn behind the node, so the signal leaves a wake as it travels. */
+.thread-trail {
+  top: 12vh;
+  height: 76vh;
+  background: linear-gradient(180deg, transparent, var(--accent));
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  opacity: .5;
+}
+
+.thread-node {
+  position: absolute;
+  left: 50%;
+  top: 12vh;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
 /* ---- section rail ---- */
 .rail {
   position: fixed;
@@ -1367,53 +1415,247 @@ html[data-motion="on"] .motion-btn {
 
 .proj-media {
   position: relative;
-  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--core-bg-2);
+  aspect-ratio: 16 / 10;
+  padding: 6px;
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--accent-wash), transparent 70%),
+    var(--core-bg-2);
   border-bottom: 1px solid var(--hair);
   flex: none;
 }
 
-.proj-media img {
+/* The clients card carries more text, so its diagram takes less height. */
+.proj-media--sm {
+  aspect-ratio: 16 / 7;
+}
+
+/*
+   Project diagrams.
+
+   Each card carries a schematic of what that system does, not a picture of
+   its interface. That is a deliberate honesty line: a generated or mocked
+   screenshot of a UI that does not exist would be a fabricated work sample,
+   while a schematic only restates the claim the card's own text makes.
+
+   Every diagram shares one stroke language, and every animation's resting
+   state is the finished one. Motion adds life on top; it is never what
+   makes the picture legible, so switching motion off costs nothing.
+*/
+.glyph {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 50% 0;
-  filter: saturate(.5) contrast(1.02);
-  transition: transform 1s var(--e), filter .6s var(--e);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.proj:hover .proj-media img {
-  transform: scale(1.04);
-  filter: saturate(.9) contrast(1.02);
+.glyph .g-dim {
+  stroke: var(--hair-2);
+  stroke-width: 1.25;
 }
 
-/* A project with no screenshot yet gets an honest blank panel. No fake UI
-   is ever drawn in its place. */
-.media-empty {
-  display: none;
-  position: absolute;
-  inset: 0;
-  place-items: center;
-  background: repeating-linear-gradient(135deg,
-      var(--core-bg-2) 0 10px,
-      var(--core-bg) 10px 20px);
+.glyph .g-key {
+  stroke: var(--accent);
+  stroke-width: 1.5;
 }
 
-.media-empty span {
+.glyph .g-node circle {
+  fill: var(--core-bg);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+/* After .g-key, so an element carrying both fills rather than strokes. */
+.glyph .g-fill {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.glyph .g-num {
+  fill: var(--text);
+  stroke: none;
   font-family: var(--mono);
-  font-size: .625rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font-size: 24px;
+  font-weight: 500;
 }
 
-.proj-media.is-empty img {
-  display: none;
+/* ---- AuraSafe: one alert radiating to trusted contacts ---- */
+.glyph .ring {
+  transform-origin: 200px 104px;
+  stroke: var(--accent);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 7;
+  opacity: .5;
 }
 
-.proj-media.is-empty .media-empty {
-  display: grid;
+.glyph .r2 {
+  opacity: .32;
+}
+
+.glyph .r3 {
+  opacity: .18;
+}
+
+/* ---- Resume analyzer: a page being read, and the score it produces ---- */
+.glyph .scan {
+  opacity: 0;
+  stroke-width: 2;
+}
+
+.glyph .score {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* Circumference of r=42 is about 264. Resting offset leaves 87% drawn. */
+  stroke-dasharray: 264;
+  stroke-dashoffset: 34;
+  transform: rotate(-90deg);
+  transform-origin: 296px 125px;
+}
+
+/* ---- Cryptic: history solid, forecast dashed, spread shaded ---- */
+.glyph .g-band {
+  fill: var(--accent);
+  opacity: .08;
+  stroke: none;
+}
+
+.glyph .g-hist {
+  stroke: var(--text-2);
+  stroke-width: 1.75;
+}
+
+.glyph .g-fore {
+  stroke: var(--accent);
+  stroke-width: 1.75;
+  stroke-dasharray: 5 5;
+}
+
+/* ---- Email assistant: message in, draft out ---- */
+.glyph .flow {
+  opacity: 0;
+}
+
+/* ---- Client work: two sites and a reporting view ---- */
+.glyph .g-bar rect {
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+
+html[data-motion="on"] .glyph .ring {
+  animation: ringOut 3.2s var(--e-soft) infinite;
+}
+
+html[data-motion="on"] .glyph .r2 {
+  animation-delay: .35s;
+}
+
+html[data-motion="on"] .glyph .r3 {
+  animation-delay: .7s;
+}
+
+html[data-motion="on"] .glyph .scan {
+  animation: scanDown 3.4s var(--e-soft) infinite;
+}
+
+html[data-motion="on"] .glyph .score {
+  animation: scoreDraw 3.4s var(--e) infinite;
+}
+
+html[data-motion="on"] .glyph .g-fore {
+  animation: foreDraw 3.6s var(--e) infinite;
+}
+
+html[data-motion="on"] .glyph .flow {
+  animation: flowAcross 2.8s var(--e-soft) infinite;
+}
+
+html[data-motion="on"] .glyph .g-bar rect {
+  animation: barRise 3.4s var(--e) infinite;
+}
+
+html[data-motion="on"] .glyph .g-bar rect:nth-child(2) { animation-delay: .08s; }
+html[data-motion="on"] .glyph .g-bar rect:nth-child(3) { animation-delay: .16s; }
+html[data-motion="on"] .glyph .g-bar rect:nth-child(4) { animation-delay: .24s; }
+html[data-motion="on"] .glyph .g-bar rect:nth-child(5) { animation-delay: .32s; }
+html[data-motion="on"] .glyph .g-bar rect:nth-child(6) { animation-delay: .40s; }
+
+@keyframes ringOut {
+  0% {
+    transform: scale(.72);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .5;
+  }
+
+  100% {
+    transform: scale(1.12);
+    opacity: 0;
+  }
+}
+
+@keyframes scanDown {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  12%, 78% {
+    opacity: .85;
+  }
+
+  90%, 100% {
+    transform: translateY(138px);
+  }
+}
+
+@keyframes scoreDraw {
+  0% {
+    stroke-dashoffset: 264;
+  }
+
+  55%, 100% {
+    stroke-dashoffset: 34;
+  }
+}
+
+@keyframes foreDraw {
+  0% {
+    stroke-dasharray: 0 400;
+  }
+
+  60%, 100% {
+    stroke-dasharray: 5 5;
+  }
+}
+
+@keyframes flowAcross {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  15%, 85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(136px);
+  }
+}
+
+@keyframes barRise {
+  0% {
+    transform: scaleY(.15);
+  }
+
+  45%, 100% {
+    transform: scaleY(1);
+  }
 }
 
 .proj-body {
@@ -1947,6 +2189,37 @@ html[data-motion="on"] .motion-btn {
 }
 
 @supports (animation-timeline: scroll()) {
+
+  /* The thread only exists as a journey, so it appears only where it can
+     actually travel: wide screens, motion on. */
+  @media (min-width: 1241px) {
+    html[data-motion="on"] .thread {
+      display: block;
+    }
+  }
+
+  html[data-motion="on"] .thread-node {
+    animation: threadTravel linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  html[data-motion="on"] .thread-trail {
+    animation: threadWake linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes threadTravel {
+    to {
+      transform: translateY(76vh);
+    }
+  }
+
+  @keyframes threadWake {
+    to {
+      transform: scaleY(1);
+    }
+  }
+
   .progress span {
     animation: progressGrow linear both;
     animation-timeline: scroll(root block);

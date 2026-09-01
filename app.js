@@ -354,17 +354,6 @@
   }
 
 
-  /* ------------------------------------------------- project empty state */
-  $$('.proj-media img').forEach((img) => {
-    const mark = () => img.closest('.proj-media')?.classList.add('is-empty');
-    if (img.complete) {
-      if (!img.naturalWidth) mark();
-    } else {
-      img.addEventListener('error', mark, { once: true });
-    }
-  });
-
-
   /* --------------------------------------------------- hero signal field */
   const field = $('#signal');
   if (field) {

@@ -117,6 +117,16 @@
         </div>
     </div>
 
+    <!-- The story thread. The hero assembles a system out of noise; this
+         carries that same signal down the left edge through every screen,
+         so the seven sections read as one journey rather than seven slides.
+         Scroll position drives it, so it never disagrees with the page. -->
+    <div class="thread" aria-hidden="true">
+        <span class="thread-line"></span>
+        <span class="thread-trail"></span>
+        <span class="thread-node"></span>
+    </div>
+
     <!-- --------------------------------------------------- section rail -->
     <nav class="rail" id="rail" aria-label="Jump to section">
         <a href="#hero" class="rail-item" data-label="Intro"><span></span></a>
@@ -351,8 +361,21 @@
                             <article class="proj bezel">
                                 <div class="core">
                                     <div class="proj-media">
-                                        <img src="./projects/AuraSafe.png" alt="AuraSafe live location and SOS screens"
-                                            loading="lazy" decoding="async">
+                                        <svg class="glyph" viewBox="0 0 400 250" aria-hidden="true">
+                                            <g class="g-dim">
+                                                <path d="M40 196h320" />
+                                                <path d="M96 196v-18M200 196v-30M304 196v-18" />
+                                            </g>
+                                            <circle class="ring r1" cx="200" cy="104" r="34" />
+                                            <circle class="ring r2" cx="200" cy="104" r="58" />
+                                            <circle class="ring r3" cx="200" cy="104" r="82" />
+                                            <path class="g-key" d="M200 88a12 12 0 0 1 12 12c0 9-12 22-12 22s-12-13-12-22a12 12 0 0 1 12-12z" />
+                                            <g class="g-node">
+                                                <circle cx="96" cy="172" r="6" />
+                                                <circle cx="200" cy="160" r="6" />
+                                                <circle cx="304" cy="172" r="6" />
+                                            </g>
+                                        </svg>
                                     </div>
                                     <div class="proj-body">
                                         <h3>AuraSafe</h3>
@@ -376,11 +399,16 @@
                             <article class="proj bezel">
                                 <div class="core">
                                     <div class="proj-media">
-                                        <!-- TODO: real screenshot at 1200x750. Until the file exists
-                                             the empty state below is shown instead. -->
-                                        <img src="./projects/resume-analyzer.png"
-                                            alt="AI Resume Analyzer scoring view" loading="lazy" decoding="async">
-                                        <div class="media-empty" aria-hidden="true"><span>Screenshot coming</span></div>
+                                        <svg class="glyph" viewBox="0 0 400 250" aria-hidden="true">
+                                            <rect class="g-dim" x="74" y="46" width="122" height="158" rx="8" />
+                                            <g class="g-dim">
+                                                <path d="M96 78h62M96 100h78M96 118h64M96 146h78M96 164h50" />
+                                            </g>
+                                            <path class="scan g-key" d="M74 60h122" />
+                                            <circle class="g-dim" cx="296" cy="125" r="42" />
+                                            <circle class="score g-key" cx="296" cy="125" r="42" />
+                                            <text class="g-num" x="296" y="133" text-anchor="middle">87</text>
+                                        </svg>
                                     </div>
                                     <div class="proj-body">
                                         <h3>AI Resume Analyzer</h3>
@@ -404,8 +432,17 @@
                             <article class="proj bezel">
                                 <div class="core">
                                     <div class="proj-media">
-                                        <img src="./projects/CryptopricePrediction.png"
-                                            alt="Cryptic price forecast dashboard" loading="lazy" decoding="async">
+                                        <svg class="glyph" viewBox="0 0 400 250" aria-hidden="true">
+                                            <g class="g-dim">
+                                                <path d="M46 202h308" />
+                                                <path d="M46 202V52" />
+                                                <path d="M46 158h308M46 110h308" opacity=".45" />
+                                            </g>
+                                            <path class="g-band" d="M206 118 354 66v72l-148 22z" />
+                                            <path class="g-hist" d="M46 176l32-14 30 12 34-30 32 10 32-36" />
+                                            <path class="g-fore" d="M206 118l38-18 34 14 38-32 38 10" />
+                                            <circle class="g-key g-fill" cx="206" cy="118" r="5" />
+                                        </svg>
                                     </div>
                                     <div class="proj-body">
                                         <h3>Cryptic</h3>
@@ -429,8 +466,20 @@
                             <article class="proj bezel">
                                 <div class="core">
                                     <div class="proj-media">
-                                        <img src="./projects/Project3.png" alt="Email Assistant Gmail extension"
-                                            loading="lazy" decoding="async">
+                                        <svg class="glyph" viewBox="0 0 400 250" aria-hidden="true">
+                                            <g class="g-dim">
+                                                <rect x="30" y="82" width="94" height="66" rx="7" />
+                                                <path d="M30 96l47 30 47-30" />
+                                                <rect x="276" y="82" width="94" height="66" rx="7" />
+                                                <path d="M296 106h54M296 122h40M296 138h48" />
+                                            </g>
+                                            <rect class="g-key" x="168" y="94" width="64" height="42" rx="8" />
+                                            <path class="g-key" d="M184 108h32M184 122h20" />
+                                            <g class="g-dim">
+                                                <path d="M132 115h28M240 115h28" />
+                                            </g>
+                                            <circle class="flow g-fill g-key" cx="132" cy="115" r="4" />
+                                        </svg>
                                     </div>
                                     <div class="proj-body">
                                         <h3>Email Assistant</h3>
@@ -453,6 +502,24 @@
 
                             <article class="proj proj--clients bezel">
                                 <div class="core">
+                                    <div class="proj-media proj-media--sm">
+                                        <svg class="glyph" viewBox="0 0 400 250" aria-hidden="true">
+                                            <g class="g-dim">
+                                                <rect x="34" y="40" width="150" height="60" rx="7" />
+                                                <rect x="216" y="40" width="150" height="60" rx="7" />
+                                                <rect x="34" y="126" width="332" height="86" rx="7" />
+                                                <path d="M58 66h64M240 66h48" />
+                                            </g>
+                                            <g class="g-bar g-fill g-key">
+                                                <rect x="70" y="170" width="20" height="24" rx="3" />
+                                                <rect x="118" y="154" width="20" height="40" rx="3" />
+                                                <rect x="166" y="176" width="20" height="18" rx="3" />
+                                                <rect x="214" y="146" width="20" height="48" rx="3" />
+                                                <rect x="262" y="162" width="20" height="32" rx="3" />
+                                                <rect x="310" y="138" width="20" height="56" rx="3" />
+                                            </g>
+                                        </svg>
+                                    </div>
                                     <div class="proj-body">
                                         <h3>Freelance clients</h3>
                                         <p class="proj-kind">Shipped and handed over</p>
