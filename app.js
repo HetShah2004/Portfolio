@@ -354,104 +354,6 @@
   }
 
 
-  /* --------------------------------------------------- hero signal field */
-  const field = $('#signal');
-  if (field) {
-    const ctx = field.getContext('2d');
-    const GAP = 54;
-    const REACH = 240;
-
-    let w = 0, h = 0, nodes = [], live = true, raf = 0;
-    const start = performance.now();
-
-    const readInk = () =>
-      getComputedStyle(root).getPropertyValue('--accent').trim() || '#c9f24d';
-    let ink = readInk();
-    themeHooks.push(() => { ink = readInk(); });
-
-    const build = () => {
-      const r = field.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-
-      const dpr = Math.min(devicePixelRatio || 1, 2);
-      w = r.width;
-      h = r.height;
-      field.width = Math.round(w * dpr);
-      field.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      nodes = [];
-      for (let x = 0; x <= w + GAP; x += GAP) {
-        for (let y = 0; y <= h + GAP; y += GAP) nodes.push({ x, y, a: 0 });
-      }
-    };
-
-    const draw = (now) => {
-      raf = requestAnimationFrame(draw);
-      if (!live || !nodes.length) return;
-
-      const box = field.getBoundingClientRect();
-      const px = pointer.has ? pointer.x - box.left : -9999;
-      const py = pointer.has ? pointer.y - box.top : -9999;
-      const t = (now - start) / 1000;
-
-      ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = ink;
-      ctx.lineWidth = 1;
-
-      for (const n of nodes) {
-        const dx = px - n.x;
-        const dy = py - n.y;
-        const dist = Math.hypot(dx, dy);
-        const near = dist < REACH ? 1 - dist / REACH : 0;
-
-        /* Ambient wave when the cursor is far, cursor angle when it is near. */
-        const wave = Math.sin((n.x + n.y) * 0.008 + t * 0.55) * 0.9;
-        const target = near > 0 ? Math.atan2(dy, dx) : wave;
-
-        /* Shortest way round, so a stroke never spins the long way. */
-        let diff = target - n.a;
-        while (diff > Math.PI) diff -= Math.PI * 2;
-        while (diff < -Math.PI) diff += Math.PI * 2;
-        n.a += diff * 0.08;
-
-        const len = 5 + near * 11;
-        const cos = Math.cos(n.a) * len;
-        const sin = Math.sin(n.a) * len;
-
-        ctx.globalAlpha = 0.09 + near * 0.55;
-        ctx.beginPath();
-        ctx.moveTo(n.x - cos, n.y - sin);
-        ctx.lineTo(n.x + cos, n.y + sin);
-        ctx.stroke();
-      }
-
-      ctx.globalAlpha = 1;
-      field.classList.add('on');
-    };
-
-    build();
-    addEventListener('resize', build, { passive: true });
-    new IntersectionObserver((e) => { live = e[0].isIntersecting; }).observe(field);
-
-    registerMotion({
-      start() {
-        /* Rebuild on every start. While motion is off the canvas is
-           display:none, so it measures zero and holds no nodes; without this
-           it would stay blank after the switch is turned on. */
-        build();
-        if (!raf) raf = requestAnimationFrame(draw);
-      },
-      stop() {
-        cancelAnimationFrame(raf);
-        raf = 0;
-        field.classList.remove('on');
-        ctx.clearRect(0, 0, w, h);
-      }
-    });
-  }
-
-
   /* ----------------------------------------------------- assembly stage */
   /*
      The hero visual, and the argument the headline is making: a loose cloud
@@ -464,7 +366,7 @@
      drift out of step with the page.
   */
   const asm = $('#assembly');
-  const asmCore = $('#assemblyCore');
+  const asmCore = $('.hero');
   const asmStep = $('#assemblyStep');
 
   if (asm && asmCore) {
@@ -473,12 +375,23 @@
     /* Four bands of a small system: what comes in, what reasons about it,
        what serves it, what ships. Counts differ so it reads as architecture
        rather than as a grid. */
+    /* Kept compact and centred vertically so the finished system reads as
+       one object sitting in the frame, rather than a lattice stretched over
+       the full height that is always half cropped. */
     const BANDS = [
-      { y: 0.17, n: 5 },
-      { y: 0.39, n: 3 },
-      { y: 0.61, n: 4 },
-      { y: 0.83, n: 6 }
+      { y: 0.30, n: 6 },
+      { y: 0.44, n: 4 },
+      { y: 0.58, n: 5 },
+      { y: 0.72, n: 7 }
     ];
+
+    /* The assembled system lives in the right of the frame, so the sentence
+       on the left is sitting in space the drawing has cleared rather than
+       competing with it. Narrow screens put the copy over the drawing, so
+       the target band widens and the whole thing softens instead. */
+    const zone = () => (w < 900
+      ? { from: 0.10, to: 0.90, dim: 0.5 }
+      : { from: 0.58, to: 0.94, dim: 1 });
     const STEPS = ['Raw call', 'Requirements', 'Architecture', 'Shipped'];
 
     let w = 0, h = 0, nodes = [], edges = [], dust = [];
@@ -510,11 +423,16 @@
           /* Even spread inside the safe area, nudged so the rows do not
              line up into columns. */
           const t = band.n === 1 ? 0.5 : i / (band.n - 1);
-          const jitter = (((bi * 7 + i * 13) % 5) - 2) * 0.012;
+          const jitter = (((bi * 7 + i * 13) % 5) - 2) * 0.01;
+          const z = zone();
 
           nodes.push({
-            tx: (0.17 + t * 0.66 + jitter) * w,
+            tx: (z.from + t * (z.to - z.from) + jitter) * w,
             ty: band.y * h,
+            /* Simulated depth. The pointer parallaxes each node in
+               proportion to it, and size and opacity follow, so the system
+               reads as a volume rather than a flat plate. */
+            z: 0.35 + Math.random() * 0.65,
             /* Chaos before assembly: scattered wide, each with its own slow
                orbit so the cloud breathes instead of sitting still. */
             ox: (0.06 + Math.random() * 0.88) * w,
@@ -531,20 +449,26 @@
         }
       });
 
-      /* Each node reaches to the two nearest in the band below. */
+      /* Edges route by relative position in the band rather than by raw
+         distance. Nearest-neighbour wiring produced long crossing diagonals
+         that read as spaghetti; matching proportionally keeps the fan clean,
+         and only every other node takes a second edge, so the structure
+         stays legible instead of turning into a mesh. */
       for (let bi = 0; bi < BANDS.length - 1; bi++) {
         const a = BANDS[bi], b = BANDS[bi + 1];
-        for (let i = a.first; i < a.first + a.n; i++) {
-          const ranked = [];
-          for (let j = b.first; j < b.first + b.n; j++) {
-            ranked.push([Math.abs(nodes[i].tx - nodes[j].tx), j]);
+        for (let i = 0; i < a.n; i++) {
+          const t = a.n === 1 ? 0.5 : i / (a.n - 1);
+          const mid = Math.round(t * (b.n - 1));
+          edges.push([a.first + i, b.first + mid]);
+
+          if (i % 2 === 0) {
+            const alt = mid + (t < 0.5 ? 1 : -1);
+            if (alt >= 0 && alt < b.n) edges.push([a.first + i, b.first + alt]);
           }
-          ranked.sort((m, n) => m[0] - n[0]);
-          for (const pair of ranked.slice(0, 2)) edges.push([i, pair[1]]);
         }
       }
 
-      dust = Array.from({ length: 46 }, () => ({
+      dust = Array.from({ length: 70 }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
         r: 0.6 + Math.random() * 1.1,
@@ -576,6 +500,13 @@
       const px = pointer.has ? pointer.x - box.left : -9999;
       const py = pointer.has ? pointer.y - box.top : -9999;
 
+      /* Pointer offset from centre, normalised. Depth is applied per node
+         below, which is what separates the layers as the cursor moves. */
+      const nx = pointer.has && forced == null
+        ? clamp((pointer.x / innerWidth - 0.5) * 2, -1, 1) : 0;
+      const ny = pointer.has && forced == null
+        ? clamp((pointer.y / innerHeight - 0.5) * 2, -1, 1) : 0;
+
       ctx.clearRect(0, 0, w, h);
 
       for (const n of nodes) {
@@ -586,8 +517,8 @@
         const ox = n.ox + Math.cos(t * n.sp + n.ph) * wob;
         const oy = n.oy + Math.sin(t * n.sp * 0.8 + n.ph) * wob;
 
-        n.x = ox + (n.tx - ox) * local;
-        n.y = oy + (n.ty - oy) * local;
+        n.x = ox + (n.tx - ox) * local - nx * n.z * 26;
+        n.y = oy + (n.ty - oy) * local - ny * n.z * 18;
 
         /* An assembled system still answers to the cursor, but only just:
            it should read as settled, not as jelly. */
@@ -603,11 +534,12 @@
       }
 
       /* Connections only mean anything once there is a structure. */
+      const dim = zone().dim;
       const wire = p * p;
       if (wire > 0.01) {
         ctx.strokeStyle = ink;
         ctx.lineWidth = 1;
-        ctx.globalAlpha = wire * 0.42;
+        ctx.globalAlpha = wire * 0.42 * dim;
         ctx.beginPath();
         for (const e of edges) {
           ctx.moveTo(nodes[e[0]].x, nodes[e[0]].y);
@@ -621,7 +553,7 @@
         ctx.fillStyle = ink;
         for (const d of dust) {
           const dy = forced != null ? 0 : Math.sin(t * d.sp + d.ph) * 5;
-          ctx.globalAlpha = (1 - p) * 0.45;
+          ctx.globalAlpha = (1 - p) * 0.4 * dim;
           ctx.beginPath();
           ctx.arc(d.x, d.y + dy, d.r, 0, Math.PI * 2);
           ctx.fill();
@@ -631,13 +563,15 @@
       ctx.fillStyle = ink;
       for (const n of nodes) {
         const local = ease(clamp((p - n.lag) / (1 - n.lag), 0, 1));
-        ctx.globalAlpha = 0.5 + local * 0.45;
+        ctx.globalAlpha = (0.4 + local * 0.5) * (0.45 + n.z * 0.55) * dim;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 2.4 + local * 1.4, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, (2 + local * 1.5) * (0.6 + n.z * 0.6), 0, Math.PI * 2);
         ctx.fill();
       }
 
       ctx.globalAlpha = 1;
+
+      asm.classList.add('on');
 
       const step = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length));
       if (step !== lastStep && asmStep) {
@@ -730,46 +664,6 @@
           m.el.style.removeProperty('--mx-off');
           m.el.style.removeProperty('--my-off');
         }
-      }
-    });
-  }
-
-
-  /* -------------------------------------------------------- hero 3D stage */
-  const stage = $('#stage3d');
-  const stageInner = stage && $('.stage3d-inner', stage);
-  if (stageInner && FINE) {
-    let rx = 0, ry = 0, tx = 0, ty = 0, inView = true, spinRaf = 0;
-
-    new IntersectionObserver((e) => { inView = e[0].isIntersecting; },
-      { rootMargin: '140px' }).observe(stage);
-
-    const spin = () => {
-      spinRaf = requestAnimationFrame(spin);
-      if (!inView) return;
-
-      if (pointer.has) {
-        /* Measured against the viewport, so moving anywhere across the hero
-           turns the stage, not only passing over the photo itself. */
-        ty = clamp((pointer.x / innerWidth - 0.5) * 2, -1, 1) * 12;
-        tx = clamp((pointer.y / innerHeight - 0.5) * 2, -1, 1) * -9;
-      }
-
-      rx = lerp(rx, tx, 0.07);
-      ry = lerp(ry, ty, 0.07);
-      stageInner.style.transform =
-        `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-    };
-
-    registerMotion({
-      start() {
-        if (!spinRaf) spinRaf = requestAnimationFrame(spin);
-      },
-      stop() {
-        cancelAnimationFrame(spinRaf);
-        spinRaf = 0;
-        rx = ry = tx = ty = 0;
-        stageInner.style.transform = '';
       }
     });
   }

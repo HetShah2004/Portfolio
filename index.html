@@ -141,66 +141,55 @@
     <main id="top">
 
         <!-- ------------------------------------------------------ hero -->
+        <!--
+             No panel, no frame, no image slot. The system is drawn full
+             bleed across the whole screen, so the hero is one space rather
+             than a column of text beside a box.
+
+             The point of the composition: noise starts everywhere, and as
+             the first screen scrolls it converges to the right. The order
+             assembling on one side is what clears the space the sentence
+             occupies on the other.
+        -->
         <section class="section section--snap hero" id="hero">
-            <canvas class="signal" id="signal" aria-hidden="true"></canvas>
+            <canvas class="assembly" id="assembly" aria-hidden="true"></canvas>
             <div class="mesh" aria-hidden="true"></div>
 
-            <div class="hero-grid">
-                <div class="hero-copy">
-                    <p class="badge reveal">
-                        <span class="live" aria-hidden="true"></span>
-                        Available for AI and backend roles
-                    </p>
+            <div class="shell hero-inner">
+                <p class="badge reveal">
+                    <span class="live" aria-hidden="true"></span>
+                    Available for AI and backend roles
+                </p>
 
-                    <h1 class="hero-title">
-                        <span class="l"><span>Engineering AI that</span></span>
-                        <span class="l"><span><b>ships</b> real software.</span></span>
-                    </h1>
+                <h1 class="hero-title">
+                    <span class="l"><span>Engineering AI that</span></span>
+                    <span class="l"><span><b>ships</b> real software.</span></span>
+                </h1>
 
-                    <p class="hero-sub reveal">
-                        I build automation systems, REST APIs and LLM products with Python, Django,
-                        FastAPI and the Gemini stack.
-                    </p>
+                <p class="hero-sub reveal">
+                    I build automation systems, REST APIs and LLM products with Python, Django,
+                    FastAPI and the Gemini stack.
+                </p>
 
-                    <div class="hero-cta reveal">
-                        <a href="#work" class="btn btn-solid btn-lg">
-                            <span>View work</span>
-                            <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-right"></i></i>
-                        </a>
-                        <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener"
-                            class="btn btn-ghost btn-lg">
-                            <span>Open ProtoMind</span>
-                            <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-up-right"></i></i>
-                        </a>
-                    </div>
+                <div class="hero-cta reveal">
+                    <a href="#work" class="btn btn-solid btn-lg">
+                        <span>View work</span>
+                        <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-right"></i></i>
+                    </a>
+                    <a href="https://proto-mind-xi.vercel.app/" target="_blank" rel="noopener"
+                        class="btn btn-ghost btn-lg">
+                        <span>Open ProtoMind</span>
+                        <i class="btn-ico" aria-hidden="true"><i class="ph-light ph-arrow-up-right"></i></i>
+                    </a>
                 </div>
+            </div>
 
-                <!-- The story, told by the visual rather than a photograph.
-                     A cloud of loose points is a client's unstructured words;
-                     scrolling the first screen down assembles them into a
-                     running system. Scroll position drives it directly, so
-                     the picture is the argument the headline is making. -->
-                <figure class="hero-figure reveal">
-                    <div class="stage3d" id="stage3d">
-                        <div class="stage3d-inner">
-                            <span class="depth depth--plane" aria-hidden="true"></span>
-                            <div class="bezel">
-                                <div class="core assembly-core" id="assemblyCore">
-                                    <canvas class="assembly" id="assembly" aria-hidden="true"></canvas>
-                                    <div class="assembly-hud" aria-hidden="true">
-                                        <span class="assembly-step" id="assemblyStep">Raw call</span>
-                                        <span class="assembly-meter"><i></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="depth depth--tick tick-tl" aria-hidden="true"></span>
-                            <span class="depth depth--tick tick-br" aria-hidden="true"></span>
-                        </div>
-                    </div>
-                    <figcaption class="assembly-cap">
-                        A client's unstructured words, assembled into a running system.
-                    </figcaption>
-                </figure>
+            <!-- Legend for the drawing, not a second copy stack: it names
+                 what the shape on screen currently is. -->
+            <div class="shell hero-legend" aria-hidden="true">
+                <span class="lg-step" id="assemblyStep">Raw call</span>
+                <span class="lg-meter"><i></i></span>
+                <span class="lg-note">unstructured words, assembled into a running system</span>
             </div>
         </section>
 
