@@ -32,6 +32,15 @@
    ========================================================================== */
 
 
+/* Registered so it can be interpolated by an animation. Inherited, so the
+   HUD meter can size itself from the same number the canvas reads. */
+@property --assemble {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+
 /* -------------------------------------------------------------- 1 tokens */
 :root {
   color-scheme: dark;
@@ -791,7 +800,11 @@ html[data-motion="on"] .motion-btn {
 
 /* -------------------------------------------------------------- 8 hero */
 .hero {
-  overflow: hidden;
+  /* `clip`, not `hidden`. Both clip the mesh and the stage's outer plane,
+     but `hidden` creates a scroll container, and a `view()` timeline binds
+     to its nearest ancestor scroll container. With `hidden` the assembly
+     timeline attached itself to the hero, which never scrolls, and froze. */
+  overflow: clip;
 }
 
 /* Ambient mesh. Two very soft lime fields, well under the level where this
@@ -942,17 +955,67 @@ html[data-motion="on"] .motion-btn {
   box-shadow: var(--lift);
 }
 
-.portrait {
+/*
+   Assembly stage. The canvas paints the whole picture; everything here is
+   framing, plus the one number the canvas reads.
+
+   `--assemble` is a registered custom property so it can be interpolated.
+   A view timeline drives it from 0 to 1 across the hero's exit, which means
+   scroll position, and nothing else, decides how far the system has come
+   together. The canvas reads the computed value once per frame, so there is
+   still no scroll listener anywhere on the page.
+*/
+.assembly-core {
   aspect-ratio: 4 / 5;
+  background:
+    radial-gradient(120% 90% at 50% 8%, var(--accent-wash), transparent 62%),
+    var(--core-bg);
 }
 
-.portrait img {
+.assembly {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 55% 100%;
-  filter: saturate(.4) contrast(1.06);
-  transform: scale(1.1);
+}
+
+.assembly-hud {
+  position: absolute;
+  inset: auto 14px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: .625rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.assembly-step {
+  white-space: nowrap;
+}
+
+.assembly-meter {
+  flex: 1;
+  height: 2px;
+  background: var(--hair);
+  overflow: hidden;
+}
+
+.assembly-meter i {
+  display: block;
+  height: 100%;
+  width: calc(var(--assemble, 0) * 100%);
+  background: var(--accent);
+}
+
+.assembly-cap {
+  margin-top: 14px;
+  font-size: .78125rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 34ch;
 }
 
 
@@ -1413,6 +1476,24 @@ html[data-motion="on"] .motion-btn {
    exactly the period the sticky layer is pinned.
 */
 @supports (animation-timeline: view()) {
+
+  /* Hero exit maps directly onto assembly progress: at the top of the page
+     the system is a loose cloud, one screen down it is fully built. */
+  html[data-motion="on"] .assembly-core {
+    animation: assembleProgress linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 100%;
+  }
+
+  @keyframes assembleProgress {
+    from {
+      --assemble: 0;
+    }
+
+    to {
+      --assemble: 1;
+    }
+  }
   .pan-wrap {
     height: 240vh;
     view-timeline: --pan block;
@@ -1884,23 +1965,24 @@ html[data-motion="on"] .motion-btn {
 
 @supports (animation-timeline: view()) {
 
-  /* Slow drift on the one photograph, so the hero gains depth as it leaves.
-     Nothing else on the page parallaxes. */
-  .portrait img {
-    animation: heroDrift linear both;
+  /* Hero exit maps directly onto assembly progress: at the top of the page
+     the system is a loose cloud, one screen down it is fully built. */
+  html[data-motion="on"] .assembly-core {
+    animation: assembleProgress linear both;
     animation-timeline: view();
-    animation-range: entry 0% exit 100%;
+    animation-range: exit 0% exit 100%;
   }
 
-  @keyframes heroDrift {
+  @keyframes assembleProgress {
     from {
-      transform: scale(1.1) translateY(-2.5%);
+      --assemble: 0;
     }
 
     to {
-      transform: scale(1.1) translateY(2.5%);
+      --assemble: 1;
     }
   }
+
 }
 
 
@@ -2136,13 +2218,13 @@ html[data-motion="off"] .mesh {
   display: none;
 }
 
+html[data-motion="off"] .assembly-core {
+  --assemble: 1;
+}
+
 html[data-motion="off"] .stage3d-inner,
 html[data-motion="off"] .proj {
   transform: none !important;
-}
-
-html[data-motion="off"] .portrait img {
-  transform: scale(1.1);
 }
 
 /* Without the pan, the track has to be a grid again. */

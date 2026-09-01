@@ -47,7 +47,11 @@
      the switch says. */
   const registerMotion = (part) => {
     parts.push(part);
-    if (motionOn) part.start();
+    /* Put the part into a defined state either way. Registering while motion
+       is off still has to run stop(), or anything that paints its own static
+       fallback (the assembly stage, the pipeline diagram) never draws at
+       all and the panel is left blank. */
+    (motionOn ? part.start : part.stop).call(part);
   };
 
   const pointer = { x: -9999, y: -9999, has: false };
@@ -459,6 +463,233 @@
   }
 
 
+  /* ----------------------------------------------------- assembly stage */
+  /*
+     The hero visual, and the argument the headline is making: a loose cloud
+     of points is a client talking, and it resolves into a built system as
+     the first screen scrolls away.
+
+     Progress comes from `--assemble`, which a view timeline in the
+     stylesheet drives from scroll position. Reading the computed value once
+     per frame keeps this honest: no scroll listener, and the picture cannot
+     drift out of step with the page.
+  */
+  const asm = $('#assembly');
+  const asmCore = $('#assemblyCore');
+  const asmStep = $('#assemblyStep');
+
+  if (asm && asmCore) {
+    const ctx = asm.getContext('2d');
+
+    /* Four bands of a small system: what comes in, what reasons about it,
+       what serves it, what ships. Counts differ so it reads as architecture
+       rather than as a grid. */
+    const BANDS = [
+      { y: 0.17, n: 5 },
+      { y: 0.39, n: 3 },
+      { y: 0.61, n: 4 },
+      { y: 0.83, n: 6 }
+    ];
+    const STEPS = ['Raw call', 'Requirements', 'Architecture', 'Shipped'];
+
+    let w = 0, h = 0, nodes = [], edges = [], dust = [];
+    let raf = 0, live = true, lastStep = -1;
+    const born = performance.now();
+
+    const readInk = () =>
+      getComputedStyle(root).getPropertyValue('--accent').trim() || '#c9f24d';
+    let ink = readInk();
+    themeHooks.push(() => { ink = readInk(); });
+
+    const build = () => {
+      const r = asm.getBoundingClientRect();
+      if (!r.width || !r.height) return false;
+
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      w = r.width;
+      h = r.height;
+      asm.width = Math.round(w * dpr);
+      asm.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      nodes = [];
+      edges = [];
+
+      BANDS.forEach((band, bi) => {
+        band.first = nodes.length;
+        for (let i = 0; i < band.n; i++) {
+          /* Even spread inside the safe area, nudged so the rows do not
+             line up into columns. */
+          const t = band.n === 1 ? 0.5 : i / (band.n - 1);
+          const jitter = (((bi * 7 + i * 13) % 5) - 2) * 0.012;
+
+          nodes.push({
+            tx: (0.17 + t * 0.66 + jitter) * w,
+            ty: band.y * h,
+            /* Chaos before assembly: scattered wide, each with its own slow
+               orbit so the cloud breathes instead of sitting still. */
+            ox: (0.06 + Math.random() * 0.88) * w,
+            oy: (0.06 + Math.random() * 0.88) * h,
+            ph: Math.random() * Math.PI * 2,
+            sp: 0.5 + Math.random() * 0.7,
+            amp: 6 + Math.random() * 12,
+            /* Staggered arrival, earlier bands first, so the system builds
+               top down rather than snapping into place all at once. */
+            lag: Math.min(0.42, bi * 0.1 + Math.random() * 0.08),
+            x: 0,
+            y: 0
+          });
+        }
+      });
+
+      /* Each node reaches to the two nearest in the band below. */
+      for (let bi = 0; bi < BANDS.length - 1; bi++) {
+        const a = BANDS[bi], b = BANDS[bi + 1];
+        for (let i = a.first; i < a.first + a.n; i++) {
+          const ranked = [];
+          for (let j = b.first; j < b.first + b.n; j++) {
+            ranked.push([Math.abs(nodes[i].tx - nodes[j].tx), j]);
+          }
+          ranked.sort((m, n) => m[0] - n[0]);
+          for (const pair of ranked.slice(0, 2)) edges.push([i, pair[1]]);
+        }
+      }
+
+      dust = Array.from({ length: 46 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: 0.6 + Math.random() * 1.1,
+        ph: Math.random() * Math.PI * 2,
+        sp: 0.3 + Math.random() * 0.5
+      }));
+
+      return true;
+    };
+
+    /* Scroll drives this. If the browser cannot interpolate the custom
+       property, fall back to a one-off timed assembly so the visual still
+       resolves rather than sitting as permanent noise. */
+    const progress = (now) => {
+      const raw = parseFloat(
+        getComputedStyle(asmCore).getPropertyValue('--assemble'));
+      if (Number.isFinite(raw)) return clamp(raw, 0, 1);
+      return clamp((now - born - 400) / 2200, 0, 1);
+    };
+
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+    const paint = (now, forced) => {
+      if (!nodes.length) return;
+
+      const p = forced != null ? forced : progress(now);
+      const t = (now - born) / 1000;
+      const box = asm.getBoundingClientRect();
+      const px = pointer.has ? pointer.x - box.left : -9999;
+      const py = pointer.has ? pointer.y - box.top : -9999;
+
+      ctx.clearRect(0, 0, w, h);
+
+      for (const n of nodes) {
+        const local = ease(clamp((p - n.lag) / (1 - n.lag), 0, 1));
+
+        /* The orbit fades out as the node locks into position. */
+        const wob = forced != null ? 0 : (1 - local) * n.amp;
+        const ox = n.ox + Math.cos(t * n.sp + n.ph) * wob;
+        const oy = n.oy + Math.sin(t * n.sp * 0.8 + n.ph) * wob;
+
+        n.x = ox + (n.tx - ox) * local;
+        n.y = oy + (n.ty - oy) * local;
+
+        /* An assembled system still answers to the cursor, but only just:
+           it should read as settled, not as jelly. */
+        if (px > -9000) {
+          const dx = n.x - px, dy = n.y - py;
+          const d = Math.hypot(dx, dy);
+          if (d < 90 && d > 0.5) {
+            const push = (1 - d / 90) * 14;
+            n.x += (dx / d) * push;
+            n.y += (dy / d) * push;
+          }
+        }
+      }
+
+      /* Connections only mean anything once there is a structure. */
+      const wire = p * p;
+      if (wire > 0.01) {
+        ctx.strokeStyle = ink;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = wire * 0.42;
+        ctx.beginPath();
+        for (const e of edges) {
+          ctx.moveTo(nodes[e[0]].x, nodes[e[0]].y);
+          ctx.lineTo(nodes[e[1]].x, nodes[e[1]].y);
+        }
+        ctx.stroke();
+      }
+
+      /* Residual noise, thinning out as the system comes together. */
+      if (p < 0.98) {
+        ctx.fillStyle = ink;
+        for (const d of dust) {
+          const dy = forced != null ? 0 : Math.sin(t * d.sp + d.ph) * 5;
+          ctx.globalAlpha = (1 - p) * 0.45;
+          ctx.beginPath();
+          ctx.arc(d.x, d.y + dy, d.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      ctx.fillStyle = ink;
+      for (const n of nodes) {
+        const local = ease(clamp((p - n.lag) / (1 - n.lag), 0, 1));
+        ctx.globalAlpha = 0.5 + local * 0.45;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 2.4 + local * 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+
+      const step = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length));
+      if (step !== lastStep && asmStep) {
+        lastStep = step;
+        asmStep.textContent = STEPS[step];
+      }
+    };
+
+    const frame = (now) => {
+      raf = requestAnimationFrame(frame);
+      if (live) paint(now);
+    };
+
+    /* Rebuilding on resize keeps the target lattice proportional. */
+    addEventListener('resize', () => {
+      if (build()) paint(performance.now(), motionOn ? undefined : 1);
+    }, { passive: true });
+
+    new IntersectionObserver((e) => { live = e[0].isIntersecting; },
+      { rootMargin: '120px' }).observe(asm);
+
+    registerMotion({
+      start() {
+        build();
+        if (!raf) raf = requestAnimationFrame(frame);
+      },
+      stop() {
+        cancelAnimationFrame(raf);
+        raf = 0;
+        /* Static, but finished: the point of the picture survives with the
+           motion switched off. */
+        if (build()) paint(performance.now(), 1);
+        if (asmStep) {
+          lastStep = STEPS.length - 1;
+          asmStep.textContent = STEPS[lastStep];
+        }
+      }
+    });
+  }
+
+
   /* ---------------------------------------------------- magnetic controls */
   /* Rects are read in one pass and styles written in a second, so a frame
      never interleaves reads and writes and forces synchronous layout. */
@@ -751,7 +982,6 @@
       }
     });
 
-    if (!motionOn) settle();
   }
 
 
