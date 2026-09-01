@@ -1,11 +1,15 @@
 /* ==========================================================================
    Het Shah, portfolio
 
-   There is deliberately no scroll event listener anywhere in this file.
-   Position-dependent work is done by IntersectionObserver; the progress bar,
-   nav backdrop and hero drift are CSS scroll and view timelines. The only
-   thing that reads window.scrollY is the eased anchor scroll below, and that
-   runs inside its own rAF loop for the duration of one animation.
+   There is deliberately no scroll event listener in this file. Anything that
+   depends on scroll position is an IntersectionObserver, or a CSS scroll or
+   view timeline in styles.css. The only code that reads window.scrollY is the
+   eased anchor scroll, and it does so inside its own rAF loop for the
+   duration of one animation.
+
+   Every pointer-driven effect reads from one shared `pointer` object fed by a
+   single pointermove handler, so a mouse move costs one listener no matter
+   how many things are reacting to it.
    ========================================================================== */
 
 (() => {
@@ -20,15 +24,13 @@
   const FINE = matchMedia('(pointer: fine)').matches;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a, b, t) => a + (b - a) * t;
+  const RICH = FINE && !REDUCE;
 
   const navH = () =>
-    parseInt(getComputedStyle(root).getPropertyValue('--nav-h'), 10) || 68;
+    parseInt(getComputedStyle(root).getPropertyValue('--nav-h'), 10) || 98;
 
-  /* One shared pointer position. Every cursor-driven effect below reads from
-     this rather than attaching its own listener, so a mouse move costs one
-     handler no matter how many things are reacting to it. */
   const pointer = { x: -9999, y: -9999, has: false };
-  if (FINE && !REDUCE) {
+  if (RICH) {
     addEventListener('pointermove', (e) => {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
@@ -36,7 +38,7 @@
     }, { passive: true });
   }
 
-  /* Effects that depend on the accent colour re-read it from here. */
+  /* Effects that depend on the accent colour re-read it through these. */
   const themeHooks = [];
 
 
@@ -55,22 +57,18 @@
   const applyTheme = (t) => {
     root.setAttribute('data-theme', t);
     const meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', t === 'light' ? '#f2f1ed' : '#0a0a0b');
-    themeHooks.forEach((fn) => fn(t));
+    if (meta) meta.setAttribute('content', t === 'light' ? '#f2f1ed' : '#050506');
     if (toggle) {
       const icon = toggle.querySelector('i');
-      if (icon) icon.className = t === 'light' ? 'ph ph-moon' : 'ph ph-sun';
-      toggle.setAttribute(
-        'aria-label',
-        t === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
-      );
+      if (icon) icon.className = t === 'light' ? 'ph-light ph-moon' : 'ph-light ph-sun';
+      toggle.setAttribute('aria-label',
+        t === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
     }
+    themeHooks.forEach((fn) => fn(t));
   };
 
-  applyTheme(
-    readStored() ||
-    (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-  );
+  applyTheme(readStored() ||
+    (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
 
   toggle?.addEventListener('click', () => {
     const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -78,33 +76,63 @@
     try {
       localStorage.setItem(THEME_KEY, next);
     } catch {
-      /* private mode, or site data blocked. The choice just will not persist. */
+      /* Private mode or blocked site data. The choice just will not persist. */
     }
   });
 
 
+  /* --------------------------------------------------- full screen menu */
+  const menu = $('#menu');
+  const burger = $('#burger');
+  const menuLinks = $$('.menu-link span');
+
+  menuLinks.forEach((s, i) => s.style.setProperty('--d', `${80 + i * 55}ms`));
+
+  let menuOpen = false;
+
+  function setMenu(open) {
+    if (!menu || open === menuOpen) return;
+    menuOpen = open;
+    burger?.setAttribute('aria-expanded', String(open));
+    burger?.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.classList.toggle('locked', open);
+
+    if (open) {
+      menu.hidden = false;
+      /* One frame between unhiding and animating, so the transition runs. */
+      requestAnimationFrame(() => menu.classList.add('open'));
+    } else {
+      menu.classList.remove('open');
+      const done = () => { if (!menuOpen) menu.hidden = true; };
+      REDUCE ? done() : setTimeout(done, 520);
+    }
+  }
+
+  const closeMenu = () => setMenu(false);
+
+  burger?.addEventListener('click', () => setMenu(!menuOpen));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  SMALL.addEventListener('change', closeMenu);
+
+
   /* ------------------------------------------------- eased anchor scroll */
   /*
-     Nav buttons animate the page rather than jumping it. Scroll snapping is
-     switched off while the animation is in flight, otherwise the browser
-     tries to snap to an intermediate section and fights the tween. Any real
-     scroll gesture from the user cancels the animation immediately and hands
-     control back, which is what keeps it from feeling like scroll hijacking.
+     Nav clicks animate the page rather than jumping it. Snapping is switched
+     off while the animation is in flight, otherwise the browser tries to snap
+     to an intermediate screen and fights the tween. Any real scroll gesture
+     cancels it immediately and hands control back, which is what keeps this
+     from feeling like scroll hijacking.
   */
   const EASE = (t) => 1 - Math.pow(1 - t, 4);
-  const SCROLL_KEYS = new Set([
-    'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Spacebar'
-  ]);
+  const SCROLL_KEYS = new Set(
+    ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Spacebar']);
 
   let abortCurrent = null;
 
   const smoothScrollTo = (targetY) => {
     if (abortCurrent) abortCurrent();
 
-    const maxY = Math.max(
-      0,
-      document.documentElement.scrollHeight - innerHeight
-    );
+    const maxY = Math.max(0, root.scrollHeight - innerHeight);
     const to = clamp(targetY, 0, maxY);
     const from = scrollY;
     const dist = to - from;
@@ -115,7 +143,7 @@
     }
 
     /* Longer trips take longer, but never so long that it drags. */
-    const duration = clamp(420 + Math.abs(dist) * 0.42, 480, 1150);
+    const duration = clamp(440 + Math.abs(dist) * 0.36, 500, 1250);
     const t0 = performance.now();
     let raf = 0;
 
@@ -126,8 +154,8 @@
       removeEventListener('wheel', end);
       removeEventListener('touchstart', end);
       removeEventListener('keydown', onKey);
-      /* Restore snapping a frame later so it cannot grab the final position
-         while the last scrollTo of this animation is still settling. */
+      /* Restore snapping a frame later, so it cannot grab the final position
+         while this animation's last scrollTo is still settling. */
       requestAnimationFrame(() => root.classList.remove('snap-off'));
       abortCurrent = null;
     }
@@ -150,8 +178,8 @@
     raf = requestAnimationFrame(step);
   };
 
-  /* One delegated handler covers the nav, the hero buttons, the footer links
-     and the skip link. */
+  /* One delegated handler covers the island, the rail, the menu, the hero
+     buttons and the skip link. */
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a || a.hasAttribute('download')) return;
@@ -167,8 +195,8 @@
 
     let y = 0;
     if (hash !== '#top') {
-      /* A snap section aligns flush with the top of the viewport, so the nav
-         overlays its own padding. A flowing section needs the nav cleared. */
+      /* A snapping screen sits flush with the viewport top, so the floating
+         island overlays its own padding. The pan needs the island cleared. */
       const flush = target.classList.contains('section--snap') && !SMALL.matches;
       y = target.getBoundingClientRect().top + scrollY - (flush ? 0 : navH());
     }
@@ -176,7 +204,6 @@
     smoothScrollTo(y);
     history.replaceState(null, '', hash);
 
-    /* Move keyboard focus with the viewport. */
     target.setAttribute('tabindex', '-1');
     target.focus({ preventScroll: true });
   });
@@ -184,51 +211,26 @@
   $('#toTop')?.addEventListener('click', () => smoothScrollTo(0));
 
 
-  /* --------------------------------------------------------------- menu */
-  const navLinks = $('#navLinks');
-  const burger = $('#burger');
+  /* -------------------------------------------------------- section spy */
+  const sections = $$('main section[id]');
+  const marks = new Map();
 
-  function closeMenu() {
-    if (!navLinks?.classList.contains('open')) return;
-    navLinks.classList.remove('open');
-    burger?.setAttribute('aria-expanded', 'false');
-    burger?.setAttribute('aria-label', 'Open menu');
-    document.body.classList.remove('locked');
+  for (const el of $$('.nav-link, .rail-item')) {
+    const id = el.getAttribute('href').slice(1);
+    if (!marks.has(id)) marks.set(id, []);
+    marks.get(id).push(el);
   }
 
-  burger?.addEventListener('click', () => {
-    const open = navLinks.classList.toggle('open');
-    burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    document.body.classList.toggle('locked', open);
-  });
-
-  addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
-  });
-
-  SMALL.addEventListener('change', closeMenu);
-
-
-  /* ---------------------------------------------------- nav active link */
-  const sections = $$('main section[id]');
-  const links = new Map(
-    $$('.nav-link').map((l) => [l.getAttribute('href').slice(1), l])
-  );
-
   if (sections.length) {
-    /* The band is the middle 10% of the viewport. Whichever section crosses
-       it owns the nav highlight. */
-    const spy = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          links.forEach((l) => l.classList.remove('active'));
-          links.get(entry.target.id)?.classList.add('active');
-        }
-      },
-      { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
-    );
+    /* Whichever screen crosses the middle band of the viewport owns the
+       highlight, in both the island and the rail. */
+    const spy = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        marks.forEach((els) => els.forEach((el) => el.classList.remove('active')));
+        marks.get(entry.target.id)?.forEach((el) => el.classList.add('active'));
+      }
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
     sections.forEach((s) => spy.observe(s));
   }
 
@@ -239,34 +241,36 @@
   if (REDUCE) {
     revealables.forEach((el) => el.classList.add('in'));
   } else if (revealables.length) {
-    const io = new IntersectionObserver(
-      (entries, obs) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target;
-          /* Stagger against the element's reveal siblings so a group of
-             cards arrives in sequence rather than all at once. */
-          const sibs = [...(el.parentElement?.children || [])].filter((c) =>
-            c.classList.contains('reveal')
-          );
-          const i = Math.max(0, sibs.indexOf(el));
-          el.style.setProperty('--d', `${Math.min(i, 6) * 70}ms`);
-          el.classList.add('in');
-          obs.unobserve(el);
-        }
-      },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
-    );
+    const io = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const el = entry.target;
+        /* Stagger against reveal siblings, so a group arrives in sequence
+           rather than all at once. */
+        const sibs = [...(el.parentElement?.children || [])]
+          .filter((c) => c.classList.contains('reveal'));
+        const i = Math.max(0, sibs.indexOf(el));
+        el.style.setProperty('--d', `${Math.min(i, 6) * 80}ms`);
+        el.classList.add('in');
+        obs.unobserve(el);
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     revealables.forEach((el) => io.observe(el));
   }
 
-  /* Hero headline masks reveal on first paint, not on scroll. */
+  /* Headline and island resolve on first paint, not on scroll. */
   const heroTitle = $('.hero-title');
   if (heroTitle) {
-    $$('.line > span', heroTitle).forEach((s, i) => {
-      s.style.setProperty('--d', `${120 + i * 110}ms`);
-    });
+    $$('.l > span', heroTitle).forEach((s, i) =>
+      s.style.setProperty('--d', `${180 + i * 130}ms`));
     requestAnimationFrame(() => heroTitle.classList.add('in'));
+  }
+
+  const island = $('#island');
+  if (island) {
+    $$('.island-core > *', island).forEach((el, i) =>
+      el.style.setProperty('--d', `${100 + i * 70}ms`));
+    requestAnimationFrame(() => island.classList.add('in'));
   }
 
 
@@ -278,37 +282,31 @@
         el.textContent = `${el.dataset.count}${el.dataset.suffix || ''}`;
       });
     } else {
-      const cio = new IntersectionObserver(
-        (entries, obs) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            const el = entry.target;
-            obs.unobserve(el);
+      const cio = new IntersectionObserver((entries, obs) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target;
+          obs.unobserve(el);
 
-            const target = parseFloat(el.dataset.count) || 0;
-            const suffix = el.dataset.suffix || '';
-            const dur = 1200;
-            const t0 = performance.now();
+          const target = parseFloat(el.dataset.count) || 0;
+          const suffix = el.dataset.suffix || '';
+          const t0 = performance.now();
 
-            const tick = (now) => {
-              const p = Math.min((now - t0) / dur, 1);
-              const eased = 1 - Math.pow(1 - p, 3);
-              el.textContent = Math.round(target * eased) + (p === 1 ? suffix : '');
-              if (p < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-          }
-        },
-        { threshold: 0.5 }
-      );
+          const tick = (now) => {
+            const p = Math.min((now - t0) / 1300, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(target * eased) + (p === 1 ? suffix : '');
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      }, { threshold: 0.5 });
       counters.forEach((el) => cio.observe(el));
     }
   }
 
 
   /* ------------------------------------------------- project empty state */
-  /* A project whose screenshot has not been supplied yet gets a blank
-     hatched panel rather than a hand-drawn stand-in. */
   $$('.proj-media img').forEach((img) => {
     const mark = () => img.closest('.proj-media')?.classList.add('is-empty');
     if (img.complete) {
@@ -320,13 +318,7 @@
 
 
   /* --------------------------------------------------- hero signal field */
-  /*
-     A grid of short strokes behind the hero. Each one leans toward the cursor
-     when it is close, and otherwise follows a slow diagonal wave, so the
-     background reads as a field responding to you rather than as decoration.
-     Canvas, because ~450 rotating strokes as DOM nodes would not hold 60fps.
-  */
-  const field = $('#field');
+  const field = $('#signal');
   if (field && !REDUCE) {
     const ctx = field.getContext('2d');
     const GAP = 54;
@@ -335,10 +327,10 @@
     let w = 0, h = 0, nodes = [], live = true;
     const start = performance.now();
 
-    let ink = getComputedStyle(root).getPropertyValue('--accent').trim() || '#c9f24d';
-    themeHooks.push(() => {
-      ink = getComputedStyle(root).getPropertyValue('--accent').trim() || ink;
-    });
+    const readInk = () =>
+      getComputedStyle(root).getPropertyValue('--accent').trim() || '#c9f24d';
+    let ink = readInk();
+    themeHooks.push(() => { ink = readInk(); });
 
     const build = () => {
       const r = field.getBoundingClientRect();
@@ -353,9 +345,7 @@
 
       nodes = [];
       for (let x = 0; x <= w + GAP; x += GAP) {
-        for (let y = 0; y <= h + GAP; y += GAP) {
-          nodes.push({ x, y, a: 0 });
-        }
+        for (let y = 0; y <= h + GAP; y += GAP) nodes.push({ x, y, a: 0 });
       }
     };
 
@@ -382,7 +372,7 @@
         const wave = Math.sin((n.x + n.y) * 0.008 + t * 0.55) * 0.9;
         const target = near > 0 ? Math.atan2(dy, dx) : wave;
 
-        /* Take the shortest way round so strokes never spin the long way. */
+        /* Shortest way round, so a stroke never spins the long way. */
         let diff = target - n.a;
         while (diff > Math.PI) diff -= Math.PI * 2;
         while (diff < -Math.PI) diff += Math.PI * 2;
@@ -411,11 +401,10 @@
 
 
   /* ---------------------------------------------------- magnetic controls */
-  /* Buttons lean toward the cursor as it approaches. Rects are read in one
-     pass and styles written in a second, so a frame never interleaves reads
-     and writes and forces synchronous layout. */
-  const magnets = $$('.btn, .theme-toggle');
-  if (FINE && !REDUCE && magnets.length) {
+  /* Rects are read in one pass and styles written in a second, so a frame
+     never interleaves reads and writes and forces synchronous layout. */
+  const magnets = $$('.btn, .icon-btn, .to-top');
+  if (RICH && magnets.length) {
     const items = magnets.map((el) => ({ el, x: 0, y: 0, tx: 0, ty: 0 }));
 
     const tick = () => {
@@ -424,22 +413,20 @@
       for (const m of items) {
         const r = m.el.getBoundingClientRect();
         if (!r.width || r.bottom < 0 || r.top > innerHeight) {
-          m.tx = 0;
-          m.ty = 0;
+          m.tx = m.ty = 0;
           continue;
         }
         const dx = pointer.x - (r.left + r.width / 2);
         const dy = pointer.y - (r.top + r.height / 2);
-        const reach = Math.max(r.width, r.height) * 0.9 + 44;
+        const reach = Math.max(r.width, r.height) * 0.85 + 42;
         const dist = Math.hypot(dx, dy);
 
         if (dist < reach) {
-          const pull = (1 - dist / reach) * 0.32;
+          const pull = (1 - dist / reach) * 0.3;
           m.tx = dx * pull;
           m.ty = dy * pull;
         } else {
-          m.tx = 0;
-          m.ty = 0;
+          m.tx = m.ty = 0;
         }
       }
 
@@ -454,13 +441,10 @@
   }
 
 
-  /* ------------------------------------------------------- hero 3D stage */
-  /* The whole depth group tilts toward the pointer. Because the planes sit at
-     different translateZ inside one perspective, they separate as it turns,
-     which is what sells the depth. */
+  /* -------------------------------------------------------- hero 3D stage */
   const stage = $('#stage3d');
   const stageInner = stage && $('.stage3d-inner', stage);
-  if (stageInner && FINE && !REDUCE) {
+  if (stageInner && RICH) {
     let rx = 0, ry = 0, tx = 0, ty = 0, inView = true;
 
     new IntersectionObserver((e) => { inView = e[0].isIntersecting; },
@@ -471,10 +455,10 @@
       if (!inView) return;
 
       if (pointer.has) {
-        /* Measured against the viewport, so moving anywhere in the hero turns
-           the stage, not just passing over the photo itself. */
-        ty = clamp((pointer.x / innerWidth - 0.5) * 2, -1, 1) * 11;
-        tx = clamp((pointer.y / innerHeight - 0.5) * 2, -1, 1) * -8;
+        /* Measured against the viewport, so moving anywhere across the hero
+           turns the stage, not only passing over the photo itself. */
+        ty = clamp((pointer.x / innerWidth - 0.5) * 2, -1, 1) * 12;
+        tx = clamp((pointer.y / innerHeight - 0.5) * 2, -1, 1) * -9;
       }
 
       rx = lerp(rx, tx, 0.07);
@@ -487,9 +471,9 @@
 
 
   /* -------------------------------------------- project tilt and spotlight */
-  /* Per-card, and the loop only runs while a pointer is actually over a card,
-     so an idle Work section costs nothing. */
-  if (FINE && !REDUCE) {
+  /* Per card, and the loop only runs while a pointer is actually over one,
+     so an idle Work screen costs nothing. */
+  if (RICH) {
     for (const card of $$('.proj')) {
       let raf = 0, rx = 0, ry = 0, tx = 0, ty = 0, over = false;
 
@@ -515,23 +499,22 @@
         card.style.setProperty('--px', `${(nx * 100).toFixed(1)}%`);
         card.style.setProperty('--py', `${(ny * 100).toFixed(1)}%`);
 
-        ty = (nx - 0.5) * 9;
-        tx = (ny - 0.5) * -9;
+        ty = (nx - 0.5) * 8;
+        tx = (ny - 0.5) * -8;
         over = true;
         if (!raf) raf = requestAnimationFrame(run);
       }, { passive: true });
 
       card.addEventListener('pointerleave', () => {
         over = false;
-        tx = 0;
-        ty = 0;
+        tx = ty = 0;
         if (!raf) raf = requestAnimationFrame(run);
       }, { passive: true });
     }
   }
 
 
-  /* -------------------------------------------------- protomind pipeline */
+  /* --------------------------------------------------- protomind pipeline */
   const transcriptEl = $('#transcript');
   const reqsEl = $('#reqs');
   const filesEl = $('#files');
@@ -565,11 +548,7 @@
     const pipes = $$('.pipe', rail);
     let timers = [];
     const later = (fn, ms) => timers.push(setTimeout(fn, ms));
-    const clearAll = () => {
-      timers.forEach(clearTimeout);
-      timers = [];
-    };
-
+    const clearAll = () => { timers.forEach(clearTimeout); timers = []; };
     const setStep = (i) => pipes.forEach((p, n) => p.classList.toggle('on', n <= i));
 
     const addTalk = (item) => {
@@ -580,9 +559,8 @@
       div.append(who, document.createTextNode(item.text));
       transcriptEl.appendChild(div);
       $$('.t-line', transcriptEl).forEach((l, n, arr) =>
-        l.classList.toggle('now', n === arr.length - 1)
-      );
-      while (transcriptEl.children.length > 4) {
+        l.classList.toggle('now', n === arr.length - 1));
+      while (transcriptEl.children.length > 3) {
         transcriptEl.removeChild(transcriptEl.firstChild);
       }
     };
@@ -600,7 +578,7 @@
     const addFile = (path) => {
       const li = document.createElement('li');
       const icon = document.createElement('i');
-      icon.className = 'ph ph-check';
+      icon.className = 'ph-light ph-check';
       icon.setAttribute('aria-hidden', 'true');
       const span = document.createElement('span');
       span.textContent = path;
@@ -619,41 +597,38 @@
       setStep(0);
       TALK.forEach((item) => {
         later(() => addTalk(item), t);
-        t += 1150;
+        t += 1100;
       });
 
       later(() => setStep(1), t);
-      REQS.forEach((r, i) => later(() => addReq(r, i), t + i * 420));
-      t += REQS.length * 420 + 320;
+      REQS.forEach((r, i) => later(() => addReq(r, i), t + i * 400));
+      t += REQS.length * 400 + 300;
 
-      later(() => setStep(2), t); t += 520;
-      later(() => setStep(3), t); t += 520;
+      later(() => setStep(2), t); t += 500;
+      later(() => setStep(3), t); t += 500;
       later(() => setStep(4), t);
 
-      FILES.forEach((f, i) => later(() => addFile(f), t + i * 300));
-      t += FILES.length * 300 + 320;
+      FILES.forEach((f, i) => later(() => addFile(f), t + i * 290));
+      t += FILES.length * 290 + 300;
 
-      later(() => setStep(5), t); t += 720;
+      later(() => setStep(5), t); t += 700;
       later(() => setStep(6), t); t += 2800;
       later(run, t);
     };
 
     if (REDUCE) {
-      TALK.slice(-4).forEach(addTalk);
+      TALK.slice(-3).forEach(addTalk);
       REQS.forEach(addReq);
       FILES.forEach(addFile);
       setStep(6);
     } else {
       let started = false;
-      new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && !started) {
-            started = true;
-            run();
-          }
-        },
-        { threshold: 0.25 }
-      ).observe(rail);
+      new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          run();
+        }
+      }, { threshold: 0.25 }).observe(rail);
     }
   }
 
@@ -675,48 +650,45 @@
       if (cls) note.classList.add(cls);
     };
 
-    const clearError = (field) => {
-      field.classList.remove('invalid');
-      field.querySelector('.field-error')?.remove();
-      field.querySelector('input, textarea')?.removeAttribute('aria-invalid');
+    const clearError = (fieldEl) => {
+      fieldEl.classList.remove('invalid');
+      fieldEl.querySelector('.field-error')?.remove();
+      fieldEl.querySelector('input, textarea')?.removeAttribute('aria-invalid');
     };
 
-    const setError = (field, msg) => {
-      field.classList.add('invalid');
-      const control = field.querySelector('input, textarea');
-      control?.setAttribute('aria-invalid', 'true');
-      let el = field.querySelector('.field-error');
+    const setError = (fieldEl, msg) => {
+      fieldEl.classList.add('invalid');
+      fieldEl.querySelector('input, textarea')?.setAttribute('aria-invalid', 'true');
+      let el = fieldEl.querySelector('.field-error');
       if (!el) {
         el = document.createElement('p');
         el.className = 'field-error';
-        field.appendChild(el);
+        fieldEl.appendChild(el);
       }
       el.textContent = msg;
     };
 
     $$('.field input, .field textarea', form).forEach((el) => {
       el.addEventListener('input', () => {
-        const field = el.closest('.field');
-        if (field?.classList.contains('invalid')) clearError(field);
+        const fieldEl = el.closest('.field');
+        if (fieldEl?.classList.contains('invalid')) clearError(fieldEl);
       });
     });
 
     const validate = () => {
       let firstBad = null;
-      $$('.field', form).forEach((field) => {
-        const el = field.querySelector('[required]');
+      $$('.field', form).forEach((fieldEl) => {
+        const el = fieldEl.querySelector('[required]');
         if (!el) return;
         const empty = el.value.trim() === '';
         const badFormat = !empty && !el.checkValidity();
 
-        if (empty) {
-          setError(field, 'This field is required.');
-        } else if (badFormat) {
-          setError(field, el.type === 'email'
-            ? 'Enter a valid email address.'
-            : 'Check this value.');
+        if (empty) setError(fieldEl, 'This field is required.');
+        else if (badFormat) {
+          setError(fieldEl, el.type === 'email'
+            ? 'Enter a valid email address.' : 'Check this value.');
         } else {
-          clearError(field);
+          clearError(fieldEl);
           return;
         }
         if (!firstBad) firstBad = el;
@@ -764,12 +736,10 @@
   }
 
 
-  /* ------------------------------------------------------ footer year */
+  /* -------------------------------------------------------- footer year */
   const footNote = $('#footNote');
   if (footNote) {
-    footNote.textContent = footNote.textContent.replace(
-      '2026',
-      String(new Date().getFullYear())
-    );
+    footNote.textContent =
+      footNote.textContent.replace('2026', String(new Date().getFullYear()));
   }
 })();

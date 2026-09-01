@@ -1,35 +1,34 @@
 /* ==========================================================================
    Het Shah, portfolio
 
-   Design system: black ground with a lime accent in dark mode, cool paper with
-   a deep teal accent in light mode. Geist + Geist Mono, zero corner radius
-   everywhere.
+   Vibe        Ethereal Glass. Near-OLED black, vantablack cards, hairline
+               white edges, one lime accent. Light mode swaps to cool paper
+               with a deep teal accent, because lime is illegible on paper.
+   Layout      Editorial split hero, then a seven screen full-viewport deck.
 
-   Motion has two independent sources and neither is a scroll listener:
-     - scroll position drives CSS scroll and view timelines, plus
-       IntersectionObserver reveals
-     - pointer position drives the hero field, the 3D stage, the magnetic
-       controls and the project tilt, all from one shared pointermove handler
+   SHAPE RULE (one system, applied everywhere)
+     pill 999px   buttons, tags, badges, the nav island
+     shell 22px   outer bezel of every panel
+     core  15px   inner core of every panel (22 minus 7px of bezel padding)
+     input 12px
+   Nothing on this page uses any other radius.
+
+   MOTION
+     Two sources, neither of which is a scroll event listener.
+       scroll position  CSS scroll and view timelines, plus
+                        IntersectionObserver reveals
+       pointer position one shared pointermove handler feeding the hero
+                        field, the 3D stage, magnetic buttons and card tilt
 
    Contents
-     1  Tokens
-     2  Reset and base
-     3  Scroll architecture     <- snap sections vs flowing sections
-     4  Typography
-     5  Layout primitives
-     6  Nav
-     7  Controls
-     8  Hero
-     9  About
-    10  ProtoMind
-    11  Work
-    12  Path
-    13  Stack
-    14  Contact
-    15  Footer
-    16  Motion
-    17  Responsive
-    18  Reduced motion and print
+     1  Tokens              9  About
+     2  Reset and base     10  ProtoMind
+     3  Scroll deck        11  Work, horizontal pan
+     4  Typography         12  Path
+     5  Primitives         13  Stack
+     6  Island nav         14  Contact and foot
+     7  Controls           15  Motion
+     8  Hero               16  Responsive, reduced motion, print
    ========================================================================== */
 
 
@@ -37,51 +36,64 @@
 :root {
   color-scheme: dark;
 
-  --bg: #0a0a0b;
-  --bg-2: #0f100f;
-  --surface: #141514;
-  --surface-2: #1a1b19;
+  --bg: #050506;
+  --bg-2: #0a0b0a;
+  --shell-bg: rgba(255, 255, 255, .035);
+  --core-bg: #0d0e0d;
+  --core-bg-2: #121412;
 
-  --line: rgba(255, 255, 255, .085);
-  --line-2: rgba(255, 255, 255, .17);
+  --hair: rgba(255, 255, 255, .08);
+  --hair-2: rgba(255, 255, 255, .14);
+  --sheen: rgba(255, 255, 255, .10);
 
-  --text: #eceee8;
-  --text-2: #a4a89c;
-  --muted: #7f837a;
+  --text: #f0f2ec;
+  --text-2: #a6aa9e;
+  --muted: #80847b;
 
   --accent: #c9f24d;
   --accent-hover: #d8ff5f;
-  --on-accent: #0a0a0b;
+  --on-accent: #050506;
   --accent-wash: rgba(201, 242, 77, .10);
+  --mesh-1: rgba(201, 242, 77, .10);
+  --mesh-2: rgba(201, 242, 77, .04);
 
-  --nav-bg: rgba(10, 10, 11, .72);
-  --shadow: 0 24px 60px -32px rgba(0, 0, 0, .9);
+  --island-bg: rgba(12, 13, 12, .62);
+  --veil: rgba(4, 5, 4, .82);
+  --lift: 0 24px 60px -28px rgba(0, 0, 0, .9);
   --grain: .05;
 
   --font: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  --shell: 1280px;
-  --gutter: clamp(20px, 5vw, 64px);
-  --nav-h: 68px;
+  --shell: 1300px;
+  --gutter: clamp(20px, 5vw, 60px);
+  --nav-h: 98px;
+  /* Lane held clear for the fixed section rail. Zero once it is hidden. */
+  --rail-w: 0px;
 
-  /* One radius for the whole page: none. */
-  --radius: 0px;
+  --r-pill: 999px;
+  --r-shell: 22px;
+  --r-core: 15px;
+  --r-input: 12px;
+  --bezel: 7px;
 
-  --ease: cubic-bezier(.16, 1, .3, 1);
-  --ease-io: cubic-bezier(.62, .02, .34, 1);
+  /* Heavy, physical easing. Nothing on this page uses linear or ease-in-out. */
+  --e: cubic-bezier(.32, .72, 0, 1);
+  --e-soft: cubic-bezier(.16, 1, .3, 1);
 }
 
 html[data-theme="light"] {
   color-scheme: light;
 
   --bg: #f2f1ed;
-  --bg-2: #e9e8e3;
-  --surface: #ffffff;
-  --surface-2: #f8f7f4;
+  --bg-2: #eae9e4;
+  --shell-bg: rgba(19, 22, 20, .04);
+  --core-bg: #ffffff;
+  --core-bg-2: #f7f6f3;
 
-  --line: rgba(18, 22, 20, .12);
-  --line-2: rgba(18, 22, 20, .24);
+  --hair: rgba(19, 22, 20, .10);
+  --hair-2: rgba(19, 22, 20, .18);
+  --sheen: rgba(255, 255, 255, .9);
 
   --text: #131614;
   --text-2: #474b48;
@@ -90,11 +102,14 @@ html[data-theme="light"] {
   --accent: #0e6e62;
   --accent-hover: #0a564d;
   --on-accent: #ffffff;
-  --accent-wash: rgba(14, 110, 98, .09);
+  --accent-wash: rgba(14, 110, 98, .08);
+  --mesh-1: rgba(14, 110, 98, .07);
+  --mesh-2: rgba(14, 110, 98, .03);
 
-  --nav-bg: rgba(242, 241, 237, .78);
-  --shadow: 0 24px 60px -34px rgba(20, 18, 16, .30);
-  --grain: .028;
+  --island-bg: rgba(252, 252, 250, .70);
+  --veil: rgba(242, 241, 237, .86);
+  --lift: 0 24px 60px -30px rgba(20, 26, 22, .28);
+  --grain: .025;
 }
 
 
@@ -112,12 +127,11 @@ body {
   color: var(--text);
   font-family: var(--font);
   font-size: 16px;
-  font-weight: 400;
   line-height: 1.6;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color .45s var(--ease), color .45s var(--ease);
+  transition: background-color .5s var(--e), color .5s var(--e);
 }
 
 img,
@@ -145,6 +159,13 @@ ol {
   list-style: none;
 }
 
+/* A class-level `display` beats the hidden attribute's UA rule, which would
+   leave a closed full-screen overlay sitting invisibly over the page eating
+   every click. Make the attribute win outright. */
+[hidden] {
+  display: none !important;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--on-accent);
@@ -157,25 +178,24 @@ ol {
 
 .skip {
   position: fixed;
-  top: 8px;
-  left: 8px;
-  z-index: 200;
-  padding: 10px 16px;
+  top: 10px;
+  left: 10px;
+  z-index: 300;
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
   background: var(--accent);
   color: var(--on-accent);
   font-size: .8125rem;
   font-weight: 600;
-  transform: translateY(-200%);
-  transition: transform .2s var(--ease);
+  transform: translateY(-250%);
+  transition: transform .4s var(--e);
 }
 
 .skip:focus-visible {
   transform: none;
 }
 
-/* Grain and progress are the only fixed decorative layers. Both are
-   pointer-events:none so they never intercept input, and neither sits on a
-   scrolling container (that would repaint the whole page every frame). */
+/* Fixed, pointer-events:none, never on a scrolling container. */
 .grain {
   position: fixed;
   inset: 0;
@@ -202,27 +222,21 @@ ol {
 }
 
 
-/* --------------------------------------------- 3 scroll architecture */
+/* ---------------------------------------------------------- 3 scroll deck */
 /*
-   The page has two kinds of section.
+   Every screen is one viewport tall and snaps to the top. Work is the
+   exception in mechanism only: it is a tall wrapper holding a sticky
+   100dvh layer, so it still reads as a single screen while vertical scroll
+   pans it sideways.
 
-     .section--snap   exactly one viewport tall, snaps to the top of the
-                      screen. Hero, About, Stack, Contact.
-     .section--flow   as tall as its content, never snaps. ProtoMind, Work,
-                      Path, and the footer.
-
-   `proximity` rather than `mandatory` is deliberate: it settles a short
-   section into place when you land near it, but it never fights a gesture
-   that is travelling through a long one. app.js switches snapping off for
-   the duration of a nav-button scroll so the eased animation is not
-   interrupted, then switches it back on.
+   `proximity` rather than `mandatory`: it settles a screen into place when
+   you land near it, and never fights a gesture crossing the pan.
 */
 html {
   scroll-snap-type: y proximity;
   -webkit-text-size-adjust: 100%;
 }
 
-/* Set while a scripted smooth scroll is in flight. */
 html.snap-off {
   scroll-snap-type: none;
 }
@@ -236,14 +250,12 @@ html.snap-off {
   align-content: center;
   min-height: 100dvh;
   padding-top: var(--nav-h);
-  padding-bottom: clamp(2rem, 5vh, 4rem);
+  padding-bottom: clamp(1.5rem, 4vh, 3rem);
   scroll-snap-align: start;
   scroll-snap-stop: normal;
-  scroll-margin-top: 0;
 }
 
-.section--flow {
-  padding-block: clamp(5rem, 11vh, 9rem);
+.section--pan {
   scroll-snap-align: none;
   scroll-margin-top: var(--nav-h);
 }
@@ -255,29 +267,19 @@ body.locked {
 
 /* --------------------------------------------------------- 4 typography */
 .sec-title {
-  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  font-size: clamp(1.875rem, 3.8vw, 3rem);
   font-weight: 500;
   letter-spacing: -.035em;
-  line-height: 1.02;
+  line-height: 1.03;
   padding-bottom: .08em;
-  margin-bottom: clamp(2rem, 4vh, 3.25rem);
-}
-
-.sub-title {
-  font-size: .8125rem;
-  font-family: var(--mono);
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1.5rem, 3.4vh, 2.75rem);
 }
 
 .lead {
   font-size: clamp(1.375rem, 2.4vw, 2rem);
   font-weight: 400;
-  letter-spacing: -.025em;
-  line-height: 1.22;
+  letter-spacing: -.028em;
+  line-height: 1.2;
   max-width: 20ch;
 }
 
@@ -288,48 +290,79 @@ body.locked {
 
 .prose p {
   color: var(--text-2);
-  max-width: 62ch;
+  max-width: 60ch;
   line-height: 1.68;
 }
 
 .prose p + p {
-  margin-top: 1rem;
+  margin-top: .9rem;
 }
 
 .prose b,
-.tl-what b {
+.stop b {
   color: var(--text);
   font-weight: 600;
 }
 
-/* The one small uppercase label on the page. */
-.eyebrow {
+/* The page's one eyebrow, and it carries real state. */
+.badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
+  padding: 6px 14px 6px 11px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  background: var(--shell-bg);
   font-family: var(--mono);
-  font-size: .75rem;
+  font-size: .6875rem;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--text-2);
 }
 
-/* The only status dot on the page, and it carries real state. */
 .live {
   width: 6px;
   height: 6px;
+  border-radius: var(--r-pill);
   background: var(--accent);
   flex: none;
 }
 
 
-/* -------------------------------------------------- 5 layout primitives */
+/* ------------------------------------------------------- 5 primitives */
 .shell {
   width: 100%;
   max-width: var(--shell);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-left: var(--gutter);
+  padding-right: calc(var(--gutter) + var(--rail-w));
+}
+
+/*
+   Double bezel. Every panel is an outer shell holding an inner core, with
+   concentric radii and an inner highlight along the top edge, so it reads as
+   a plate seated in a tray rather than a flat rectangle.
+*/
+.bezel {
+  display: flex;
+  padding: var(--bezel);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-shell);
+  background: var(--shell-bg);
+}
+
+/* The core fills the bezel by flexing, not by `height: 100%`. A percentage
+   height here would be circular against an auto-height bezel and collapse
+   the panel to a fraction of its content. */
+.bezel > .core {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--r-core);
+  background: var(--core-bg);
+  box-shadow: inset 0 1px 0 var(--sheen);
+  overflow: hidden;
 }
 
 .tags {
@@ -339,12 +372,13 @@ body.locked {
 }
 
 .pill {
-  padding: 5px 10px;
-  border: 1px solid var(--line);
+  padding: 5px 12px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  background: var(--shell-bg);
   font-family: var(--mono);
   font-size: .6875rem;
-  font-weight: 400;
-  letter-spacing: .02em;
+  letter-spacing: .01em;
   color: var(--text-2);
   white-space: nowrap;
 }
@@ -352,186 +386,300 @@ body.locked {
 .arrow-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: .875rem;
+  gap: 7px;
+  font-size: .8125rem;
   font-weight: 500;
   color: var(--text);
-  border-bottom: 1px solid var(--line-2);
-  padding-bottom: 3px;
-  transition: color .25s var(--ease), border-color .25s var(--ease);
+  transition: color .4s var(--e);
 }
 
 .arrow-link i {
-  font-size: 1em;
-  transition: transform .35s var(--ease);
+  font-size: 1.1em;
+  transition: transform .5s var(--e);
 }
 
 .arrow-link:hover {
   color: var(--accent);
-  border-color: var(--accent);
 }
 
 .arrow-link:hover i {
-  transform: translateX(3px);
+  transform: translate(2px, -2px);
 }
 
 
-/* --------------------------------------------------------------- 6 nav */
-.nav {
+/* ------------------------------------------------------- 6 island nav */
+/* A floating glass pill, detached from the top edge. */
+.island {
   position: fixed;
-  inset: 0 0 auto;
+  top: 18px;
+  left: 50%;
   z-index: 100;
-  height: var(--nav-h);
-  display: flex;
-  align-items: center;
+  transform: translateX(-50%);
 }
 
-/* Separate painted layer so the condense-on-scroll animation only ever
-   touches opacity. Visible by default; the scroll timeline below fades it
-   in only where scroll-driven animations are supported. */
-.nav::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--nav-bg);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
-  opacity: 1;
-}
-
-.nav-inner {
-  position: relative;
+.island-core {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  gap: 12px;
+  padding: 7px 7px 7px 18px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  background: var(--island-bg);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow: var(--lift), inset 0 1px 0 var(--sheen);
+}
+
+.island-rule {
+  width: 1px;
+  height: 20px;
+  background: var(--hair);
+  flex: none;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   flex: none;
 }
 
 .brand-mark svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: var(--accent);
-  stroke-width: 1.6;
-  stroke-linecap: square;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.brand-mark circle {
+  fill: var(--accent);
+  stroke: none;
 }
 
 .brand-text {
-  display: flex;
-  flex-direction: column;
   font-size: .875rem;
   font-weight: 600;
-  letter-spacing: -.01em;
-  line-height: 1.15;
+  letter-spacing: -.015em;
+  white-space: nowrap;
 }
 
-.brand-text i {
-  font-family: var(--mono);
-  font-size: .625rem;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.nav-links {
+.island-links {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 1.4vw, 20px);
+  gap: 2px;
 }
 
 .nav-link {
   position: relative;
-  padding: 6px 2px;
+  padding: 8px 13px;
+  border-radius: var(--r-pill);
   font-size: .8125rem;
-  font-weight: 450;
   color: var(--text-2);
   white-space: nowrap;
-  transition: color .25s var(--ease);
+  transition: color .4s var(--e), background-color .4s var(--e);
 }
 
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform .35s var(--ease);
-}
-
-.nav-link:hover,
-.nav-link.active {
+.nav-link:hover {
   color: var(--text);
+  background: var(--shell-bg);
 }
 
-.nav-link.active::after {
-  transform: scaleX(1);
+.nav-link.active {
+  color: var(--on-accent);
+  background: var(--accent);
 }
 
-.nav-actions {
+.island-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   flex: none;
 }
 
-.theme-toggle {
+.icon-btn {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--line);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hair);
   color: var(--text-2);
+  font-size: 1.125rem;
   transform: translate3d(var(--mx-off, 0px), var(--my-off, 0px), 0);
-  transition: color .25s var(--ease), border-color .25s var(--ease);
+  transition: color .4s var(--e), border-color .4s var(--e), background-color .4s var(--e);
 }
 
-.theme-toggle:hover {
+.icon-btn:hover {
   color: var(--text);
-  border-color: var(--line-2);
+  background: var(--shell-bg);
+  border-color: var(--hair-2);
 }
 
-.theme-toggle i {
-  font-size: 1.0625rem;
-}
-
+/* Two bars that rotate into a true X rather than swapping icons. */
 .burger {
   display: none;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--line);
-  padding: 10px 8px;
-  flex-direction: column;
-  justify-content: space-between;
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hair);
 }
 
 .burger span {
-  display: block;
-  height: 1px;
-  width: 100%;
+  position: absolute;
+  left: 50%;
+  width: 15px;
+  height: 1.5px;
+  border-radius: var(--r-pill);
   background: var(--text);
-  transition: transform .35s var(--ease), opacity .2s linear;
+  transition: transform .55s var(--e);
+}
+
+.burger span:first-child {
+  transform: translate(-50%, -4px);
+}
+
+.burger span:last-child {
+  transform: translate(-50%, 4px);
 }
 
 .burger[aria-expanded="true"] span:first-child {
-  transform: translateY(6px) rotate(45deg);
+  transform: translate(-50%, 0) rotate(45deg);
 }
 
 .burger[aria-expanded="true"] span:last-child {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translate(-50%, 0) rotate(-45deg);
+}
+
+/* ---- full screen menu ---- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3rem;
+  padding: var(--nav-h) var(--gutter) 3rem;
+  background: var(--veil);
+  backdrop-filter: blur(30px) saturate(160%);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  opacity: 0;
+  transition: opacity .5s var(--e);
+}
+
+.menu.open {
+  opacity: 1;
+}
+
+.menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.menu-link {
+  overflow: hidden;
+  font-size: clamp(2.25rem, 8vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1.1;
+  padding-bottom: .06em;
+  color: var(--text);
+  transition: color .4s var(--e);
+}
+
+.menu-link span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform .7s var(--e);
+  transition-delay: var(--d, 0ms);
+}
+
+.menu.open .menu-link span {
+  transform: none;
+}
+
+.menu-link:hover {
+  color: var(--accent);
+}
+
+.menu-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: .8125rem;
+  color: var(--text-2);
+}
+
+.menu-social {
+  display: flex;
+  gap: 14px;
+  font-size: 1.25rem;
+}
+
+.menu-social a:hover {
+  color: var(--accent);
+}
+
+/* ---- section rail ---- */
+.rail {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  z-index: 96;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  transform: translateY(-50%);
+}
+
+.rail-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 12px;
+}
+
+.rail-item span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  border-radius: var(--r-pill);
+  background: var(--hair-2);
+  transition: width .5s var(--e), background-color .5s var(--e);
+}
+
+.rail-item::before {
+  content: attr(data-label);
+  margin-right: 10px;
+  font-family: var(--mono);
+  font-size: .625rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity .45s var(--e), transform .45s var(--e);
+}
+
+.rail-item:hover span,
+.rail-item.active span {
+  width: 30px;
+  background: var(--accent);
+}
+
+.rail-item:hover::before {
+  opacity: 1;
+  transform: none;
 }
 
 
@@ -540,43 +688,67 @@ body.locked {
   position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  padding: 13px 22px;
+  padding: 7px 7px 7px 20px;
   border: 1px solid transparent;
+  border-radius: var(--r-pill);
   font-size: .875rem;
   font-weight: 500;
-  letter-spacing: -.005em;
   white-space: nowrap;
   cursor: pointer;
-  /* app.js writes the two offsets while the pointer is near, which is what
-     makes the control lean toward the cursor. They default to 0, so with no
-     pointer (or reduced motion) the button simply never moves. */
+  /* app.js writes the offsets while the pointer is near. They default to
+     zero, so with no pointer the control simply never moves. */
   transform: translate3d(var(--mx-off, 0px), var(--my-off, 0px), 0);
-  transition: background-color .28s var(--ease), border-color .28s var(--ease),
-    color .28s var(--ease);
+  transition: background-color .45s var(--e), border-color .45s var(--e),
+    color .45s var(--e);
 }
 
-.btn i {
-  font-size: 1.05em;
-  transition: transform .35s var(--ease);
+/* The trailing arrow is never naked: it sits in its own circle, flush with
+   the button's inner padding, and pushes diagonally on hover. */
+.btn-ico {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-pill);
+  background: var(--shell-bg);
+  font-size: .9375rem;
+  flex: none;
+  transition: transform .55s var(--e), background-color .45s var(--e);
 }
 
-.btn:hover i {
-  transform: translateX(3px);
+.btn:hover .btn-ico {
+  transform: translate(2px, -2px) scale(1.06);
 }
 
 .btn:active {
-  transform: translate3d(var(--mx-off, 0px), calc(var(--my-off, 0px) + 1px), 0);
+  transform: translate3d(var(--mx-off, 0px), var(--my-off, 0px), 0) scale(.975);
+}
+
+.btn-lg {
+  padding: 9px 9px 9px 24px;
+  font-size: .9375rem;
+}
+
+.btn-lg .btn-ico {
+  width: 34px;
+  height: 34px;
 }
 
 .btn-sm {
-  padding: 9px 15px;
+  padding: 5px 5px 5px 15px;
+  font-size: .8125rem;
+}
+
+.btn-sm .btn-ico {
+  width: 26px;
+  height: 26px;
   font-size: .8125rem;
 }
 
 .btn-block {
   width: 100%;
+  justify-content: space-between;
 }
 
 .btn-solid {
@@ -584,23 +756,27 @@ body.locked {
   color: var(--on-accent);
 }
 
+.btn-solid .btn-ico {
+  background: rgba(0, 0, 0, .12);
+}
+
 .btn-solid:hover {
   background: var(--accent-hover);
 }
 
 .btn-solid:disabled {
-  background: var(--surface-2);
+  background: var(--core-bg-2);
   color: var(--muted);
   cursor: not-allowed;
-  transform: none;
 }
 
-.btn-line {
-  border-color: var(--line-2);
+.btn-ghost {
+  border-color: var(--hair-2);
   color: var(--text);
+  background: var(--shell-bg);
 }
 
-.btn-line:hover {
+.btn-ghost:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -611,11 +787,23 @@ body.locked {
   overflow: hidden;
 }
 
-/* Ambient signal field. A grid of short strokes that lean toward the cursor,
-   over a slow ambient wave so the hero is alive before anyone touches it.
-   Canvas rather than DOM: ~450 nodes as elements would not hold 60fps. It
-   fades in only once the first frame is drawn, so there is no flash. */
-.field {
+/* Ambient mesh. Two very soft lime fields, well under the level where this
+   would read as a neon glow. */
+.mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46vw 46vw at 74% 22%, var(--mesh-1), transparent 62%),
+    radial-gradient(38vw 38vw at 12% 88%, var(--mesh-2), transparent 60%);
+}
+
+/* Grid of short strokes that lean toward the cursor over a slow ambient
+   wave. Canvas because ~450 rotating strokes as DOM nodes would not hold
+   60fps. Fades in on the first painted frame so there is no flash.
+   Named `signal`, not `field`: the contact form already owns `.field`. */
+.signal {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -623,34 +811,41 @@ body.locked {
   height: 100%;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1.4s var(--ease);
+  transition: opacity 1.4s var(--e);
 }
 
-.field.on {
+.signal.on {
   opacity: 1;
 }
 
+/* Editorial split: type on the left, the 3D stage bleeding off the right
+   edge of the viewport. */
 .hero-grid {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.38fr) minmax(0, .62fr);
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 31vw, 430px);
   align-items: center;
-  gap: clamp(2rem, 6vw, 5.5rem);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  width: 100%;
+  padding-left: max(var(--gutter), calc((100vw - var(--shell)) / 2 + var(--gutter)));
+  /* Enough room on the right for the stage's depth plane and corner tick,
+     which sit outside the card, plus the rail lane. */
+  padding-right: calc(var(--gutter) + var(--rail-w) + 34px);
 }
 
 .hero-copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(1.1rem, 2.6vh, 1.9rem);
+  gap: clamp(1.1rem, 2.6vh, 1.85rem);
 }
 
 .hero-title {
-  font-size: clamp(2.25rem, 4.4vw, 4rem);
+  font-size: clamp(2.5rem, 5.1vw, 4.5rem);
   font-weight: 400;
   letter-spacing: -.045em;
-  line-height: 1.02;
+  line-height: 1.03;
 }
 
 .hero-title b {
@@ -658,20 +853,21 @@ body.locked {
   color: var(--accent);
 }
 
-/* Each line masks its own reveal. The padding/margin pair keeps descenders
-   in "Engineering" and "ships" from being clipped by the mask. */
-.hero-title .line {
+/* Each line masks its own reveal. The padding and margin pair keeps the
+   descenders in "Engineering" and "ships" clear of the mask edge. */
+.hero-title .l {
   display: block;
   overflow: hidden;
   padding-bottom: .1em;
   margin-bottom: -.1em;
+  perspective: 800px;
 }
 
 .hero-sub {
-  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
   color: var(--text-2);
-  max-width: 46ch;
-  line-height: 1.6;
+  max-width: 44ch;
+  line-height: 1.62;
 }
 
 .hero-cta {
@@ -682,18 +878,15 @@ body.locked {
 
 .hero-figure {
   position: relative;
-  justify-self: end;
   width: 100%;
-  max-width: 410px;
 }
 
-/* 3D stage. Four planes at different Z inside one perspective: a tinted panel
-   behind, the photograph, a frame in front of it, and corner ticks closest to
-   the camera. app.js tilts the whole group toward the pointer, so the depth
-   between them is what you actually read as three-dimensional. */
+/* 3D stage. Three planes at different Z inside one perspective: a tinted
+   panel behind, the bezelled photograph, and corner ticks in front. app.js
+   turns the group toward the pointer, and it is the separation between the
+   planes as it turns that reads as depth. */
 .stage3d {
   perspective: 1100px;
-  perspective-origin: 50% 50%;
 }
 
 .stage3d-inner {
@@ -707,47 +900,43 @@ body.locked {
 }
 
 .depth--plane {
-  inset: 28px -28px -28px 28px;
+  inset: 30px -30px -30px 30px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-shell);
   background: var(--accent-wash);
-  border: 1px solid var(--line);
   transform: translateZ(-70px);
 }
 
-.depth--frame {
-  inset: -14px;
-  border: 1px solid var(--line-2);
-  transform: translateZ(48px);
-}
-
-/* Ticks share the frame's depth so they stay welded to its corners as the
-   stage turns. Depth comes from the three planes, not from floating marks. */
 .depth--tick {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border: 0 solid var(--accent);
-  transform: translateZ(48px);
+  transform: translateZ(52px);
 }
 
 .tick-tl {
-  top: -14px;
-  left: -14px;
+  top: -13px;
+  left: -13px;
   border-top-width: 2px;
   border-left-width: 2px;
+  border-top-left-radius: var(--r-shell);
 }
 
 .tick-br {
-  right: -14px;
-  bottom: -14px;
+  right: -13px;
+  bottom: -13px;
   border-bottom-width: 2px;
   border-right-width: 2px;
+  border-bottom-right-radius: var(--r-shell);
+}
+
+.hero-figure .bezel {
+  position: relative;
+  box-shadow: var(--lift);
 }
 
 .portrait {
-  position: relative;
   aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border: 1px solid var(--line-2);
-  background: var(--surface);
 }
 
 .portrait img {
@@ -755,7 +944,7 @@ body.locked {
   height: 100%;
   object-fit: cover;
   object-position: 55% 100%;
-  filter: saturate(.45) contrast(1.06);
+  filter: saturate(.4) contrast(1.06);
   transform: scale(1.1);
 }
 
@@ -763,20 +952,19 @@ body.locked {
 /* ------------------------------------------------------------- 9 about */
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr);
+  gap: clamp(2rem, 4.5vw, 4rem);
   align-items: start;
 }
 
 .about-main {
   display: flex;
   flex-direction: column;
-  gap: clamp(1.25rem, 2.6vh, 2rem);
+  gap: clamp(1.1rem, 2.4vh, 1.75rem);
 }
 
-/* Data rail, not cards. Hairlines carry the grouping. */
 .about-stats {
-  border-top: 1px solid var(--line);
+  padding: clamp(14px, 2vw, 22px) clamp(18px, 2.2vw, 26px);
 }
 
 .srow {
@@ -784,17 +972,20 @@ body.locked {
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  padding: clamp(.9rem, 2vh, 1.35rem) 0;
-  border-bottom: 1px solid var(--line);
+  padding: clamp(.7rem, 1.7vh, 1.1rem) 0;
+  border-bottom: 1px solid var(--hair);
+}
+
+.srow:last-child {
+  border-bottom: 0;
 }
 
 .snum {
   font-family: var(--mono);
-  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  font-size: clamp(1.375rem, 2.3vw, 1.875rem);
   font-weight: 500;
   letter-spacing: -.03em;
   line-height: 1;
-  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -811,47 +1002,47 @@ body.locked {
   grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: end;
-  margin-bottom: clamp(2.5rem, 5vh, 3.75rem);
+  margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
 }
 
 .spot-id .sec-title {
-  margin-bottom: .5rem;
+  margin-bottom: .4rem;
 }
 
 .spot-tag {
   font-family: var(--mono);
   font-size: .8125rem;
-  letter-spacing: .04em;
   color: var(--accent);
 }
 
 .spot-claim {
   color: var(--text-2);
   max-width: 58ch;
-  line-height: 1.68;
+  line-height: 1.62;
 }
 
-/* Pipeline rail. Stages light up in sequence as the diagram below runs, so
-   the reader can see which stage produced which panel. */
+.pipe-core {
+  padding: 0;
+}
+
 .pipe-rail {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  border: 1px solid var(--line);
-  margin-bottom: 1px;
+  border-bottom: 1px solid var(--hair);
 }
 
 .pipe {
   position: relative;
-  padding: 14px 10px;
+  padding: 12px 8px;
   font-family: var(--mono);
-  font-size: .6875rem;
+  font-size: .625rem;
   font-weight: 500;
-  letter-spacing: .08em;
+  letter-spacing: .1em;
   text-transform: uppercase;
   text-align: center;
   color: var(--muted);
-  border-right: 1px solid var(--line);
-  transition: color .4s var(--ease), background-color .4s var(--ease);
+  border-right: 1px solid var(--hair);
+  transition: color .6s var(--e), background-color .6s var(--e);
 }
 
 .pipe:last-child {
@@ -866,7 +1057,7 @@ body.locked {
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: 0 50%;
-  transition: transform .45s var(--ease);
+  transition: transform .6s var(--e);
 }
 
 .pipe.on {
@@ -881,19 +1072,19 @@ body.locked {
 .panes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  margin-bottom: clamp(2rem, 4vh, 3rem);
 }
 
 .pane {
-  background: var(--bg);
-  padding: clamp(16px, 2vw, 22px);
-  min-height: 232px;
+  padding: clamp(14px, 1.8vw, 20px);
+  border-right: 1px solid var(--hair);
+  min-height: clamp(150px, 22vh, 200px);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+}
+
+.pane:last-child {
+  border-right: 0;
 }
 
 .pane-head {
@@ -901,15 +1092,13 @@ body.locked {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hair);
 }
 
 .pane-head h3 {
   font-size: .8125rem;
   font-weight: 500;
-  letter-spacing: -.005em;
-  color: var(--text);
 }
 
 .langs {
@@ -918,10 +1107,11 @@ body.locked {
 }
 
 .langs b {
-  padding: 2px 6px;
-  border: 1px solid var(--line);
+  padding: 2px 7px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
   font-family: var(--mono);
-  font-size: .625rem;
+  font-size: .5625rem;
   font-weight: 400;
   color: var(--muted);
 }
@@ -929,24 +1119,24 @@ body.locked {
 .transcript {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-size: .8125rem;
-  line-height: 1.5;
+  gap: 9px;
+  font-size: .78125rem;
+  line-height: 1.48;
 }
 
 .t-line {
   color: var(--muted);
-  transition: color .5s var(--ease);
+  transition: color .6s var(--e);
 }
 
 .t-line em {
   display: block;
   font-family: var(--mono);
-  font-size: .625rem;
+  font-size: .5625rem;
   font-style: normal;
-  letter-spacing: .1em;
+  letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--line-2);
+  color: var(--hair-2);
   margin-bottom: 2px;
 }
 
@@ -962,21 +1152,22 @@ body.locked {
 .files {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-size: .8125rem;
-  line-height: 1.45;
+  gap: 9px;
+  font-size: .78125rem;
+  line-height: 1.42;
 }
 
-.reqs li {
+.reqs li,
+.files li {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   color: var(--text-2);
-  animation: paneIn .5s var(--ease) both;
+  animation: paneIn .6s var(--e) both;
 }
 
 .reqs li b {
   font-family: var(--mono);
-  font-size: .6875rem;
+  font-size: .625rem;
   font-weight: 500;
   color: var(--accent);
   flex: none;
@@ -984,13 +1175,9 @@ body.locked {
 }
 
 .files li {
-  display: flex;
-  gap: 10px;
   align-items: center;
   font-family: var(--mono);
-  font-size: .75rem;
-  color: var(--text-2);
-  animation: paneIn .5s var(--ease) both;
+  font-size: .71875rem;
 }
 
 .files li i {
@@ -1011,47 +1198,39 @@ body.locked {
   }
 }
 
-.spot-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  margin-bottom: clamp(2rem, 4vh, 3rem);
-}
-
-.sstat {
-  background: var(--bg);
-  padding: clamp(18px, 2.2vw, 26px);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sstat .slabel {
-  text-align: left;
-}
-
 .spot-foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
+  margin-top: clamp(1.25rem, 2.6vh, 1.85rem);
 }
 
-.spot-foot .tags {
-  max-width: 46rem;
+.spot-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.sstat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sstat .slabel {
+  text-align: left;
 }
 
 .honest {
-  font-size: .875rem;
+  margin-top: clamp(1rem, 2.2vh, 1.5rem);
+  padding-left: 16px;
+  border-left: 2px solid var(--hair-2);
+  font-size: .8125rem;
   color: var(--muted);
-  max-width: 70ch;
-  line-height: 1.65;
-  padding-left: 18px;
-  border-left: 2px solid var(--line-2);
+  max-width: 78ch;
+  line-height: 1.6;
 }
 
 .honest b {
@@ -1060,77 +1239,69 @@ body.locked {
 }
 
 
-/* -------------------------------------------------------------- 11 work */
-/* Bento. Four projects, four cells, no filler. One tall feature on the left,
-   two stacked beside it, one wide row underneath. Hairline gaps instead of
-   card borders. */
-.bento {
-  display: grid;
-  perspective: 1400px;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  margin-bottom: clamp(3.5rem, 7vh, 5.5rem);
+/* ------------------------------------------- 11 work, horizontal pan */
+.pan-wrap {
+  height: auto;
 }
 
-.proj {
-  position: relative;
-  background: var(--bg);
+.pan-sticky {
+  padding-top: var(--nav-h);
+  padding-bottom: clamp(2rem, 5vh, 4rem);
+}
+
+.pan-head {
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.pan-head .sec-title {
+  margin-bottom: 0;
+}
+
+.pan-rail {
+  overflow: hidden;
+}
+
+/* Fallback shape when the browser has no scroll timelines: a plain wrapping
+   grid. The pan below is a progressive enhancement on top of this. */
+.pan-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  padding-left: var(--gutter);
+  padding-right: calc(var(--gutter) + var(--rail-w));
+  perspective: 1300px;
+}
+
+.proj > .core {
   display: flex;
   flex-direction: column;
-  transform-style: preserve-3d;
-  transition: background-color .35s var(--ease);
 }
 
-.proj:hover {
-  background: var(--bg-2);
-  z-index: 2;
-}
-
-/* Cursor spotlight. Tracks the pointer inside the card the tilt is following,
-   so the light and the geometry agree about where the viewer is. */
-.proj::after {
+/* Cursor spotlight. It tracks the pointer inside the same card the tilt is
+   following, so the light and the geometry agree about where the viewer is. */
+.proj > .core::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  transition: opacity .45s var(--ease);
-  background: radial-gradient(320px circle at var(--px, 50%) var(--py, 50%),
-      var(--accent-wash), transparent 68%);
+  transition: opacity .5s var(--e);
+  background: radial-gradient(300px circle at var(--px, 50%) var(--py, 50%),
+      var(--accent-wash), transparent 66%);
 }
 
-.proj:hover::after {
+.proj:hover > .core::after {
   opacity: 1;
 }
 
-.proj:nth-child(1) {
-  grid-column: 1 / 8;
-}
-
-.proj:nth-child(2) {
-  grid-column: 8 / 13;
-}
-
-.proj:nth-child(3) {
-  grid-column: 1 / 6;
-}
-
-.proj:nth-child(4) {
-  grid-column: 6 / 13;
-}
-
-/* Project shots are wide captures, so every media box keeps a wide box and
-   crops from the top. A tall box would zoom a 16:9 screenshot into an
-   unreadable detail. */
 .proj-media {
   position: relative;
-  overflow: hidden;
   aspect-ratio: 16 / 10;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--core-bg-2);
+  border-bottom: 1px solid var(--hair);
+  flex: none;
 }
 
 .proj-media img {
@@ -1138,31 +1309,31 @@ body.locked {
   height: 100%;
   object-fit: cover;
   object-position: 50% 0;
-  filter: saturate(.55) contrast(1.02);
-  transition: transform .8s var(--ease), filter .5s var(--ease);
+  filter: saturate(.5) contrast(1.02);
+  transition: transform 1s var(--e), filter .6s var(--e);
 }
 
 .proj:hover .proj-media img {
-  transform: scale(1.03);
-  filter: saturate(.85) contrast(1.02);
+  transform: scale(1.04);
+  filter: saturate(.9) contrast(1.02);
 }
 
-/* Empty state for a project whose screenshot has not been supplied yet.
-   Deliberately blank: no fake UI is drawn in its place. */
+/* A project with no screenshot yet gets an honest blank panel. No fake UI
+   is ever drawn in its place. */
 .media-empty {
   display: none;
   position: absolute;
   inset: 0;
   place-items: center;
   background: repeating-linear-gradient(135deg,
-      var(--surface) 0 10px,
-      var(--surface-2) 10px 20px);
+      var(--core-bg-2) 0 10px,
+      var(--core-bg) 10px 20px);
 }
 
 .media-empty span {
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .12em;
+  font-size: .625rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -1179,12 +1350,13 @@ body.locked {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: clamp(18px, 2.2vw, 30px);
+  gap: 10px;
+  padding: clamp(16px, 1.8vw, 22px);
+  flex: 1;
 }
 
 .proj-body h3 {
-  font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+  font-size: 1.1875rem;
   font-weight: 500;
   letter-spacing: -.02em;
   line-height: 1.15;
@@ -1192,190 +1364,201 @@ body.locked {
 
 .proj-kind {
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .1em;
+  font-size: .625rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--accent);
   margin-top: -6px;
 }
 
-.proj-body p:not(.proj-kind) {
-  font-size: .875rem;
+.proj-body > p:not(.proj-kind) {
+  font-size: .84375rem;
   color: var(--text-2);
-  line-height: 1.62;
-  max-width: 58ch;
+  line-height: 1.6;
 }
 
-.client-block {
-  border-top: 1px solid var(--line);
-  padding-top: clamp(2rem, 4vh, 3rem);
+.proj-body .arrow-link {
+  margin-top: auto;
 }
 
-.client-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+.proj--clients .client {
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+  width: 100%;
 }
 
-.client h4 {
-  font-size: 1.125rem;
+.proj--clients .client h4 {
+  font-size: .9375rem;
   font-weight: 500;
-  letter-spacing: -.015em;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.client p {
-  font-size: .875rem;
+.proj--clients .client p {
+  font-size: .8125rem;
   color: var(--text-2);
-  line-height: 1.62;
-  max-width: 48ch;
-  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+/*
+   The pan itself. The wrapper is tall, an inner layer is sticky at the top
+   of the viewport, and a view timeline declared on the wrapper drives the
+   track sideways while that wrapper crosses the screen. `contain` spans
+   exactly the period the sticky layer is pinned.
+*/
+@supports (animation-timeline: view()) {
+  .pan-wrap {
+    height: 240vh;
+    view-timeline: --pan block;
+  }
+
+  .pan-sticky {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+
+  .pan-track {
+    display: flex;
+    grid-template-columns: none;
+    gap: 18px;
+    width: max-content;
+    animation: panX linear both;
+    animation-timeline: --pan;
+    animation-range: contain;
+  }
+
+  .proj {
+    width: clamp(280px, 25vw, 380px);
+    flex: none;
+  }
+
+  @keyframes panX {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(calc(100vw - 100%));
+    }
+  }
 }
 
 
 /* -------------------------------------------------------------- 12 path */
-.path-grid {
+/* A horizontal track rather than a vertical list, so the whole progression
+   reads in one screen. */
+.track {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, .5fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: start;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 2rem);
+  margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
 }
 
-.timeline {
-  border-top: 1px solid var(--line);
+.track::before {
+  content: "";
+  position: absolute;
+  top: 38px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hair);
 }
 
-.tl {
-  display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 2.5rem);
-  padding: clamp(1.5rem, 3.5vh, 2.5rem) 0;
-  border-bottom: 1px solid var(--line);
+.stop {
+  position: relative;
+  padding-top: 62px;
 }
 
-.tl-when {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.tl-date {
-  font-family: var(--mono);
-  font-size: .75rem;
-  letter-spacing: .04em;
-  color: var(--muted);
-}
-
-.tl-now {
-  padding: 3px 8px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-family: var(--mono);
-  font-size: .625rem;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.tl-score {
+.stop-date {
+  position: absolute;
+  top: 0;
+  left: 0;
   font-family: var(--mono);
   font-size: .6875rem;
   letter-spacing: .04em;
-  color: var(--text-2);
-  border: 1px solid var(--line);
-  padding: 3px 8px;
+  color: var(--muted);
 }
 
-.tl-what h3 {
-  font-size: clamp(1.0625rem, 1.6vw, 1.375rem);
+.stop-node {
+  position: absolute;
+  top: 33px;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.stop h3 {
+  font-size: clamp(.9375rem, 1.3vw, 1.125rem);
   font-weight: 500;
-  letter-spacing: -.02em;
+  letter-spacing: -.015em;
   line-height: 1.2;
 }
 
-.tl-org {
-  font-size: .875rem;
+.stop-org {
+  font-size: .8125rem;
   color: var(--accent);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
-.tl-what ul {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-bottom: 14px;
-}
-
-.tl-what li {
-  position: relative;
-  padding-left: 16px;
-  font-size: .875rem;
+.stop-score {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 8px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  font-family: var(--mono);
+  font-size: .625rem;
   color: var(--text-2);
-  line-height: 1.6;
-  max-width: 62ch;
 }
 
-.tl-what li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: .62em;
-  width: 6px;
-  height: 1px;
-  background: var(--line-2);
+.stop > p:last-child {
+  font-size: .8125rem;
+  color: var(--text-2);
+  line-height: 1.55;
 }
 
 .certs {
-  border-top: 1px solid var(--line);
-  padding-top: 1.5rem;
-}
-
-.cert-list {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: clamp(1rem, 2.5vh, 1.75rem);
+  border-top: 1px solid var(--hair);
 }
 
-.cert-list li {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.cert-org {
+.certs-label {
   font-family: var(--mono);
   font-size: .625rem;
-  letter-spacing: .12em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--muted);
+  margin-right: 6px;
 }
 
-.cert-name {
-  font-size: .875rem;
-  color: var(--text);
-}
-
-.certs-more {
-  font-size: .8125rem;
-  color: var(--muted);
-  margin-bottom: 1.25rem;
+.certs .arrow-link {
+  margin-left: auto;
 }
 
 
 /* ------------------------------------------------------------- 13 stack */
 .marquee {
   display: flex;
-  gap: 0;
   overflow: hidden;
-  border-block: 1px solid var(--line);
-  padding-block: clamp(14px, 2.4vh, 22px);
-  margin-bottom: clamp(2rem, 4.5vh, 3.25rem);
+  border-block: 1px solid var(--hair);
+  padding-block: clamp(12px, 2.2vh, 20px);
+  margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
   user-select: none;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
 }
 
 .marquee-track {
@@ -1384,13 +1567,12 @@ body.locked {
   align-items: center;
   gap: clamp(28px, 4vw, 56px);
   padding-right: clamp(28px, 4vw, 56px);
-  animation: marquee 42s linear infinite;
+  animation: marquee 44s linear infinite;
 }
 
 .marquee-track span {
   font-family: var(--mono);
-  font-size: clamp(.8125rem, 1.4vw, 1rem);
-  font-weight: 400;
+  font-size: clamp(.8125rem, 1.3vw, .9375rem);
   letter-spacing: .04em;
   color: var(--muted);
   white-space: nowrap;
@@ -1405,34 +1587,27 @@ body.locked {
 .stack-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 14px;
 }
 
-.sgroup {
-  background: var(--bg);
-  padding: clamp(14px, 1.8vw, 22px);
+.sgroup > .core {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.sgroup--wide {
-  grid-column: span 3;
+  gap: 10px;
+  padding: clamp(14px, 1.7vw, 20px);
 }
 
 .sgroup h3 {
   font-family: var(--mono);
-  font-size: .6875rem;
+  font-size: .625rem;
   font-weight: 500;
-  letter-spacing: .12em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
 
-/* ----------------------------------------------------------- 14 contact */
+/* -------------------------------------------------- 14 contact and foot */
 .contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1443,18 +1618,22 @@ body.locked {
 .contact-left {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
+}
+
+.contact-left .sec-title {
+  margin-bottom: .25rem;
 }
 
 .contact-sub {
   color: var(--text-2);
   max-width: 42ch;
-  line-height: 1.65;
+  line-height: 1.62;
 }
 
 .contact-list {
-  border-top: 1px solid var(--line);
-  margin-top: .5rem;
+  border-top: 1px solid var(--hair);
+  margin-top: .25rem;
 }
 
 .contact-list li {
@@ -1462,21 +1641,21 @@ body.locked {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: clamp(.7rem, 1.6vh, 1rem) 0;
-  border-bottom: 1px solid var(--line);
+  padding: clamp(.6rem, 1.5vh, .9rem) 0;
+  border-bottom: 1px solid var(--hair);
 }
 
 .clabel {
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .12em;
+  font-size: .625rem;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--muted);
   flex: none;
 }
 
 .cplain {
-  font-size: .875rem;
+  font-size: .8125rem;
   color: var(--text-2);
 }
 
@@ -1490,10 +1669,11 @@ body.locked {
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
   color: var(--text-2);
   font-size: 1.0625rem;
-  transition: color .25s var(--ease), border-color .25s var(--ease);
+  transition: color .4s var(--e), border-color .4s var(--e);
 }
 
 .csocial a:hover {
@@ -1501,14 +1681,18 @@ body.locked {
   border-color: var(--accent);
 }
 
-/* Form. Labels sit above their input, helper and error text below it. */
+/* Labels above their input, errors below it. */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  border: 1px solid var(--line);
-  padding: clamp(20px, 2.6vw, 32px);
-  background: var(--surface);
+  gap: 12px;
+  padding: clamp(18px, 2.2vw, 26px);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .hp {
@@ -1517,19 +1701,18 @@ body.locked {
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .field label {
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .1em;
+  font-size: .625rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--text-2);
 }
@@ -1537,18 +1720,19 @@ body.locked {
 .field input,
 .field textarea {
   width: 100%;
-  padding: 11px 13px;
+  padding: 11px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-input);
   background: var(--bg);
-  border: 1px solid var(--line-2);
   color: var(--text);
   font: inherit;
   font-size: .9375rem;
-  transition: border-color .25s var(--ease), background-color .25s var(--ease);
+  transition: border-color .4s var(--e);
 }
 
 .field textarea {
   resize: vertical;
-  min-height: 96px;
+  min-height: 80px;
 }
 
 .field input:focus,
@@ -1569,74 +1753,14 @@ body.locked {
 
 .form-note {
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .06em;
+  font-size: .625rem;
+  letter-spacing: .08em;
   color: var(--muted);
   text-align: center;
 }
 
-.form-note.ok {
-  color: var(--accent);
-}
-
+.form-note.ok,
 .form-note.err {
-  color: var(--accent);
-  font-weight: 500;
-}
-
-
-/* ------------------------------------------------------------ 15 footer */
-.footer {
-  border-top: 1px solid var(--line);
-  padding-top: clamp(3rem, 6vh, 4.5rem);
-  padding-bottom: 2rem;
-  background: var(--bg-2);
-}
-
-.foot-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, .7fr) minmax(0, .7fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  padding-bottom: clamp(2.5rem, 5vh, 3.5rem);
-}
-
-.foot-name {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -.02em;
-  margin-bottom: 8px;
-}
-
-.foot-desc {
-  font-size: .875rem;
-  color: var(--text-2);
-  max-width: 40ch;
-  line-height: 1.62;
-}
-
-.foot-head {
-  display: block;
-  font-family: var(--mono);
-  font-size: .625rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-
-.foot-col ul {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.foot-col a {
-  font-size: .875rem;
-  color: var(--text-2);
-  transition: color .25s var(--ease);
-}
-
-.foot-col a:hover {
   color: var(--accent);
 }
 
@@ -1645,11 +1769,12 @@ body.locked {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line);
+  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--hair);
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .04em;
+  font-size: .625rem;
+  letter-spacing: .06em;
   color: var(--muted);
 }
 
@@ -1657,57 +1782,83 @@ body.locked {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 4px 4px 4px 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
   font-family: var(--mono);
-  font-size: .6875rem;
-  letter-spacing: .1em;
+  font-size: .625rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--text-2);
-  transition: color .25s var(--ease);
+  transition: color .4s var(--e), border-color .4s var(--e);
+}
+
+.to-top .btn-ico.sm {
+  width: 24px;
+  height: 24px;
+  font-size: .8125rem;
 }
 
 .to-top:hover {
   color: var(--accent);
+  border-color: var(--accent);
 }
 
-.to-top i {
-  transition: transform .35s var(--ease);
-}
-
-.to-top:hover i {
-  transform: translateY(-3px);
+.to-top:hover .btn-ico {
+  transform: translateY(-2px);
 }
 
 
-/* ------------------------------------------------------------ 16 motion */
-/* Reveals are driven by IntersectionObserver in app.js, never by a scroll
-   listener. Without JS everything is visible from the start. */
+/* ------------------------------------------------------------ 15 motion */
+/* Reveals are IntersectionObserver driven, never a scroll listener. Without
+   JS everything is visible from the start. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity .75s var(--ease), transform .75s var(--ease);
+  transform: translateY(26px);
+  transition: opacity .9s var(--e), transform .9s var(--e), filter .9s var(--e);
   transition-delay: var(--d, 0ms);
+}
+
+/* The heavier blurred entry is limited to headings, where there are few
+   enough elements for the filter to stay cheap. */
+.js .sec-title.reveal,
+.js .lead.reveal {
+  filter: blur(7px);
 }
 
 .js .reveal.in {
   opacity: 1;
   transform: none;
+  filter: none;
 }
 
-.js .hero-title .line > span {
+/* Headline lines rotate up out of their own mask. */
+.js .hero-title .l > span {
   display: block;
-  transform: translateY(105%);
-  transition: transform 1s var(--ease);
+  transform: translateY(105%) rotateX(35deg);
+  transform-origin: 50% 0;
+  transition: transform 1.1s var(--e);
   transition-delay: var(--d, 0ms);
 }
 
-.js .hero-title.in .line > span {
+.js .hero-title.in .l > span {
   transform: none;
 }
 
-/* Scroll-driven pieces. Everything here is progressive enhancement: if the
-   browser has no scroll timelines the page keeps its static fallback. */
-@supports (animation-timeline: scroll()) {
+/* Island links stagger in on first paint. */
+.js .island-core > * {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity .7s var(--e), transform .7s var(--e);
+  transition-delay: var(--d, 0ms);
+}
 
+.js .island.in .island-core > * {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: scroll()) {
   .progress span {
     animation: progressGrow linear both;
     animation-timeline: scroll(root block);
@@ -1722,27 +1873,12 @@ body.locked {
       transform: scaleX(1);
     }
   }
-
-  /* Nav backdrop fades in over the first 120px instead of sitting there
-     from the start, so the hero reads as one uninterrupted plane. */
-  .nav::before {
-    opacity: 0;
-    animation: navIn linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 120px;
-  }
-
-  @keyframes navIn {
-    to {
-      opacity: 1;
-    }
-  }
 }
 
 @supports (animation-timeline: view()) {
 
-  /* Slow vertical drift on the one hero photograph. It gives the hero a
-     sense of depth as it leaves; nothing else on the page parallaxes. */
+  /* Slow drift on the one photograph, so the hero gains depth as it leaves.
+     Nothing else on the page parallaxes. */
   .portrait img {
     animation: heroDrift linear both;
     animation-timeline: view();
@@ -1761,158 +1897,172 @@ body.locked {
 }
 
 
-/* -------------------------------------------------------- 17 responsive */
-@media (max-width: 1080px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+/* ------------------------------ 16 responsive, reduced motion, print */
+@media (min-width: 1241px) {
+  :root {
+    --rail-w: 60px;
+  }
+}
+
+@media (max-width: 1240px) {
+  .rail {
+    display: none;
   }
 
   .stack-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .sgroup--wide {
-    grid-column: span 2;
+@media (max-width: 1080px) {
+  .island-links {
+    display: none;
   }
 
-  .spot-stats {
-    grid-template-columns: repeat(2, 1fr);
+  .burger {
+    display: block;
+  }
+
+  .track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2rem;
+  }
+
+  .track::before {
+    display: none;
+  }
+
+  .stop {
+    padding-top: 26px;
+  }
+
+  .stop-node {
+    top: 4px;
+    left: auto;
+    right: 0;
   }
 }
 
 @media (max-width: 900px) {
   :root {
-    --nav-h: 60px;
+    --nav-h: 88px;
   }
 
-  .nav-links {
-    position: fixed;
-    inset: var(--nav-h) 0 auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    padding: 8px var(--gutter) 20px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
-    transform: translateY(-105%);
-    transition: transform .45s var(--ease);
-    visibility: hidden;
+  /* Below the breakpoint the layout is a single column, so a screen can no
+     longer be guaranteed to fit one viewport. Snapping is switched off
+     rather than trapping content off screen. */
+  html {
+    scroll-snap-type: none;
   }
 
-  .nav-links.open {
-    transform: none;
-    visibility: visible;
-  }
-
-  .nav-link {
-    padding: 14px 0;
-    font-size: 1rem;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav-link::after {
-    display: none;
-  }
-
-  .burger {
-    display: flex;
-  }
-
-  .nav-actions .btn {
-    display: none;
-  }
-
-  /* Snap sections stop being exactly one screen tall once the layout has
-     collapsed to a single column, otherwise the content overflows. */
   .section--snap {
     min-height: 0;
-    padding-top: calc(var(--nav-h) + clamp(3rem, 8vh, 5rem));
-    padding-bottom: clamp(3rem, 8vh, 5rem);
+    padding-top: calc(var(--nav-h) + clamp(2rem, 6vh, 4rem));
+    padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
     scroll-snap-align: none;
     scroll-margin-top: var(--nav-h);
   }
 
-  html {
-    scroll-snap-type: none;
+  .island {
+    left: var(--gutter);
+    right: var(--gutter);
+    transform: none;
+  }
+
+  .island-core {
+    justify-content: space-between;
+  }
+
+  .island-rule,
+  .island-actions .btn {
+    display: none;
   }
 
   .hero-grid,
   .about-grid,
   .spot-head,
-  .path-grid,
-  .contact-grid,
-  .client-grid,
-  .foot-inner {
+  .contact-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .hero {
-    padding-top: calc(var(--nav-h) + clamp(2rem, 6vh, 3.5rem));
+  .hero-grid {
+    padding-inline: var(--gutter);
+    gap: 2.5rem;
   }
 
-  /* Copy stays first so the headline and CTA are the first things on
-     screen. The portrait follows at a size that does not push them off. */
   .hero-figure {
-    justify-self: start;
-    max-width: 300px;
+    max-width: 320px;
   }
 
+  .pipe-rail,
   .panes,
-  .pipe-rail {
+  .field-row {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .pipe {
     border-right: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--hair);
     text-align: left;
   }
 
+  .pane {
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+    min-height: 0;
+  }
+
+  .pane:last-child,
   .pipe:last-child {
     border-bottom: 0;
   }
 
-  .pane {
-    min-height: 0;
+  /* The pan needs a wide viewport to be worth pinning. On phones it becomes
+     an ordinary stack. */
+  .pan-wrap {
+    height: auto !important;
+    view-timeline: none !important;
   }
 
-  .bento {
-    grid-template-columns: minmax(0, 1fr);
+  .pan-sticky {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding-top: calc(var(--nav-h) + clamp(2rem, 6vh, 4rem));
+    padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
+  }
+
+  .pan-track {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: auto !important;
+    animation: none !important;
   }
 
   .proj {
-    grid-column: 1 / -1;
-    flex-direction: column;
+    width: auto !important;
   }
 
-  .proj-media {
-    aspect-ratio: 16 / 9;
-  }
-
-  .tl {
+  .stack-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
   }
 
-  .tl-when {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .foot-inner {
-    gap: 2.25rem;
+  .track {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 560px) {
-  .stack-grid,
-  .spot-stats {
-    grid-template-columns: minmax(0, 1fr);
+  .contact-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
 
-  .sgroup--wide {
-    grid-column: span 1;
+  .foot-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .hero-cta {
@@ -1921,23 +2071,10 @@ body.locked {
 
   .hero-cta .btn {
     flex: 1 1 100%;
-  }
-
-  .contact-list li {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .foot-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    justify-content: space-between;
   }
 }
 
-
-/* ------------------------------------------- 18 reduced motion and print */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-snap-type: none;
@@ -1954,30 +2091,23 @@ body.locked {
   }
 
   .js .reveal,
-  .js .hero-title .line > span {
+  .js .hero-title .l > span,
+  .js .island-core > * {
     opacity: 1;
     transform: none;
+    filter: none;
   }
 
   .marquee-track {
     animation: none;
   }
 
-  .nav::before {
-    opacity: 1;
-  }
-
   .progress span {
     display: none;
   }
 
-  .portrait img {
-    transform: scale(1.1);
-  }
-
-  /* Pointer-driven effects never start under reduced motion (app.js checks
-     the same query), but pin them flat in case a preference changes live. */
-  .field {
+  .signal,
+  .mesh {
     display: none;
   }
 
@@ -1986,25 +2116,51 @@ body.locked {
     transform: none !important;
   }
 
-  .proj::after {
-    display: none;
+  .portrait img {
+    transform: scale(1.1);
+  }
+
+  /* Without the pan, the track has to be a grid again. */
+  .pan-wrap {
+    height: auto !important;
+  }
+
+  .pan-sticky {
+    position: static !important;
+    height: auto !important;
+  }
+
+  .pan-track {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    width: auto !important;
+  }
+
+  .proj {
+    width: auto !important;
   }
 }
 
 @media print {
-  .nav,
+
+  .island,
+  .menu,
+  .rail,
   .grain,
   .progress,
+  .signal,
+  .mesh,
   .marquee,
   .to-top,
-  .field,
   .form {
     display: none !important;
   }
 
   .section--snap,
-  .section--flow {
+  .pan-sticky {
     min-height: 0;
+    height: auto;
+    position: static;
     padding-block: 1rem;
   }
 }
