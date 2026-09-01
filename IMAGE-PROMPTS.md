@@ -81,24 +81,10 @@ AuraSafe or ProtoMind and finds the interface does not match the portfolio
 has caught you misrepresenting your work, and that costs far more than a
 plain screenshot ever would.
 
-So:
-
-- **AuraSafe, Cryptic, Email Assistant** already use real captures. Keep them.
-- **AI Resume Analyzer** has no image yet and shows a hatched empty panel.
-  Fix that with a real capture, at roughly 1200x750, saved to
-  `projects/resume-analyzer.png`. It appears automatically, no code change.
+Real captures live at roughly 1200x750 in `projects/`. Send me the
+filenames and I will wire them in beside or instead of the diagrams.
 
 ### Where generated imagery is legitimate here
-
-An **abstract cover** for a project with nothing screenshot-worthy, clearly
-not pretending to be a UI:
-
-> Abstract representation of document parsing, on a near-black hex #050506
-> ground. A single sheet of paper rendered as a thin lime-green hex #c9f24d
-> outline, with horizontal lines of varying length suggesting text, and a
-> thin scanning line crossing it. Beside it a small circular progress ring,
-> also lime outline. Flat vector, hairline strokes, no fill, no text, no
-> glow, wide empty margins. Aspect ratio 16:10.
 
 A **device frame** to sit a real screenshot inside:
 
